@@ -1,3 +1,68 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: 'Inter';
+  src: local('Inter'), url(../fonts/Inter/Inter-VariableFont_slnt\,wght.ttf) format('opentype');
+}
+
+:root {
+	--background-color: #1F2937;
+}
+
+[data-theme="dark"] {
+	--background-color: white;
+}
+
+html, body {
+    font-family: 'Inter';
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    font-size: 1rem;
+    margin: 0;
+    overflow-x: hidden;
+    background-color: var(--background-color);
+    color: white;
+    scrollbar-color: rgb(24 8 100) transparent;
+}
+
+.heading-1{
+    font-size: 60px;
+    font-weight: 700;
+    line-height: 72px;
+}
+.heading-2{
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 60px;
+}
+.heading-3{
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 48px;
+}
+
+.subtitle-1{
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 32px;
+}
+
+.subtitle-2{
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 28px;
+}
+
+.body-1{
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.body-1-semi{
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+}
