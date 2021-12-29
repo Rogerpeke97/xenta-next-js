@@ -7,7 +7,11 @@ module.exports = {
     extend: {},
     colors: {
       "primary": "#020A33",
-      "background": "#1F2937",
+      "background": "#32445c",
+      "button": {
+        light:  "#E9ECEF",
+        dark:   "#E9ECEF",
+      }
     }
   },
   plugins: [],

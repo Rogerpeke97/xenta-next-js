@@ -2,6 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import DefaultLayout from '../components/layouts/DefaultLayout'
 import NavigationBar from '../components/modules/navigation/NavigationBar'
+import Welcome from '../components/modules/Welcome'
 
 const Home: NextPage = () => {
   return (
@@ -14,7 +15,7 @@ const Home: NextPage = () => {
       <DefaultLayout>
         <div className="h-screen">
           <NavigationBar name={"Xenta Web"} />
-          <h1 className="heading-1">Hello Next.js</h1>
+          <Welcome />
         </div>
       </DefaultLayout>
     </div>

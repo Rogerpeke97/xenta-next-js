@@ -66,3 +66,35 @@ html, body {
     font-weight: 700;
     line-height: 24px;
 }
+
+
+/*
+ * Buttons
+ */
+.custom-button{
+    transition: all 0.2s ease-out;
+}
+ .custom-button:hover{
+   opacity: 0.8;
+ }
+
+
+
+ /*
+  * Animations
+  */
+
+.animate-text{
+    display: inline-block;
+    animation: fontJump 1s infinite;
+    animation-delay: calc(.1s * var(--i));
+}
+
+@keyframes fontJump {
+  0%,40%,100% {
+      transform: translateY(0)
+  }
+  20% {
+      transform: translateY(-10px)
+  }
+}
