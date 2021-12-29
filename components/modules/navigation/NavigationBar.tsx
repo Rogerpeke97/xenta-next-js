@@ -1,7 +1,7 @@
 import type react from 'react'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faLinkedin } from '@fortawesome/free-brands-svg-icons'
-import IconButton from '../../atoms/IconButton'
+import IconButton from '../../atoms/buttons/IconButton'
 
 interface NavProps {
   name: string

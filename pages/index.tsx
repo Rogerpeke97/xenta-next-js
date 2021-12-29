@@ -2,6 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import DefaultLayout from '../components/layouts/DefaultLayout'
 import NavigationBar from '../components/modules/navigation/NavigationBar'
+import SideBar from '../components/modules/navigation/SideBar'
 import Welcome from '../components/modules/Welcome'
 
 const Home: NextPage = () => {
@@ -13,9 +14,12 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <DefaultLayout>
-        <div className="h-screen">
-          <NavigationBar name={"Xenta Web"} />
-          <Welcome />
+        <div className="h-screen flex">
+          <SideBar name={"Logo"} />
+          <div className="grow">
+            <NavigationBar name={"Xenta Web"} />
+            <Welcome />
+          </div>
         </div>
       </DefaultLayout>
     </div>
