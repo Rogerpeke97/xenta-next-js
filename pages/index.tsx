@@ -22,7 +22,7 @@ const Home: NextPage = () => {
         <DefaultLayout>
           <div className="h-screen flex">
             <SideBar name={"Logo"} />
-            <div className="grow">
+            <div className="flex flex-col grow">
               <NavigationBar name={"Xenta Web"} />
               <MenuContent />
             </div>

@@ -20,7 +20,7 @@ const MenuContent = () => {
   }
 
   return(
-    <div className="h-screen px-6 pt-6">
+    <div className="h-full px-5 pt-6">
       {loadContent()}
     </div>
   )
