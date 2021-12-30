@@ -12,6 +12,8 @@ interface overlayProps {
 
 const Overlay: react.FC<overlayProps> = ({ isLoading }) => {
 
+  const [isVisible, setIsVisible] = useState(true)
+
   const loadingStates = [
     {text: 'Loading...'.split(''), value: true},
     {text: 'Done!'.split(''), value: false}
@@ -22,7 +24,8 @@ const Overlay: react.FC<overlayProps> = ({ isLoading }) => {
   }
 
   return(
-    <div className={"h-full w-full flex items-center justify-center absolute bg-card rounded-lg z-10 " + (isLoading ? "" : "fade-out")}>
+    <div onAnimationEnd={() => setTimeout(() => setIsVisible(false), 1000)}
+    className={"h-full w-full flex items-center justify-center absolute bg-card rounded-lg z-10 " + (isLoading ? "" : "fade-out ") + (isVisible ? "" : "invisible")}>
       <div className="flex flex-col items-center justify-center">
         {isLoading ? <div className="spinner"></div> : <FontAwesomeIcon className="icon smooth-render" icon={faCheck} />}
         <div className="flex pt-7 items-center justify-center">

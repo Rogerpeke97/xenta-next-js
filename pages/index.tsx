@@ -14,7 +14,7 @@ const Home: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>Xenta Web</title>
+        <title>Xenta</title>
         <meta name="description" content="Xenta the game" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
