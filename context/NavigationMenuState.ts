@@ -1,11 +1,11 @@
 import {createContext} from 'react';
 
 interface NavigationMenuState {
-  currentMenu: any,
+  currentMenu: Number,
   setCurrentMenu: Function
 }
 
 export const NavigationMenuState = createContext<NavigationMenuState>({
-  currentMenu: null,
+  currentMenu: 0,
   setCurrentMenu: () => {}
 });

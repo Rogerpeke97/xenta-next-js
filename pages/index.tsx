@@ -9,7 +9,7 @@ import { NavigationMenuState } from '../context/NavigationMenuState'
 
 const Home: NextPage = () => {
 
-  const [currentMenu, setCurrentMenu] = useState<any>(null)
+  const [currentMenu, setCurrentMenu] = useState<Number>(0)
 
   return (
     <div>
