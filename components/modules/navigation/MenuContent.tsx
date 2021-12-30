@@ -4,7 +4,7 @@ import type react from 'react'
 
 
 
-const Welcome: react.FC<any>= () => {
+const MenuContent: react.FC<any>= () => {
   const title = 'Xenta'.split('')
   return(
     <div className="px-6 pt-6">
@@ -15,8 +15,11 @@ const Welcome: react.FC<any>= () => {
           {letter}
         </h1>
       })}
+      <div>
+        
+      </div>
     </div>
   )
 }
 
-export default Welcome
+export default MenuContent

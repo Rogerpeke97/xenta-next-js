@@ -11,7 +11,8 @@ module.exports = {
       "button": {
         light:  "#E9ECEF",
         dark:   "#E9ECEF",
-      }
+      },
+      "card": "#1D1E2C"
     }
   },
   plugins: [],

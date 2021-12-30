@@ -29,14 +29,12 @@ const IconButton: react.FC<iconProps> = ({ iconName, link, iconSize }) => {
     return styleForIcon || {}
   }
   return (
-    <div className="rounded-md bg-button-light shadow-lg custom-button">
+    <div className="rounded-md bg-card shadow-lg custom-button">
       <a className="flex items-center justify-center"
       href={link} target="_blank" rel="noopener noreferrer" 
       style={findIconDefinition()}
       >
-        <div className="w-3/5">
-          <FontAwesomeIcon color="darkblue" icon={iconName} />
-        </div>
+        <FontAwesomeIcon className="icon" icon={iconName} />
       </a>
     </div>
   )
