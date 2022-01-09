@@ -19,7 +19,7 @@ const MenuContent = () => {
     return findScreen?.component ?? <div>Not Found</div>
   }
 
-  return(
+  return (
     <div className="h-full px-5 pt-6">
       {loadContent()}
     </div>

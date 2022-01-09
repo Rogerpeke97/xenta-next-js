@@ -7,12 +7,12 @@ module.exports = {
     extend: {},
     colors: {
       "primary": "#020A33",
-      "background": "#32445c",
+      "background": "#1e2429",
       "button": {
         light:  "#E9ECEF",
         dark:   "#E9ECEF",
       },
-      "card": "#1D1E2C"
+      "card": "#0070f3"
     }
   },
   plugins: [],

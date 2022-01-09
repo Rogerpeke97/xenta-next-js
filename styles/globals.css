@@ -8,7 +8,12 @@
 }
 
 :root {
-	--background-color: #1F2937;
+	--background-color: black;
+  --primary: #020A33;
+  --background: #1e2429;
+  --buton-light: #E9ECEF;
+  --button-dark: #020A33;
+  --card: #0070f3;
 }
 
 [data-theme="dark"] {
@@ -57,6 +62,35 @@ html, body {
 
 
 /*
+ * Inputs
+ */
+
+.input-wrapper {
+    position: relative;
+}
+
+
+input{
+  color: black;
+  width: 100%;
+  height: 50px;
+  border: none;
+  border-radius: 6px;
+  outline: none;
+  padding: 0 35px;
+}
+
+.input-icon{
+  position: absolute;
+  top: 50%;
+  left: 0px;
+  margin-top: -8px;
+}
+
+
+
+
+/*
  * Buttons
  */
 .custom-button{
@@ -64,6 +98,12 @@ html, body {
 }
  .custom-button:hover{
    opacity: 0.8;
+ }
+ button{
+   transition: all 0.2s ease-out;
+ }
+ button:hover{
+    box-shadow: 0px 0px 6px 1px #000000, inset 0px -50px 0px rgba(24, 8, 100, 1)
  }
 
 
@@ -91,10 +131,18 @@ html, body {
     cursor: pointer;
   }
   .card:hover{
-    background-color: #1D1E2C;
+    background-color: var(--card);
   }
   .card-active{
-    background-color: #1D1E2C;
+    background-color: var(--card);
+  }
+
+  /*
+  * Links
+  */
+  a{
+    text-decoration: underline;
+    color: var(--card);
   }
 
 
@@ -136,7 +184,7 @@ html, body {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: conic-gradient(var(--background-color), white);
+    background: conic-gradient(var(--background-color), var(--card));
     position: relative;
     animation: spin 1.4s linear infinite;
     transform: translateZ(0);

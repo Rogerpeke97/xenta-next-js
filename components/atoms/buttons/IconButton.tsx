@@ -34,7 +34,7 @@ const IconButton: react.FC<iconProps> = ({ iconName, link, iconSize }) => {
       href={link} target="_blank" rel="noopener noreferrer" 
       style={findIconDefinition()}
       >
-        <FontAwesomeIcon className="icon" icon={iconName} />
+        <FontAwesomeIcon className="icon" icon={iconName} color="white" />
       </a>
     </div>
   )
