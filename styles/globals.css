@@ -14,6 +14,7 @@
   --buton-light: #E9ECEF;
   --button-dark: #020A33;
   --card: #0070f3;
+  --warning: #ffb300;
 }
 
 [data-theme="dark"] {
@@ -60,6 +61,11 @@ html, body {
     line-height: 24px;
 }
 
+.body-2{
+    font-size: 14px;
+    line-height: 20px;
+}
+
 
 /*
  * Inputs
@@ -88,6 +94,15 @@ input{
 }
 
 
+/*
+ * Warnings
+ */
+
+ .warning {
+   color: var(--warning);
+ }
+
+
 
 
 /*
@@ -100,7 +115,7 @@ input{
    opacity: 0.8;
  }
  button{
-   transition: all 0.2s ease-out;
+   transition: all 0.4s ease-out;
  }
  button:hover{
     box-shadow: 0px 0px 6px 1px #000000, inset 0px -50px 0px rgba(24, 8, 100, 1)
@@ -150,6 +165,27 @@ input{
  /*
   * Animations
   */
+
+  .pop-in{
+    animation: pop-in 0.5s ease-out;
+    transition: all 0.2s ease-out;
+  }
+
+  @keyframes pop-in{
+    from{
+      transform: scale(0);
+    }
+    50%{
+      transform: scale(1.025);
+    }
+    to{
+      transform: scale(1);
+    }
+  }
+
+
+
+
 
   .smooth-render{
     opacity: 0;

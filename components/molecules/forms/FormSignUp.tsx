@@ -1,18 +1,19 @@
 
 import React, { MouseEventHandler, useState } from 'react'
-import { faEnvelope, faExclamationCircle, faKey } from '@fortawesome/free-solid-svg-icons'
+import { faEnvelope, faExclamationCircle, faKey, faUser } from '@fortawesome/free-solid-svg-icons'
 import FormField from '../../atoms/inputs/FormField'
-import TextLink from '../../atoms/links/TextLink'
 import Button from '../../atoms/buttons/Button'
 import FormWarning from '../../atoms/forms/FormWarning'
 
 
 
-const FormLogin = () => {
+const FormSignUp = () => {
 
   const [form, setForm] = useState({
+    name: '',
     email: '',
     password: '',
+    isValidUser: true,
     isValidEmail: true,
     isValidPassword: true,
     isSubmitted: false,
@@ -28,11 +29,16 @@ const FormLogin = () => {
     return /^(?=.*[A-Z])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/.test(password)
   }
 
+  const validateUserName = (name: string) => {
+    return /^().{1,15}$/.test(name)
+  }
+
   function handleChange(newValue: string, inputName: string) {
 
     const validationsByInputName = [
       { name: 'email', validate: (email: string) => validateEmail(email), isValidName: 'isValidEmail' },
-      { name: 'password', validate: (password: string) => validatePassword(password), isValidName: 'isValidPassword' }
+      { name: 'password', validate: (password: string) => validatePassword(password), isValidName: 'isValidPassword' },
+      { name: 'name', validate: (name: string) => validateUserName(name), isValidName: 'isValidUser' }
     ]
 
     const validation = validationsByInputName.find(({ name }) => name === inputName)
@@ -46,17 +52,21 @@ const FormLogin = () => {
   const [isLoading, setIsLoading] = useState(false)
 
 
-  const login = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent) => {
+  const signUp = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    console.log('login')
+    console.log('signup')
     setTimeout(() => { setIsLoading(false) }, 2000)
   }
 
 
   return (
-    <form className="flex flex-col w-full pop-in" onSubmit={login}>
+    <form className="flex flex-col w-full pop-in" onSubmit={signUp}>
       <div className="px-6 flex flex-col items-center justify-center">
+        <FormField value={form.name} onChange={(e) => handleChange((e.target as HTMLTextAreaElement).value, 'name')} type="name" icon={faUser} placeholder="Name" />
+        <div className="w-full h-7">
+          {!form.isValidUser && <FormWarning text="Please enter a valid user name" icon={faExclamationCircle} />}
+        </div>
         <FormField value={form.email} onChange={(e) => handleChange((e.target as HTMLTextAreaElement).value, 'email')} type="email" icon={faEnvelope} placeholder="Email" />
         <div className="w-full h-7">
           {!form.isValidEmail && <FormWarning text="Please enter a valid email address" icon={faExclamationCircle} />}
@@ -66,17 +76,12 @@ const FormLogin = () => {
           {!form.isValidPassword && <FormWarning text="Password must be of at least 8 characters, including digits and one upper case letter" icon={faExclamationCircle} />}
         </div>
       </div>
-      <div className="flex items-end pb-6 px-3">
-        <div className="flex w-full items-center justify-end">
-          <TextLink textColor="text-card" text="Forgot password?" link="/forgot-password" />
-        </div>
-      </div>
       <div className="flex items-center justify-center">
-        <Button size="regular" color="bg-card" text="Login" onClick={(e) => login(e)} isLoading={isLoading} />
+        <Button size="regular" color="bg-card" text="Sign Up" onClick={(e) => signUp(e)} isLoading={isLoading} />
       </div>
     </form>
   )
 }
 
 
-export default FormLogin
+export default FormSignUp
