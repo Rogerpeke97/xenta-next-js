@@ -5,10 +5,14 @@ import FormField from '../../atoms/inputs/FormField'
 import TextLink from '../../atoms/links/TextLink'
 import Button from '../../atoms/buttons/Button'
 import FormWarning from '../../atoms/forms/FormWarning'
+import Api from '../../../pages/api/Api'
 
 
 
 const FormLogin = () => {
+
+  const api = new Api();
+
 
   const [form, setForm] = useState({
     email: '',
@@ -50,6 +54,8 @@ const FormLogin = () => {
     e.preventDefault()
     setIsLoading(true)
     console.log('login')
+    const response = await api.post('/signin', {params: { email: form.email, password: form.password }})
+    console.log(response)
     setTimeout(() => { setIsLoading(false) }, 2000)
   }
 

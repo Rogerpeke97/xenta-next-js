@@ -8,7 +8,7 @@ import FormSignUp from '../../components/molecules/forms/FormSignUp'
 
 
 const loginStyle = {
-  height: '100%',
+  height: '100vh',
   minHeight: '600px',
   maxHeight: '800px',
   minWidth: '320px',
