@@ -131,9 +131,13 @@ input{
  button{
    transition: all 0.4s ease-out;
  }
- button:hover{
+ button:hover:enabled{
     box-shadow: 0px 0px 6px 1px #000000, inset 0px -50px 0px rgba(24, 8, 100, 1)
  }
+
+ button:disabled{
+   opacity: 0.5;
+  }
 
 
   /*

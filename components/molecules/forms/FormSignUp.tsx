@@ -76,7 +76,7 @@ const FormSignUp = () => {
           {!form.isValidPassword && <FormWarning text="Password must be of at least 8 characters, including digits and one upper case letter" icon={faExclamationCircle} />}
         </div>
       </div>
-      <div className="flex items-center justify-center">
+      <div className="flex items-center pt-7 justify-center">
         <Button size="regular" color="bg-card" text="Sign Up" onClick={(e) => signUp(e)} isLoading={isLoading} />
       </div>
     </form>
