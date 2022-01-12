@@ -33,6 +33,14 @@ const FormSignUp = () => {
     return /^().{1,15}$/.test(name)
   }
 
+  const areAllFieldsValid = () => {
+    const isValidEmail = validateEmail(form.email)
+    const isValidPassword = validatePassword(form.password)
+    const isValidUser = validateUserName(form.name)
+    setForm({ ...form, isValidEmail, isValidPassword, isValidUser })
+    return isValidEmail && isValidPassword && isValidUser
+  }
+
   function handleChange(newValue: string, inputName: string) {
 
     const validationsByInputName = [
@@ -52,11 +60,18 @@ const FormSignUp = () => {
   const [isLoading, setIsLoading] = useState(false)
 
 
+  const isValidForm = () => {
+    return form.isValidEmail && form.isValidPassword && form.isValidUser
+  }
+
+
   const signUp = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent) => {
     e.preventDefault()
-    setIsLoading(true)
-    console.log('signup')
-    setTimeout(() => { setIsLoading(false) }, 2000)
+    if (areAllFieldsValid()) {
+      setIsLoading(true)
+      console.log('signup')
+      setTimeout(() => { setIsLoading(false) }, 2000)
+    }
   }
 
 
@@ -77,7 +92,7 @@ const FormSignUp = () => {
         </div>
       </div>
       <div className="flex items-center pt-7 justify-center">
-        <Button size="regular" color="bg-card" text="Sign Up" onClick={(e) => signUp(e)} isLoading={isLoading} />
+        <Button size="regular" color="bg-card" text="Sign Up" onClick={(e) => signUp(e)} isLoading={isLoading} disabled={!isValidForm()} />
       </div>
     </form>
   )

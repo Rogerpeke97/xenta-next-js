@@ -8,7 +8,7 @@ import FormWarning from '../../atoms/forms/FormWarning'
 import Api from '../../../pages/api/Api'
 import Toast from '../../atoms/notifications/Toast'
 
-interface message{
+interface message {
   message: string,
   type: string
 }
@@ -48,15 +48,23 @@ const FormLogin = () => {
 
     const validation = validationsByInputName.find(({ name }) => name === inputName)
 
+    console.log(validation?.validate(newValue))
+
     const isValidName = validation?.isValidName ?? ''
 
     setForm({ ...form, [inputName]: newValue, [isValidName]: validation?.validate(newValue) })
 
   }
 
-
   const isValidForm = () => {
     return form.isValidEmail && form.isValidPassword
+  }
+
+  const areAllFieldsValid = () => {
+    const isValidEmail = validateEmail(form.email)
+    const isValidPassword = validatePassword(form.password)
+    setForm({ ...form, isValidEmail, isValidPassword })
+    return isValidEmail && isValidPassword
   }
 
   const [isLoading, setIsLoading] = useState(false)
@@ -64,15 +72,18 @@ const FormLogin = () => {
 
 
   const login = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent) => {
-    setForm({ ...form, messages: []})
-    e.preventDefault()
-    setIsLoading(true)
-    console.log('login')
-    const { error, message } = await api.post('/signin', {params: { email: form.email, password: form.password }})
-    if (error) {
-      setForm({ ...form, messages: [{ message: error, type: 'error' }] })
+    console.log(areAllFieldsValid())
+    if (areAllFieldsValid()) {
+      setForm({ ...form, messages: [] })
+      e.preventDefault()
+      setIsLoading(true)
+      console.log('login')
+      const { error, message } = await api.post('/signin', { params: { email: form.email, password: form.password } })
+      if (error) {
+        setForm({ ...form, messages: [{ message: error, type: 'error' }] })
+      }
+      setTimeout(() => { setIsLoading(false) }, 2000)
     }
-    setTimeout(() => { setIsLoading(false) }, 2000)
   }
 
 
