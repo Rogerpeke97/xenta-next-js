@@ -1,6 +1,7 @@
 
 import React, { MouseEventHandler, useState } from 'react'
-import { faEnvelope, faExclamationCircle, faKey, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { faEnvelope, faExclamationCircle, faKey } from '@fortawesome/free-solid-svg-icons'
+import { faGoogle } from '@fortawesome/free-brands-svg-icons'
 import FormField from '../../atoms/inputs/FormField'
 import TextLink from '../../atoms/links/TextLink'
 import Button from '../../atoms/buttons/Button'
@@ -86,6 +87,11 @@ const FormLogin = () => {
     }
   }
 
+  const loginWithGoogle = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent) => {
+    e.preventDefault()
+    console.log('login with google')
+  }
+
 
   return (
     <form className="flex flex-col w-full pop-in" onSubmit={login}>
@@ -106,6 +112,9 @@ const FormLogin = () => {
       </div>
       <div className="flex items-center pt-2 justify-center">
         <Button size="regular" color="bg-card" text="Login" onClick={(e) => login(e)} isLoading={isLoading} disabled={!isValidForm()} />
+        <div className="ml-3">
+          <Button size="regular" color="bg-card" text="Google login" icon={faGoogle} onClick={(e) => loginWithGoogle(e)} isLoading={isLoading} disabled={isLoading} />
+        </div>
       </div>
       {form.messages.map((message, index) => <Toast key={index} text={message.message} type={message.type} />)}
     </form>

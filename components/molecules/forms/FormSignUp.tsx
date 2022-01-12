@@ -76,22 +76,22 @@ const FormSignUp = () => {
 
 
   return (
-    <form className="flex flex-col w-full overflow-scroll pop-in" onSubmit={signUp}>
+    <form className="flex flex-col w-full pop-in" onSubmit={signUp}>
       <div className="px-6 flex flex-col items-center justify-center">
-        <FormField value={form.name} onChange={(e) => handleChange((e.target as HTMLTextAreaElement).value, 'name')} type="name" icon={faUser} placeholder="Name" />
+        <FormField value={form.name} onChange={(e) => handleChange((e.target as HTMLTextAreaElement).value, 'name')} type="name" icon={faUser} placeholder="Name" disabled={isLoading} />
         <div className="w-full h-7">
           {!form.isValidUser && <FormWarning text="Please enter a valid user name" icon={faExclamationCircle} />}
         </div>
-        <FormField value={form.email} onChange={(e) => handleChange((e.target as HTMLTextAreaElement).value, 'email')} type="email" icon={faEnvelope} placeholder="Email" />
+        <FormField value={form.email} onChange={(e) => handleChange((e.target as HTMLTextAreaElement).value, 'email')} type="email" icon={faEnvelope} placeholder="Email" disabled={isLoading} />
         <div className="w-full h-7">
           {!form.isValidEmail && <FormWarning text="Please enter a valid email address" icon={faExclamationCircle} />}
         </div>
-        <FormField value={form.password} onChange={(e) => handleChange((e.target as HTMLTextAreaElement).value, 'password')} type="password" icon={faKey} placeholder="Password" />
+        <FormField value={form.password} onChange={(e) => handleChange((e.target as HTMLTextAreaElement).value, 'password')} type="password" icon={faKey} placeholder="Password" disabled={isLoading} />
         <div className="w-full h-7">
           {!form.isValidPassword && <FormWarning text="Password must be of at least 8 characters, including digits and one upper case letter" icon={faExclamationCircle} />}
         </div>
       </div>
-      <div className="flex items-center pt-7 justify-center">
+      <div className="flex items-center pt-10 justify-center">
         <Button size="regular" color="bg-card" text="Sign Up" onClick={(e) => signUp(e)} isLoading={isLoading} disabled={!isValidForm()} />
       </div>
     </form>

@@ -8,6 +8,7 @@ interface buttonProps {
   text: string,
   isLoading?: boolean,
   disabled?: boolean,
+  icon: IconProp,
   color: string,
   size: string
 }
@@ -24,11 +25,20 @@ const Button = (props: buttonProps): JSX.Element => {
     return styleForButton?.style || {}
   }
 
+  const buttonContent = (): JSX.Element => {
+    return (
+      <div className="flex items-center justify-center">
+        {props.icon && <FontAwesomeIcon className="icon-small mr-2" icon={props.icon} color="white" />}
+        <h1 className="body-2 smooth-render font-bold">{props.text}</h1>
+      </div>
+    )
+  }
+
   return (
     <button disabled={props.disabled}
-      className={`flex justify-center items-center px-1 ${props.color} rounded-lg`}
+      className={`flex justify-center items-center ${props.color} rounded-lg`}
       onClick={props.onClick} style={findButtonSize(props.size)}>
-      {props.isLoading ? <div className="spinner"></div> : <h1 className="text-ellipsis overflow-hidden nowrap mx-1 font-bold smooth-render">{props.text}</h1>}
+      {props.isLoading ? <div className="spinner"></div> : buttonContent()}
     </button>
   )
 }
