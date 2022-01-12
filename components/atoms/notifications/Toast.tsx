@@ -48,8 +48,8 @@ const Toast = (props: toastProps): JSX.Element => {
   return (
     <div ref={toast} className={`toast flex flex-col rounded-lg pop-in ${!displayToast && 'fade-out '} ${animationStatus === 'finished' && 'hidden'}`}
       style={findStyle(props.type)}>
-      <div className="flex h-5 justify-end">
-        <FontAwesomeIcon className="icon-small" icon={faWindowClose} onClick={() => removeToast()} />
+      <div className="flex h-5 pr-1 justify-end">
+        <FontAwesomeIcon className="icon-small icon-hover" icon={faWindowClose} onClick={() => removeToast()} />
       </div>
       <div className="flex grow justify-center">
         <FontAwesomeIcon className="icon-small" icon={findToastIcon(props.type)} />

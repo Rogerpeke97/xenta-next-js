@@ -149,6 +149,14 @@ input{
   height: 0.5rem;
 }
 
+.icon-hover{
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+.icon-hover:hover{
+  opacity: 0.8;
+}
+
 
 .icon-small{
   width: 16px;

@@ -113,7 +113,7 @@ const FormLogin = () => {
       <div className="flex items-center pt-2 justify-center">
         <Button size="regular" color="bg-card" text="Login" onClick={(e) => login(e)} isLoading={isLoading} disabled={!isValidForm()} />
         <div className="ml-3">
-          <Button size="regular" color="bg-card" text="Google login" icon={faGoogle} onClick={(e) => loginWithGoogle(e)} isLoading={isLoading} disabled={isLoading} />
+          <Button size="regular" color="bg-primary" text="Google login" icon={faGoogle} onClick={(e) => loginWithGoogle(e)} disabled={isLoading} />
         </div>
       </div>
       {form.messages.map((message, index) => <Toast key={index} text={message.message} type={message.type} />)}
