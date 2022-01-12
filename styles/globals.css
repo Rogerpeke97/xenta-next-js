@@ -15,6 +15,7 @@
   --button-dark: #020A33;
   --card: #0070f3;
   --warning: #ffb300;
+  --success: #00d084;
 }
 
 [data-theme="dark"] {
@@ -102,6 +103,19 @@ input{
    color: var(--warning);
  }
 
+ /*
+  * Notifications
+  */
+.toast{
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  margin-left: -150px;
+  width: 300px;
+  height: 60px;
+  z-index: 9999;
+}
+
 
 
 
@@ -125,6 +139,13 @@ input{
   /*
   * Icons
   */
+
+.icon-extra-small{
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+
 .icon-small{
   width: 16px;
   height: 16px;

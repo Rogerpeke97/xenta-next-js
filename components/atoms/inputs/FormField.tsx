@@ -8,6 +8,7 @@ interface formFieldProps {
   icon: IconProp,
   placeholder: string,
   value: string,
+  disabled: boolean,
   onChange: react.ChangeEventHandler
 }
 
@@ -16,7 +17,7 @@ const FormField = (props: formFieldProps): JSX.Element => {
   return (
     <div className="flex items-center input-wrapper w-full">
       <FontAwesomeIcon className="icon-small input-icon ml-3" icon={props.icon} color="#0070f3" />
-      <input className="my-7" type={props.type} placeholder={props.placeholder} onChange={props.onChange} value={props.value}>
+      <input className="my-2" disabled={props.disabled} type={props.type} placeholder={props.placeholder} onChange={props.onChange} value={props.value}>
       </input>
     </div>
   )

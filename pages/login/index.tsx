@@ -48,7 +48,7 @@ const Login: NextPage = () => {
         <div className="py-7 flex items-center justify-center">
           <h1 className="heading-3 font-bold">Login</h1>
         </div>
-        <div className="flex w-full py-3 px-3">
+        <div className="flex w-full py-3">
           {currentStateComponent(formState.state)}
         </div>
         <div className="flex w-full h-full items-end pt-4 px-3">

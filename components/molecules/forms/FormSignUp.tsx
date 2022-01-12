@@ -61,7 +61,7 @@ const FormSignUp = () => {
 
 
   return (
-    <form className="flex flex-col w-full pop-in" onSubmit={signUp}>
+    <form className="flex flex-col w-full overflow-scroll pop-in" onSubmit={signUp}>
       <div className="px-6 flex flex-col items-center justify-center">
         <FormField value={form.name} onChange={(e) => handleChange((e.target as HTMLTextAreaElement).value, 'name')} type="name" icon={faUser} placeholder="Name" />
         <div className="w-full h-7">

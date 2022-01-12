@@ -7,6 +7,7 @@ interface buttonProps {
   onClick: react.MouseEventHandler,
   text: string,
   isLoading?: boolean,
+  disabled?: boolean,
   color: string,
   size: string
 }
@@ -24,7 +25,7 @@ const Button = (props: buttonProps): JSX.Element => {
   }
 
   return (
-    <button disabled={props.isLoading}
+    <button disabled={props.disabled}
       className={`flex justify-center items-center px-1 ${props.color} rounded-lg`}
       onClick={props.onClick} style={findButtonSize(props.size)}>
       {props.isLoading ? <div className="spinner"></div> : <h1 className="text-ellipsis overflow-hidden nowrap mx-1 font-bold smooth-render">{props.text}</h1>}
