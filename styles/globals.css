@@ -297,3 +297,34 @@ input{
         transform: translateY(-10px)
     }
   }
+
+  /*
+  * Specifics
+  */
+
+  .hide-side-bar{
+    animation: hide-side-bar 0.5s ease-out forwards;
+  }
+
+  @keyframes hide-side-bar{
+    50%{
+      transform: translateX(-100%);
+    }
+    100%{
+      position: absolute;
+      transform: translateX(-100%);
+    }
+  }
+
+  .show-side-bar{
+    animation: show-side-bar 0.5s ease-out backwards;
+  }
+
+  @keyframes show-side-bar{
+    from{
+      transform: translateX(-100%);
+    }
+    to{
+      transform: translateX(0%);
+    }
+  }
