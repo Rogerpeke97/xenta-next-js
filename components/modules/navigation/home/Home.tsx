@@ -10,13 +10,13 @@ const Home = () => {
   const currentUser = 'John Doe'
   const loadData = () => {
     setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 2000)
+    // setTimeout(() => {
+    //   setIsLoading(false)
+    // }, 2000)
   }
   useEffect(() => {
     loadData()
-  }, [])
+  }, [isLoading])
   return(
     <div className="smooth-render flex relative h-full">
       <Overlay isLoading={isLoading}/>

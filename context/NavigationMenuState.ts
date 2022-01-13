@@ -1,11 +1,14 @@
 import {createContext} from 'react';
 
+import Api from '../pages/api/Api'
+
 interface NavigationMenuState {
   currentMenu: Number,
   setCurrentMenu: Function,
   windowWidth: {description: string, size: number},
   showSideBar: boolean,
-  setShowSideBar: Function
+  setShowSideBar: Function,
+  api: Api
 }
 
 export const NavigationMenuState = createContext<NavigationMenuState>({
@@ -13,5 +16,6 @@ export const NavigationMenuState = createContext<NavigationMenuState>({
   setCurrentMenu: () => {},
   windowWidth: {description: '', size: 0},
   showSideBar: false,
-  setShowSideBar: () => {}
+  setShowSideBar: () => {},
+  api: new Api()
 });

@@ -8,7 +8,7 @@ interface buttonProps {
   text: string,
   isLoading?: boolean,
   disabled?: boolean,
-  icon: IconProp,
+  icon?: IconProp,
   color: string,
   size: string
 }

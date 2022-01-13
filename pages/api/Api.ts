@@ -1,17 +1,25 @@
 export default class Api {
 
   url: string
+  headers: Headers
 
   constructor() {
     this.url = 'http://localhost:8080';
+    this.headers = new Headers();
+    this.headers.set('Content-Type', 'application/json');
+    this.headers.set('Accept', 'application/json');
+    this.headers.set('Authorization', '')
   }
 
   async get(urlPath: string) {
     const requestOptions = {
-      method: 'GET'
+      method: 'GET',
+      headers: this.headers
     };
     try{
       const response = await fetch(this.url + urlPath, requestOptions);
+      const authHeader = response.headers.get('Authorization') ?? '';
+      this.headers.set('Authorization', authHeader);
       return this.handleResponse(response);
     }
     catch(error){
