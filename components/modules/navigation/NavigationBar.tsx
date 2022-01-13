@@ -1,20 +1,45 @@
 import type react from 'react'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
-import { faLinkedin } from '@fortawesome/free-brands-svg-icons'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 import IconButton from '../../atoms/buttons/IconButton'
+import { NavigationMenuState } from '../../../context/NavigationMenuState'
+import { useContext } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 interface NavProps {
-  name: string
+  name: string,
+  sideBar: [boolean, (boolean: boolean) => void]
 }
 
-const NavigationBar: react.FC<NavProps> = ({ name }) => {
+const NavigationBar: react.FC<NavProps> = ({ name, sideBar }) => {
+
+  const { windowWidth } = useContext(NavigationMenuState)
+
+  const [showSideBar, setShowSideBar] = sideBar
+
+  const leftSide = () => {
+    if (windowWidth.description === "small") {
+      return (
+        <div className="flex pl-5 flex-col items-center justify-center">
+          <FontAwesomeIcon className="icon" icon={faBars} onClick={()=>setShowSideBar(!showSideBar)} />
+        </div>
+      )
+    }
+    else {
+      return (
+        <div className="pl-4 flex justify-center items-center">
+          {name}
+        </div>
+      )
+    }
+  }
+
+
   return (
-		<nav className="flex h-24 w-full px-5">
+    <nav className="flex h-24 w-full px-5">
       <div className="w-full flex bg-background rounded-lg">
         <div className="h-full flex grow content-center">
-          <div className="pl-4 flex justify-center items-center">
-            {name}
-          </div>
+          {leftSide()}
         </div>
         <div className="flex grow align-center px-5">
           <div className="flex grow justify-end items-center">
@@ -22,7 +47,7 @@ const NavigationBar: react.FC<NavProps> = ({ name }) => {
           </div>
         </div>
       </div>
-		</nav>
+    </nav>
   )
 }
 

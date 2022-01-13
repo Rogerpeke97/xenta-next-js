@@ -246,9 +246,6 @@ input{
 
 
 
-
-
-
   .spinner {
     width: 40px;
     height: 40px;
@@ -302,12 +299,29 @@ input{
   * Specifics
   */
 
-  .hide-side-bar{
-    animation: hide-side-bar 0.2s ease-out forwards;
-    transition: all 0.2s ease-out;
+  .show-side-bar{
+    animation: show-side-bar 0.2s ease-out forwards;
   }
 
-  @keyframes hide-side-bar{
+  @keyframes show-side-bar{
+    from{
+      width: 0px !important;
+      transform: translateX(-100%);
+    }
+    to{
+      transform: translateX(0%);
+    }
+  }
+
+  .hide-side-bar-mobile{
+    animation: hide-side-bar-mobile 0.2s ease-out forwards;
+  }
+
+  @keyframes hide-side-bar-mobile{
+    from{
+      transform: translateX(0%);
+      width: 100%;
+    }
     to{
       transform: translateX(-100%);
       overflow: hidden;
@@ -315,16 +329,18 @@ input{
     }
   }
 
-  .show-side-bar{
-    animation: show-side-bar 0.2s ease-out backwards;
+  .show-side-bar-mobile{
+    animation: show-side-bar-mobile 0.2s ease-out backwards;
   }
 
-  @keyframes show-side-bar{
+
+  @keyframes show-side-bar-mobile{
     from{
-      width: 0;
+      width: 0px !important;
       transform: translateX(-100%);
     }
     to{
       transform: translateX(0%);
+      width: 100%;
     }
   }

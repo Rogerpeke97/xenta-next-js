@@ -2,7 +2,7 @@ import type react from 'react'
 import { faUser, faHome, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import NavigationCard from '../../atoms/navigation/NavigationCard'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { NavigationMenuState } from '../../../context/NavigationMenuState'
 
 
@@ -16,7 +16,14 @@ const SideBarMenus = () => {
     {text: 'Log out', icon: faSignOutAlt}
   ]
 
-	const { currentMenu, setCurrentMenu } = useContext(NavigationMenuState)
+	const { currentMenu, setCurrentMenu, setShowSideBar } = useContext(NavigationMenuState)
+
+  const updateMenu = (menu: Number) => {
+    if(menu !== currentMenu){
+      setShowSideBar(false)
+      setCurrentMenu(menu)
+    }
+  }
 
   return (
     <div className="flex flex-col py-7 pl-5">
@@ -27,7 +34,7 @@ const SideBarMenus = () => {
             text={menu.text} 
             icon={menu.icon} 
             key={index} 
-            onClick={() => setCurrentMenu(index)}
+            onClick={() => updateMenu(index)}
           />
         )
       })}

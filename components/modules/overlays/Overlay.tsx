@@ -31,7 +31,7 @@ const Overlay: react.FC<overlayProps> = ({ isLoading }) => {
         <div className="flex pt-7 items-center justify-center">
           <div>
             {findLoadingState().text.map((letter, index) => {
-              return <h1 key={index} style={{ '--i': index}} 
+              return <h1 key={index} style={{ '--i': index }} 
               className="animate-text pl-1 heading-3"
               >
                 {letter}
