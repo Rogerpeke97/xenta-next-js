@@ -57,6 +57,9 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     main()
+    return () => {
+      window.removeEventListener('resize', () => { })
+    }
   }, [])
 
 
