@@ -1,5 +1,5 @@
 
-import React, { MouseEventHandler, useState } from 'react'
+import React, { MouseEventHandler, useContext, useState } from 'react'
 import { faEnvelope, faExclamationCircle, faKey } from '@fortawesome/free-solid-svg-icons'
 import { faGoogle } from '@fortawesome/free-brands-svg-icons'
 import FormField from '../../atoms/inputs/FormField'
@@ -8,6 +8,7 @@ import Button from '../../atoms/buttons/Button'
 import FormWarning from '../../atoms/forms/FormWarning'
 import Api from '../../../pages/api/Api'
 import Toast from '../../atoms/notifications/Toast'
+import { AppContextHelpers } from '../../../context/AppContextHelpers'
 
 interface message {
   message: string,
@@ -18,8 +19,7 @@ interface message {
 
 const FormLogin = () => {
 
-  const api = new Api();
-
+  const { api, setToast } = useContext(AppContextHelpers)
 
   const [form, setForm] = useState({
     email: '',
@@ -27,7 +27,6 @@ const FormLogin = () => {
     isValidEmail: true,
     isValidPassword: true,
     isSubmitted: false,
-    messages: Array<message>(),
     popUpMessage: ''
   })
 
@@ -75,13 +74,29 @@ const FormLogin = () => {
   const login = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent) => {
     console.log(areAllFieldsValid())
     if (areAllFieldsValid()) {
-      setForm({ ...form, messages: [] })
       e.preventDefault()
       setIsLoading(true)
       console.log('login')
-      const { error, message } = await api.post('/signin', { params: { email: form.email, password: form.password } })
+      const { error, message } = await api.post('/signin', { email: form.email, password: form.password })
       if (error) {
-        setForm({ ...form, messages: [{ message: error, type: 'error' }] })
+        console.log(error)
+        setToast({
+          messages: [{
+            message: error,
+            type: 'error'
+          }],
+          displayToast: true
+        })
+      }
+      else {
+        console.log(error)
+        setToast({
+          messages: [{
+            message: message,
+            type: 'success'
+          }],
+          displayToast: true
+        })
       }
       setTimeout(() => { setIsLoading(false) }, 2000)
     }
@@ -116,7 +131,6 @@ const FormLogin = () => {
           <Button size="regular" color="bg-primary" text="Google login" icon={faGoogle} onClick={(e) => loginWithGoogle(e)} disabled={isLoading} />
         </div>
       </div>
-      {form.messages.map((message, index) => <Toast key={index} text={message.message} type={message.type} />)}
     </form>
   )
 }

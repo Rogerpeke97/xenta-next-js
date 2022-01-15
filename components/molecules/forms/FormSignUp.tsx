@@ -1,9 +1,10 @@
 
-import React, { MouseEventHandler, useState } from 'react'
+import React, { MouseEventHandler, useContext, useState } from 'react'
 import { faEnvelope, faExclamationCircle, faKey, faUser } from '@fortawesome/free-solid-svg-icons'
 import FormField from '../../atoms/inputs/FormField'
 import Button from '../../atoms/buttons/Button'
 import FormWarning from '../../atoms/forms/FormWarning'
+import { AppContextHelpers } from '../../../context/AppContextHelpers'
 
 
 
@@ -19,6 +20,8 @@ const FormSignUp = () => {
     isSubmitted: false,
     popUpMessage: ''
   })
+
+  const { api, setToast } = useContext(AppContextHelpers)
 
 
   const validateEmail = (email: string) => {
@@ -65,12 +68,37 @@ const FormSignUp = () => {
   }
 
 
-  const signUp = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent) => {
+  const signUp = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent) => {
     e.preventDefault()
     if (areAllFieldsValid()) {
       setIsLoading(true)
       console.log('signup')
-      setTimeout(() => { setIsLoading(false) }, 2000)
+      const { error, message } = await api.post('/signup', {
+        username: form.name,
+        email: form.email,
+        password: form.password
+      })
+      if (error) {
+        console.log(error)
+        setToast({
+          messages: [{
+            message: error,
+            type: 'error'
+          }],
+          displayToast: true
+        })
+      }
+      else {
+        console.log(error)
+        setToast({
+          messages: [{
+            message: message,
+            type: 'success'
+          }],
+          displayToast: true
+        })
+      }
+      setIsLoading(false)
     }
   }
 

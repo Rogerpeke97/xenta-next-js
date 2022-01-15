@@ -1,6 +1,6 @@
 import react from 'react'
 import { useContext, useEffect } from 'react'
-import { NavigationMenuState } from '../../../context/NavigationMenuState'
+import { AppContextHelpers } from '../../../context/AppContextHelpers'
 import Home from './home/Home'
 
 
@@ -12,7 +12,7 @@ const MenuContent = () => {
     { name: 'Home', component: <Home />, index: 0 },
   ]
 
-  const { currentMenu } = useContext(NavigationMenuState)
+  const { currentMenu } = useContext(AppContextHelpers)
 
   const loadContent = (): JSX.Element => {
     const findScreen = screens.find(screen => screen.index === currentMenu)

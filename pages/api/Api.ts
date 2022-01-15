@@ -1,3 +1,10 @@
+interface ApiReturnValues{
+  error: [String, any],
+  ok: Boolean,
+  message: String,
+}
+
+
 export default class Api {
 
   url: string
@@ -11,7 +18,7 @@ export default class Api {
     this.headers.set('Authorization', '')
   }
 
-  async get(urlPath: string) {
+  async get(urlPath: string): Promise<ApiReturnValues> {
     const requestOptions = {
       method: 'GET',
       headers: this.headers
@@ -22,12 +29,12 @@ export default class Api {
       this.headers.set('Authorization', authHeader);
       return this.handleResponse(response);
     }
-    catch(error){
+    catch(error: any){
       return error;
     }
   }
 
-  async post(urlPath: string, body: Object) {
+  async post(urlPath: string, body: Object): Promise<ApiReturnValues> {
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -37,12 +44,12 @@ export default class Api {
       const response = await fetch(this.url + urlPath, requestOptions);
       return this.handleResponse(response);
     }
-    catch(error){
+    catch(error: any){
       return error;
     }
   }
 
-  async put(urlPath: string, body: JSON) {
+  async put(urlPath: string, body: JSON): Promise<ApiReturnValues> {
     const requestOptions = {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -52,13 +59,13 @@ export default class Api {
       const response = await fetch(this.url + urlPath, requestOptions);
       return this.handleResponse(response);
     }
-    catch(error){
+    catch(error: any){
       return error
     }
   }
 
   // prefixed with underscore because delete is a reserved word in javascript
-  async _delete(urlPath: string) {
+  async _delete(urlPath: string): Promise<ApiReturnValues> {
     const requestOptions = {
       method: 'DELETE'
     };
@@ -66,7 +73,7 @@ export default class Api {
       const response = await fetch(this.url + urlPath, requestOptions);
       return this.handleResponse(response);
     }
-    catch(error){
+    catch(error: any){
       return error;
     }
   }

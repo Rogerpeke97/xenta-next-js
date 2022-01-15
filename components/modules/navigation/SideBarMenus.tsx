@@ -3,7 +3,7 @@ import { faUser, faHome, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import NavigationCard from '../../atoms/navigation/NavigationCard'
 import { useContext, useEffect, useState } from 'react'
-import { NavigationMenuState } from '../../../context/NavigationMenuState'
+import { AppContextHelpers } from '../../../context/AppContextHelpers'
 
 
 
@@ -16,7 +16,7 @@ const SideBarMenus = () => {
     {text: 'Log out', icon: faSignOutAlt}
   ]
 
-	const { currentMenu, setCurrentMenu, setShowSideBar } = useContext(NavigationMenuState)
+	const { currentMenu, setCurrentMenu, setShowSideBar } = useContext(AppContextHelpers)
 
   const updateMenu = (menu: Number) => {
     if(menu !== currentMenu){

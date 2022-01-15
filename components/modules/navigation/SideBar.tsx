@@ -4,7 +4,7 @@ import { faLinkedin } from '@fortawesome/free-brands-svg-icons'
 import Divider from '../../atoms/dividers/Divider'
 import SideBarMenus from './SideBarMenus'
 import { useContext, useEffect, useState } from 'react'
-import { NavigationMenuState } from '../../../context/NavigationMenuState'
+import { AppContextHelpers } from '../../../context/AppContextHelpers'
 
 interface NavProps {
   name: string,
@@ -12,7 +12,7 @@ interface NavProps {
 
 const SideBar: react.FC<NavProps> = ({ name }) => {
 
-  const { windowWidth, showSideBar, setShowSideBar } = useContext(NavigationMenuState)
+  const { windowWidth, showSideBar, setShowSideBar } = useContext(AppContextHelpers)
 
   const displaySideBarMobile = () => {
     const display = showSideBar
