@@ -9,7 +9,7 @@ interface AppContextHelpers {
   windowWidth: {description: string, size: number},
   showSideBar: boolean,
   setShowSideBar: Function,
-  api: Api,
+  api: any,
   setToast: Function
 }
 
@@ -20,6 +20,6 @@ export const AppContextHelpers = createContext<AppContextHelpers>({
   windowWidth: {description: '', size: 0},
   showSideBar: false,
   setShowSideBar: () => {},
-  api: new Api(),
+  api: {},
   setToast: () => {}
 });

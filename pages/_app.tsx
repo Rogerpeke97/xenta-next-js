@@ -7,10 +7,18 @@ import { AppContextHelpers } from '../context/AppContextHelpers'
 import Api from './api/Api'
 import { useRouter } from 'next/router'
 import Toast from '../components/atoms/notifications/Toast'
+import Overlay from '../components/modules/overlays/Overlay'
+import NavigationLayout from '../components/layouts/NavigationLayout'
+import Login from './login'
 
 function MyApp({ Component, pageProps }: AppProps) {
 
+
+  const [api, setApi] = useState<Api>()
+
   const router = useRouter()
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const [currentMenu, setCurrentMenu] = useState<Number>(0)
 
@@ -25,26 +33,29 @@ function MyApp({ Component, pageProps }: AppProps) {
     displayToast: false
   })
 
-  const api = new Api()
-
-  const isUserLoggedIn = async () => {
+  async function checkIfAuthenticated(){
+    const api = new Api()
+    setApi(api)
     try{
       const response = await api.get('/ping')
-      console.log(response.error)
-      if (!response.ok) {
-        router.push('login')
-      }
-      else{
+      if (response.error) {
         setIsAuthenticated(false)
+        router.push('login')
+        return
+      }
+      setIsAuthenticated(true)
+      if(router.pathname === '/login') {
+        router.push('/')
+        return
       }
     }
     catch{
       router.push('login')
+      setIsAuthenticated(false)
     }
   }
 
-
-  function main() {
+  function setWindowListener() {
     setWindowWidth({ description: window.innerWidth < 1100 ? "small" : "big", size: window.innerWidth })
     window.addEventListener('resize', () => {
       setWindowWidth(() => {
@@ -57,16 +68,24 @@ function MyApp({ Component, pageProps }: AppProps) {
         return windowSize
       })
     })
-    isUserLoggedIn()
   }
 
   useEffect(() => {
-    main()
+    setWindowListener()
+    checkIfAuthenticated()
+    setIsLoading(false)
     return () => {
       window.removeEventListener('resize', () => { })
     }
-  }, [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.pathname])
 
+  function displayComponent(){
+    if(isLoading){
+      return <Overlay isLoading={isLoading}/>
+    }
+    return <Component {...pageProps} />
+  }
 
   return (
     <DefaultLayout>
@@ -76,11 +95,17 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <AppContextHelpers.Provider value={{ isAuthenticated, currentMenu, setCurrentMenu, windowWidth, showSideBar, setShowSideBar, api, setToast }}>
-        <Component {...pageProps} />
+        {!isAuthenticated ? 
+          (router.pathname === '/login' && !isLoading) && <Login /> :
+          <NavigationLayout>
+            {displayComponent()}
+          </NavigationLayout>
+        }
         {toast.displayToast && toast.messages.map((message, index) => <Toast key={index} text={message.message} type={message.type} />)}
       </AppContextHelpers.Provider>
     </DefaultLayout>
   )
+
 }
 
 export default MyApp

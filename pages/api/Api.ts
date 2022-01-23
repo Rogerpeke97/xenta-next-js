@@ -1,4 +1,4 @@
-interface ApiReturnValues{
+interface ApiReturnValues {
   error: [String, any],
   ok: Boolean,
   message: String,
@@ -15,7 +15,7 @@ export default class Api {
     this.headers = new Headers();
     this.headers.set('Content-Type', 'application/json');
     this.headers.set('Accept', 'application/json');
-    this.headers.set('Authorization', '')
+    this.headers.set('Authorization', localStorage?.getItem('token') ?? '');
   }
 
   async get(urlPath: string): Promise<ApiReturnValues> {
@@ -23,13 +23,13 @@ export default class Api {
       method: 'GET',
       headers: this.headers
     };
-    try{
+    try {
       const response = await fetch(this.url + urlPath, requestOptions);
       const authHeader = response.headers.get('Authorization') ?? '';
       this.headers.set('Authorization', authHeader);
       return this.handleResponse(response);
     }
-    catch(error: any){
+    catch (error: any) {
       return error;
     }
   }
@@ -37,14 +37,14 @@ export default class Api {
   async post(urlPath: string, body: Object): Promise<ApiReturnValues> {
     const requestOptions = {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: this.headers,
       body: JSON.stringify(body)
     };
-    try{
+    try {
       const response = await fetch(this.url + urlPath, requestOptions);
       return this.handleResponse(response);
     }
-    catch(error: any){
+    catch (error: any) {
       return error;
     }
   }
@@ -52,14 +52,14 @@ export default class Api {
   async put(urlPath: string, body: JSON): Promise<ApiReturnValues> {
     const requestOptions = {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: this.headers,
       body: JSON.stringify(body)
     };
     try {
       const response = await fetch(this.url + urlPath, requestOptions);
       return this.handleResponse(response);
     }
-    catch(error: any){
+    catch (error: any) {
       return error
     }
   }
@@ -67,21 +67,30 @@ export default class Api {
   // prefixed with underscore because delete is a reserved word in javascript
   async _delete(urlPath: string): Promise<ApiReturnValues> {
     const requestOptions = {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: this.headers
     };
-    try{
+    try {
       const response = await fetch(this.url + urlPath, requestOptions);
       return this.handleResponse(response);
     }
-    catch(error: any){
+    catch (error: any) {
       return error;
     }
   }
 
   handleResponse(response: any) {
+    for(const header of response.headers){
+      console.log(header);
+   }
+    console.log(response.headers.get('Authorization'));
+    if(response.headers.get('Authorization')){
+      const authHeader = response.headers.get('Authorization');
+      this.headers.set('Authorization', authHeader);
+      localStorage.setItem('token', authHeader);
+    }
     return response.text().then((text: string) => {
       const data = text && JSON.parse(text);
-
       return data;
     });
   }

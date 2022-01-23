@@ -4,25 +4,28 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import NavigationCard from '../../atoms/navigation/NavigationCard'
 import { useContext, useEffect, useState } from 'react'
 import { AppContextHelpers } from '../../../context/AppContextHelpers'
+import Router from 'next/router'
 
 
 
 const SideBarMenus = () => {
 
   const menus = [
-    {text: 'Home', icon: faHome},
-    {text: 'Profile', icon: faUser},
-    {text: 'Settings', icon: faCog},
-    {text: 'Log out', icon: faSignOutAlt}
+    {text: 'Home', icon: faHome, route: '/'},
+    {text: 'Profile', icon: faUser, route: '/profile'},
+    {text: 'Settings', icon: faCog, route: '/settings'},
+    {text: 'Log out', icon: faSignOutAlt, route: '/logout'}
   ]
 
 	const { currentMenu, setCurrentMenu, setShowSideBar } = useContext(AppContextHelpers)
 
-  const updateMenu = (menu: Number) => {
+  const updateMenu = (menu: number) => {
     if(menu !== currentMenu){
       setShowSideBar(false)
       setCurrentMenu(menu)
     }
+    const menuRoute = menus[menu]?.route
+    Router.push(menuRoute)
   }
 
   return (

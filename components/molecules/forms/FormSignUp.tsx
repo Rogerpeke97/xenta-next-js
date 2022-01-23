@@ -74,8 +74,8 @@ const FormSignUp = () => {
       setIsLoading(true)
       console.log('signup')
       const { error, message } = await api.post('/signup', {
-        username: form.name,
-        email: form.email,
+        username: form.email,
+        name: form.name,
         password: form.password
       })
       if (error) {

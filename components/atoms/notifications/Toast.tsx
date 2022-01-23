@@ -49,6 +49,7 @@ const Toast = (props: toastProps): JSX.Element => {
 
   useEffect(() => {
     setTimeout(() => removeToast(), 5000)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const [animationStatus, setAnimationStatus] = useState('')

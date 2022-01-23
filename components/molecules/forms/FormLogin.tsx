@@ -9,11 +9,7 @@ import FormWarning from '../../atoms/forms/FormWarning'
 import Api from '../../../pages/api/Api'
 import Toast from '../../atoms/notifications/Toast'
 import { AppContextHelpers } from '../../../context/AppContextHelpers'
-
-interface message {
-  message: string,
-  type: string
-}
+import Router from 'next/router'
 
 
 
@@ -48,8 +44,6 @@ const FormLogin = () => {
 
     const validation = validationsByInputName.find(({ name }) => name === inputName)
 
-    console.log(validation?.validate(newValue))
-
     const isValidName = validation?.isValidName ?? ''
 
     setForm({ ...form, [inputName]: newValue, [isValidName]: validation?.validate(newValue) })
@@ -76,10 +70,8 @@ const FormLogin = () => {
     if (areAllFieldsValid()) {
       e.preventDefault()
       setIsLoading(true)
-      console.log('login')
-      const { error, message } = await api.post('/signin', { email: form.email, password: form.password })
+      const { error, message } = await api.post('/signin', { username: form.email, password: form.password })
       if (error) {
-        console.log(error)
         setToast({
           messages: [{
             message: error,
@@ -89,7 +81,6 @@ const FormLogin = () => {
         })
       }
       else {
-        console.log(error)
         setToast({
           messages: [{
             message: message,
@@ -98,7 +89,8 @@ const FormLogin = () => {
           displayToast: true
         })
       }
-      setTimeout(() => { setIsLoading(false) }, 2000)
+      setIsLoading(false)
+      Router.push('/')
     }
   }
 
