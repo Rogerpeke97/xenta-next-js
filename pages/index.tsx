@@ -9,10 +9,45 @@ import NavigationLayout from '../components/layouts/NavigationLayout'
 
 const Home = () => {
 
-  const { showSideBar, setShowSideBar, isAuthenticated } = useContext(AppContextHelpers)
+  const { showSideBar, setShowSideBar, api, setToast } = useContext(AppContextHelpers)
+
+
+  const [userData, setUserData] = useState({
+    username: '',
+    name: ''
+  })
+
+
+  async function getUserData(){
+    const response = await api.get('/user')
+    console.log(response)
+    if(response.error){
+      setToast({
+        messages: [{
+          message: response.error,
+          type: 'error'
+        }],
+        displayToast: true
+      })
+    }
+    setUserData(response.user)
+  }
+
+  useEffect(() => {
+    getUserData()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
-    <div className="flex">HOME</div>
+    <div>
+      <h3 className="heading-2">
+        Welcome back
+       <span className="text-card">{' ' + userData.name}</span>!
+       </h3>
+       <div style={{height: '1000px'}}>
+        GAME GOES HERE 
+       </div>
+    </div>
   )
 }
 

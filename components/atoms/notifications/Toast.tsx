@@ -49,6 +49,9 @@ const Toast = (props: toastProps): JSX.Element => {
 
   useEffect(() => {
     setTimeout(() => removeToast(), 5000)
+    return () => {
+      removeToast()
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

@@ -34,6 +34,10 @@ html, body {
     scrollbar-color: rgb(24 8 100) transparent;
 }
 
+/*
+ * Typography
+ */
+
 .heading-1{
     font-size: 60px;
     line-height: 72px;
