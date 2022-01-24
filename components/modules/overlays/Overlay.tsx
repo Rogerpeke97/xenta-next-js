@@ -5,7 +5,7 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
 
 interface overlayProps {
-  isLoading: boolean
+  isLoading: boolean,
 }
 
 

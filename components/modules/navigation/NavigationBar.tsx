@@ -36,7 +36,7 @@ const NavigationBar: react.FC<NavProps> = ({ name, sideBar }) => {
 
 
   return (
-    <nav className="flex h-24 w-full px-5">
+    <nav className="flex w-full px-5" style={{minHeight: '120px'}}>
       <div className="w-full flex bg-background rounded-lg">
         <div className="h-full flex grow content-center">
           {leftSide()}

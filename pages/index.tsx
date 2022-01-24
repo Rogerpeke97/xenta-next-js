@@ -6,10 +6,14 @@ import MenuContent from '../components/modules/navigation/MenuContent'
 import { AppContextHelpers } from '../context/AppContextHelpers'
 import NavigationBar from '../components/modules/navigation/NavigationBar'
 import NavigationLayout from '../components/layouts/NavigationLayout'
+import Overlay from '../components/modules/overlays/Overlay'
+import Loading from '../components/atoms/loaders/Loading'
 
 const Home = () => {
 
   const { showSideBar, setShowSideBar, api, setToast } = useContext(AppContextHelpers)
+
+  const [isLoading, setIsLoading] = useState(true)
 
 
   const [userData, setUserData] = useState({
@@ -19,6 +23,7 @@ const Home = () => {
 
 
   async function getUserData(){
+    setIsLoading(true)
     const response = await api.get('/user')
     console.log(response)
     if(response.error){
@@ -30,7 +35,8 @@ const Home = () => {
         displayToast: true
       })
     }
-    setUserData(response.user)
+    setUserData(response)
+    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -40,13 +46,18 @@ const Home = () => {
 
   return (
     <div>
-      <h3 className="heading-2">
-        Welcome back
-       <span className="text-card">{' ' + userData.name}</span>!
-       </h3>
-       <div style={{height: '1000px'}}>
-        GAME GOES HERE 
-       </div>
+      {isLoading ? 
+        <Loading isLoading={isLoading} loadingText="Loading your profile..." /> :
+        <div className="smooth-render">
+          <h3 className="heading-2">
+            Welcome back
+          <span className="text-card">{' ' + userData.name}</span>!
+          </h3>
+          <div style={{height: '1000px'}}>
+            GAME GOES HERE 
+          </div>
+        </div>
+      }
     </div>
   )
 }

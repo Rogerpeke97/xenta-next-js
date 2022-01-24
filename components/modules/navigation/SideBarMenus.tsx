@@ -28,6 +28,14 @@ const SideBarMenus = () => {
     Router.push(menuRoute)
   }
 
+  useEffect(() => {
+    if(Router.pathname === '/'){
+      return
+    }
+    updateMenu(menus.findIndex(menu => menu.route === Router.pathname))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div className="flex flex-col py-7 pl-5">
       {menus.map((menu, index)=> {

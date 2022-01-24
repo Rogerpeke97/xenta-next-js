@@ -31,8 +31,33 @@ html, body {
     overflow-x: hidden;
     background-color: var(--background-color);
     color: white;
-    scrollbar-color: rgb(24 8 100) transparent;
+    /* scrollbar-color: rgb(24 8 100) transparent; */
 }
+
+
+/*
+ * Scrollbar
+ */ 
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: var(--card); 
+}
+
+
+
+
 
 /*
  * Typography
@@ -98,6 +123,12 @@ input{
   margin-top: -8px;
 }
 
+.input-icon-end{
+  position: absolute;
+  top: 50%;
+  right: 0px;
+  margin-top: -8px;
+}
 
 /*
  * Warnings

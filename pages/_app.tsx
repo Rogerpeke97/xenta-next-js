@@ -28,16 +28,16 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
+  const [refreshTokenInterval, setRefreshTokenInterval] = useState<NodeJS.Timer>()
+
   const [toast, setToast] = useState({
     messages: [{message: '', type: ''}],
     displayToast: false
   })
 
-  async function checkIfAuthenticated(){
-    const api = new Api()
-    setApi(api)
+  async function checkIfAuthenticated(apiInit: Api){
     try{
-      const response = await api.get('/ping')
+      const response = await apiInit.get('/ping')
       if (response.error) {
         setIsAuthenticated(false)
         router.push('login')
@@ -70,11 +70,24 @@ function MyApp({ Component, pageProps }: AppProps) {
     })
   }
 
+  const REFRESH_TOKEN_EVERY = 900000
+
+
   useEffect(() => {
     setWindowListener()
-    checkIfAuthenticated()
+    const apiInit = new Api()
+    setApi(apiInit)
+    checkIfAuthenticated(apiInit)
+    setRefreshTokenInterval(
+      setInterval(() => {
+        checkIfAuthenticated(apiInit)
+      }, REFRESH_TOKEN_EVERY)
+    )
     setIsLoading(false)
     return () => {
+      if(refreshTokenInterval){
+        clearInterval(refreshTokenInterval)
+      }
       window.removeEventListener('resize', () => { })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

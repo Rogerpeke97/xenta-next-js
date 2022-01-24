@@ -1,6 +1,6 @@
 import type react from 'react'
-import { faGithub } from '@fortawesome/free-brands-svg-icons'
-import { faLinkedin } from '@fortawesome/free-brands-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import Divider from '../../atoms/dividers/Divider'
 import SideBarMenus from './SideBarMenus'
 import { useContext, useEffect, useState } from 'react'
@@ -29,10 +29,13 @@ const SideBar: react.FC<NavProps> = ({ name }) => {
       return (
         <nav className={`${displaySideBarMobile()}`}>
           <div className="h-screen w-full bg-background rounded-lg">
-            <div className="h-24 flex items-center justify-center">
-              <h3 className="subtitle-1 font-bold">
+            <div className="h-24 flex items-center justify-between">
+              <h3 className="pl-6 subtitle-1 font-bold">
                 {name}
               </h3>
+              <div className="pr-6">
+                <FontAwesomeIcon icon={faTimes} className="icon" onClick={()=>setShowSideBar(false)} />
+              </div>
             </div>
             <Divider color={"grey"} />
             <SideBarMenus />

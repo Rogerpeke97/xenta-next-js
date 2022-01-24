@@ -11,6 +11,8 @@ const MenuContent = ({ children }: { children: React.ReactElement }) => {
   const screens = [
     { name: 'home', component: children, index: 0},
     { name: 'profile', component: children, index: 1},
+    { name: 'settings', component: children, index: 2},
+    { name: 'logout', component: children, index: 3},
   ]
 
   const { currentMenu } = useContext(AppContextHelpers)
@@ -24,7 +26,7 @@ const MenuContent = ({ children }: { children: React.ReactElement }) => {
   }
 
   return (
-    <div className="h-full px-5 pt-6">
+    <div className="overflow-y-auto px-5 pt-6">
       {loadContent()}
     </div>
   )
