@@ -10,6 +10,7 @@ import Api from '../../../pages/api/Api'
 import Toast from '../../atoms/notifications/Toast'
 import { AppContextHelpers } from '../../../context/AppContextHelpers'
 import Router from 'next/router'
+import { validateEmail, validatePassword } from '../../../plugins/validators/inputValidator'
 
 
 
@@ -26,16 +27,7 @@ const FormLogin = () => {
     popUpMessage: ''
   })
 
-
-  const validateEmail = (email: string) => {
-    return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)
-  }
-
-  const validatePassword = (password: string) => {
-    return /^(?=.*[A-Z])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/.test(password)
-  }
-
-  function handleChange(newValue: string, inputName: string) {
+  function handleInputChange(newValue: string, inputName: string) {
 
     const validationsByInputName = [
       { name: 'email', validate: (email: string) => validateEmail(email), isValidName: 'isValidEmail' },
@@ -103,11 +95,11 @@ const FormLogin = () => {
   return (
     <form className="flex flex-col w-full pop-in" onSubmit={login}>
       <div className="px-6 flex flex-col items-center justify-center">
-        <FormField value={form.email} onChange={(e) => handleChange((e.target as HTMLTextAreaElement).value, 'email')} type="email" icon={faEnvelope} placeholder="Email" disabled={isLoading} />
+        <FormField value={form.email} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'email')} type="email" icon={faEnvelope} placeholder="Email" disabled={isLoading} />
         <div className="w-full h-7">
           {!form.isValidEmail && <FormWarning text="Please enter a valid email address" icon={faExclamationCircle} />}
         </div>
-        <FormField value={form.password} onChange={(e) => handleChange((e.target as HTMLTextAreaElement).value, 'password')} type="password" icon={faKey} placeholder="Password" disabled={isLoading} />
+        <FormField value={form.password} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'password')} type="password" icon={faKey} placeholder="Password" disabled={isLoading} />
         <div className="w-full h-7">
           {!form.isValidPassword && <FormWarning text="Password must be of at least 8 characters, including digits and one upper case letter" icon={faExclamationCircle} />}
         </div>

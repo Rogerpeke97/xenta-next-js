@@ -25,8 +25,11 @@ export default class Api {
     };
     try {
       const response = await fetch(this.url + urlPath, requestOptions);
-      const authHeader = response.headers.get('Authorization') ?? '';
-      this.headers.set('Authorization', authHeader);
+      console.log(response)
+      const authHeader = response.headers.get('Authorization');
+      if(authHeader){
+        this.headers.set('Authorization', authHeader);
+      }
       return this.handleResponse(response);
     }
     catch (error: any) {

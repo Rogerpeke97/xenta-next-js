@@ -5,7 +5,7 @@ import FormField from '../../atoms/inputs/FormField'
 import Button from '../../atoms/buttons/Button'
 import FormWarning from '../../atoms/forms/FormWarning'
 import { AppContextHelpers } from '../../../context/AppContextHelpers'
-
+import { validateEmail, validatePassword, validateUserName } from '../../../plugins/validators/inputValidator'
 
 
 const FormSignUp = () => {
@@ -23,19 +23,6 @@ const FormSignUp = () => {
 
   const { api, setToast } = useContext(AppContextHelpers)
 
-
-  const validateEmail = (email: string) => {
-    return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)
-  }
-
-  const validatePassword = (password: string) => {
-    return /^(?=.*[A-Z])(?=.*[0-9].*[0-9])(?=.*[a-z].*[a-z].*[a-z]).{8,}$/.test(password)
-  }
-
-  const validateUserName = (name: string) => {
-    return /^().{1,15}$/.test(name)
-  }
-
   const areAllFieldsValid = () => {
     const isValidEmail = validateEmail(form.email)
     const isValidPassword = validatePassword(form.password)
@@ -44,7 +31,7 @@ const FormSignUp = () => {
     return isValidEmail && isValidPassword && isValidUser
   }
 
-  function handleChange(newValue: string, inputName: string) {
+  function handleInputChange(newValue: string, inputName: string) {
 
     const validationsByInputName = [
       { name: 'email', validate: (email: string) => validateEmail(email), isValidName: 'isValidEmail' },
@@ -106,15 +93,15 @@ const FormSignUp = () => {
   return (
     <form className="flex flex-col w-full pop-in" onSubmit={signUp}>
       <div className="px-6 flex flex-col items-center justify-center">
-        <FormField value={form.name} onChange={(e) => handleChange((e.target as HTMLTextAreaElement).value, 'name')} type="name" icon={faUser} placeholder="Name" disabled={isLoading} />
+        <FormField value={form.name} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'name')} type="name" icon={faUser} placeholder="Name" disabled={isLoading} />
         <div className="w-full h-7">
           {!form.isValidUser && <FormWarning text="Please enter a valid user name" icon={faExclamationCircle} />}
         </div>
-        <FormField value={form.email} onChange={(e) => handleChange((e.target as HTMLTextAreaElement).value, 'email')} type="email" icon={faEnvelope} placeholder="Email" disabled={isLoading} />
+        <FormField value={form.email} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'email')} type="email" icon={faEnvelope} placeholder="Email" disabled={isLoading} />
         <div className="w-full h-7">
           {!form.isValidEmail && <FormWarning text="Please enter a valid email address" icon={faExclamationCircle} />}
         </div>
-        <FormField value={form.password} onChange={(e) => handleChange((e.target as HTMLTextAreaElement).value, 'password')} type="password" icon={faKey} placeholder="Password" disabled={isLoading} />
+        <FormField value={form.password} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'password')} type="password" icon={faKey} placeholder="Password" disabled={isLoading} />
         <div className="w-full h-7">
           {!form.isValidPassword && <FormWarning text="Password must be of at least 8 characters, including digits and one upper case letter" icon={faExclamationCircle} />}
         </div>
