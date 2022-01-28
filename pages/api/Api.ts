@@ -25,9 +25,8 @@ export default class Api {
     };
     try {
       const response = await fetch(this.url + urlPath, requestOptions);
-      console.log(response)
-      const authHeader = response.headers.get('Authorization');
-      if(authHeader){
+      const authHeader = response.headers.get('Authorization') ?? '';
+      if(authHeader?.length > 0){
         this.headers.set('Authorization', authHeader);
       }
       return this.handleResponse(response);
@@ -83,10 +82,6 @@ export default class Api {
   }
 
   handleResponse(response: any) {
-    for(const header of response.headers){
-      console.log(header);
-   }
-    console.log(response.headers.get('Authorization'));
     if(response.headers.get('Authorization')){
       const authHeader = response.headers.get('Authorization');
       this.headers.set('Authorization', authHeader);

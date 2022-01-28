@@ -8,6 +8,7 @@ import NavigationBar from '../components/modules/navigation/NavigationBar'
 import NavigationLayout from '../components/layouts/NavigationLayout'
 import Overlay from '../components/modules/overlays/Overlay'
 import Loading from '../components/atoms/loaders/Loading'
+import Menu from '../components/modules/game/Menu'
 
 const Home = () => {
 
@@ -24,7 +25,7 @@ const Home = () => {
 
   async function getUserData(){
     setIsLoading(true)
-    const response = await api.get('/user')
+    const response = await api.get('/api/user')
     console.log(response)
     if(response.error){
       setToast({
@@ -35,7 +36,7 @@ const Home = () => {
         displayToast: true
       })
     }
-    setUserData(response)
+    setUserData(response.data)
     setIsLoading(false)
   }
 
@@ -53,8 +54,8 @@ const Home = () => {
             Welcome back
           <span className="text-card">{' ' + userData.name}</span>!
           </h3>
-          <div style={{height: '1000px'}}>
-            GAME GOES HERE 
+          <div>
+            <Menu />
           </div>
         </div>
       }

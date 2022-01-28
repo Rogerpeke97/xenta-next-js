@@ -71,16 +71,16 @@ const FormLogin = () => {
           }],
           displayToast: true
         })
+        setIsLoading(false)
+        return
       }
-      else {
-        setToast({
-          messages: [{
-            message: message,
-            type: 'success'
-          }],
-          displayToast: true
-        })
-      }
+      setToast({
+        messages: [{
+          message: message,
+          type: 'success'
+        }],
+        displayToast: true
+      })
       setIsLoading(false)
       Router.push('/')
     }

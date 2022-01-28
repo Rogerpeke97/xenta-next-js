@@ -37,7 +37,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   async function checkIfAuthenticated(apiInit: Api){
     try{
-      const response = await apiInit.get('/ping')
+      const response = await apiInit.get('/api/ping')
       if (response.error) {
         setIsAuthenticated(false)
         router.push('login')

@@ -60,7 +60,7 @@ const Settings = () => {
 
   async function getUserData(){
     setIsLoading(true)
-    const response = await api.get('/user')
+    const response = await api.get('/api/user')
     if(response.error){
       setToast({
         messages: [{
@@ -70,7 +70,7 @@ const Settings = () => {
         displayToast: true
       })
     }
-    const { name, username } = response
+    const { name, username } = response.data
     setAccountSettings({...accountSettings, name, username})
     setIsLoading(false)
   }
@@ -89,7 +89,7 @@ const Settings = () => {
     }
     setIsLoading(true)
     const { username, oldPassword, newPassword } = accountSettings
-    const response = await api.post('/change-password', {
+    const response = await api.post('/api/change-password', {
       username,
       oldPassword,
       newPassword

@@ -29,14 +29,14 @@ const Login: NextPage = () => {
     state: 'signup',
     descriptionText: "Already have an account?",
     buttonText: 'Login',
-    stateComponent: <FormSignUp />
+    stateComponent: <FormSignUp onSignUpSuccess={()=>setFormState(loginStateInfo)}/>
   }
 
   const findStateToGoTo = (state: string) => {
     return state === 'login' ? signUpStateInfo : loginStateInfo
   }
 
-  const currentStateComponent = (state: string) => {
+  const currentStateComponent = () => {
     return formState.stateComponent
   }
 
@@ -49,7 +49,7 @@ const Login: NextPage = () => {
           <h1 className="heading-3 font-bold">Login</h1>
         </div>
         <div className="flex w-full py-3">
-          {currentStateComponent(formState.state)}
+          {currentStateComponent()}
         </div>
         <div className="flex w-full h-full items-end pt-4 px-3">
           <div className="flex w-full h-28 items-center justify-start py-4">

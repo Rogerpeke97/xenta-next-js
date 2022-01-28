@@ -1,5 +1,5 @@
 
-import React, { MouseEventHandler, useContext, useState } from 'react'
+import React, { MouseEventHandler, useContext, useEffect, useState } from 'react'
 import { faEnvelope, faExclamationCircle, faKey, faUser } from '@fortawesome/free-solid-svg-icons'
 import FormField from '../../atoms/inputs/FormField'
 import Button from '../../atoms/buttons/Button'
@@ -8,7 +8,7 @@ import { AppContextHelpers } from '../../../context/AppContextHelpers'
 import { validateEmail, validatePassword, validateUserName } from '../../../plugins/validators/inputValidator'
 
 
-const FormSignUp = () => {
+const FormSignUp = ({ onSignUpSuccess }: { onSignUpSuccess: () => void }) => {
 
   const [form, setForm] = useState({
     name: '',
@@ -74,18 +74,18 @@ const FormSignUp = () => {
           }],
           displayToast: true
         })
+        setIsLoading(false)
+        return
       }
-      else {
-        console.log(error)
-        setToast({
-          messages: [{
-            message: message,
-            type: 'success'
-          }],
-          displayToast: true
-        })
-      }
+      setToast({
+        messages: [{
+          message: message,
+          type: 'success'
+        }],
+        displayToast: true
+      })
       setIsLoading(false)
+      onSignUpSuccess()
     }
   }
 
