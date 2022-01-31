@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef } from "react";
 import * as THREE from 'three';
 import { Lensflare, LensflareElement } from 'three/examples/jsm/objects/Lensflare.js';
+import { vertexShaderParticle, fragmentShaderParticle } from '../../../plugins/game/shaders/sphereParticle';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 interface Axes {
   x: number;
@@ -16,74 +18,125 @@ interface HslAxes {
   z: number;
 }
 
+interface TrackedParticles {
+  index: number;
+  position: THREE.Vector3;
+  wasSetAt: number;
+}
+
 const Menu = () => {
 
   const canvasContainer = useRef<HTMLDivElement>(null);
 
   function setCameraPosition(camera: THREE.PerspectiveCamera, position: Axes, rotation: Axes) {
-    camera.position.set(position.x, position.y, position.z);
-    camera.rotation.set(rotation.x, rotation.y, rotation.z);
+    camera.position.set(position.x, position.y, position.z)
+    camera.rotation.set(rotation.x, rotation.y, rotation.z)
   }
 
   function addSunLight(scene: THREE.Scene) {
-    const textureLoader = new THREE.TextureLoader()
-    const flare1 = textureLoader.load('/game/textures/flare1.png')
-    const flare2 = textureLoader.load('/game/textures/flare2.png')
-    const addFlares = (colorAndPositions: HslAxes) => {
-      const { h, s, l, x, y, z } = colorAndPositions
-      const sunLight = new THREE.PointLight(0xffffff, 1.5, 7500)
-      const lensflare = new Lensflare();
-      lensflare.addElement(new LensflareElement(flare1, 700, 0, sunLight.color))
-      lensflare.addElement(new LensflareElement(flare2, 60, 0.6))
-      lensflare.addElement(new LensflareElement(flare2, 70, 0.7))
-      lensflare.addElement(new LensflareElement(flare2, 120, 0.9))
-      lensflare.addElement(new LensflareElement(flare2, 70, 1))
-      sunLight.add(lensflare)
-      sunLight.color.setHSL(h, s, l)
-      sunLight.position.set(x, y, z)
-      scene.add(sunLight)
+    const spotLight = new THREE.SpotLight(0xffffff);
+    spotLight.angle = Math.PI / 5
+    spotLight.penumbra = 0.2
+    spotLight.position.set(20, 10, 40)
+    spotLight.castShadow = true
+    spotLight.shadow.camera.near = 3
+    spotLight.shadow.camera.far = 10
+    spotLight.shadow.mapSize.width = 1024
+    spotLight.shadow.mapSize.height = 1024
+    scene.add(spotLight)
+
+    const dirLight = new THREE.DirectionalLight(0x55505a, 1);
+    dirLight.position.set(0, 10, 0)
+    dirLight.castShadow = true
+    dirLight.shadow.camera.near = 1
+    dirLight.shadow.camera.far = 10
+
+    dirLight.shadow.camera.right = 1
+    dirLight.shadow.camera.left = - 1
+    dirLight.shadow.camera.top = 1
+    dirLight.shadow.camera.bottom = - 1
+
+    dirLight.shadow.mapSize.width = 1024
+    dirLight.shadow.mapSize.height = 1024
+    scene.add(dirLight)
+  }
+  function hasCollidedWithPlanet(point: THREE.Vector3) {
+    const planetOriginAxes = {
+      x: 30,
+      y: -2,
+      z: 30
     }
-    addFlares({ h: 0.55, s: 1.5, l: 0.5, x: 5000, y: 0, z: 1000 })
-    addFlares({ h: 0.08, s: 1.4, l: 0.5, x: -1000, y: 100, z: 1005 })
-    addFlares({ h: 0.995, s: 1.2, l: 0.9, x: 5000, y: 5000, z: 1000 })
+    const PLANET_RADIUS = 10
+    const coordinatesForCollisionCalc = Math.pow(point.x - planetOriginAxes.x, 2) + Math.pow(point.y - planetOriginAxes.y, 2) + Math.pow(point.z - planetOriginAxes.z, 2)
+    const hasCollision = Math.sqrt(coordinatesForCollisionCalc) <= PLANET_RADIUS
+    return hasCollision
   }
 
-  function addFallingLeaves(scene: THREE.Scene, renderer: THREE.WebGLRenderer) {
-    const LEAVES_COUNT = 750
-    const LEAVES_DISTANCE = 53
-    const leaves = new THREE.BufferGeometry()
-    const leafTexture = new THREE.TextureLoader().load('/game/textures/leaf.png')
-    const leafMaterial = new THREE.PointsMaterial({
-      color: 'green', size: 0.3, map: leafTexture, alphaTest: 0.1,
-      blending: THREE.CustomBlending,
+  const addAmbientParticles = useCallback((scene: THREE.Scene, renderer: THREE.WebGLRenderer, clock: THREE.Clock, resolution: THREE.Vector2) => {
+    const PARTICLES_COUNT = 750
+    const PARTICLES_DISTANCE = 53
+    const particleTexture = new THREE.TextureLoader().load('/game/textures/particle.png')
+    const particles = new THREE.BufferGeometry()
+    const positions: Array<number> = []
+    const colors: Array<number> = []
+    let color = new THREE.Vector3()
+    const NORMALIZED_VEC_MAX = 1.0
+    let particlePositionX, particlePositionY, particlePositionZ
+    for (let i = 0; i < PARTICLES_COUNT; i++) {
+      particlePositionX = Math.random() * PARTICLES_DISTANCE
+      particlePositionY = Math.random() * PARTICLES_DISTANCE
+      particlePositionZ = Math.random() * PARTICLES_DISTANCE
+      positions.push(particlePositionX, particlePositionY, particlePositionZ)
+      color.set(Math.random() * NORMALIZED_VEC_MAX, Math.random() * NORMALIZED_VEC_MAX, Math.random() * NORMALIZED_VEC_MAX)
+      colors.push(color.x, color.y, color.z)
+    }
+    particles.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+    particles.setAttribute('customParticleColor', new THREE.Float32BufferAttribute(colors, 3))
+    const particleShaderMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        time: { value: clock.getElapsedTime() },
+        resolution: { value: resolution },
+        particleTexture: { value: particleTexture }
+      },
+      vertexShader: vertexShaderParticle(),
+      fragmentShader: fragmentShaderParticle(),
+      blending: THREE.AdditiveBlending,
+      depthTest: true,
+      depthWrite: false,
       transparent: true
     })
-    const positions: Array<number> = []
-    let leafPositionX, leafPositionY, leafPositionZ
-    for (let i = 0; i < 750; i++) {
-      leafPositionX = Math.random() * LEAVES_DISTANCE
-      leafPositionY = Math.random() * LEAVES_DISTANCE
-      leafPositionZ = Math.random() * LEAVES_DISTANCE
-      positions.push(leafPositionX, leafPositionY, leafPositionZ)
-    }
-    leaves.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
-    const leavesSystem = new THREE.Points(leaves, leafMaterial)
-    const leavesInSystem = leavesSystem.geometry.attributes.position.array
-    const leavesPosition = leaves.getAttribute('position')
-    const LEAF_AXES = 3
-    console.log(leavesPosition)
+    const particlesSystem = new THREE.Points(particles, particleShaderMaterial)
+    const particlesPosition = particles.getAttribute('position')
+    const PARTICLE_AXES = 3
+    const vectorCollision = new THREE.Vector3()
+    console.log(particlesPosition)
+    const trackedStillParticles: Array<TrackedParticles> = []
+    let trackedParticle
     renderer.setAnimationLoop(() => {
-      for (let i = 0; i < LEAVES_COUNT * LEAF_AXES; i++) {
-        if (leavesPosition.getY(i) < -10) {
-          leavesPosition.setY(i, leavesPosition.getY(i) + 20)
+      for (let i = 0; i < PARTICLES_COUNT; i++) {
+        if (particlesPosition.getY(i) < -10) {
+          particlesPosition.setY(i, particlesPosition.getY(i) + 30)
         }
-        leavesPosition
-          .setY(i, leavesPosition.getY(i) - 0.01)
-        leavesSystem.geometry.attributes.position.needsUpdate = true
+        vectorCollision.set(particlesPosition.getX(i), particlesPosition.getY(i), particlesPosition.getZ(i))
+        if (hasCollidedWithPlanet(vectorCollision)) {     
+          trackedParticle = trackedStillParticles.find(particle => particle.index === i)
+          if(trackedParticle){
+            if(clock.getElapsedTime() - trackedParticle.wasSetAt > 2){
+              trackedStillParticles.splice(trackedStillParticles.indexOf(trackedParticle), 1)
+              particlesPosition.setY(i, particlesPosition.getY(i) + 30)
+            }
+            continue
+          }
+          trackedStillParticles.push({index: i, position: vectorCollision, wasSetAt: clock.getElapsedTime()})
+          continue
+        }
+        particlesPosition
+        .setY(i, particlesPosition.getY(i) - 0.01)
+        particlesSystem.geometry.attributes.position.needsUpdate = true
       }
     })
-    scene.add(leavesSystem)
-  }
+    scene.add(particlesSystem)
+  }, [])
 
   const render = useCallback((renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.PerspectiveCamera) => {
     renderer.render(scene, camera)
@@ -91,8 +144,7 @@ const Menu = () => {
   }, [])
 
   const resize = useCallback((renderer: THREE.WebGLRenderer, camera: THREE.PerspectiveCamera, renderScreenWidth: number, renderScreenHeight: number) => {
-    if(canvasContainer.current === null) return
-    console.log('hello', canvasContainer.current.clientWidth, canvasContainer.current.clientHeight)
+    if (canvasContainer.current === null) return
     renderScreenWidth = canvasContainer.current.clientWidth
     renderScreenHeight = canvasContainer.current.clientHeight
     renderer.setSize(renderScreenWidth, renderScreenHeight);
@@ -103,30 +155,27 @@ const Menu = () => {
   function addPlanet(scene: THREE.Scene, renderer: THREE.WebGLRenderer) {
     const planetTexture = new THREE
       .TextureLoader()
-      .load('/game/textures/planet.jpg', () => {
+      .load('/game/textures/rock.jpg', () => {
         planetTexture.wrapS = THREE.RepeatWrapping
         planetTexture.wrapT = THREE.RepeatWrapping
         planetTexture
           .repeat
           .set(2, 2)
       })
-    const planetMaterial = new THREE.MeshPhongMaterial({
-      map: planetTexture,
-      bumpMap: planetTexture,
-      bumpScale: 0.05,
-      specularMap: planetTexture,
-      specular: new THREE.Color('grey'),
-      shininess: 5,
-      transparent: true,
-      opacity: 0.5
-    })
-    const planet = new THREE.Mesh(
-      new THREE.SphereGeometry(100, 32, 32),
-      planetMaterial
-    )
-    planet.position.set(0, 0, 0)
+    const planetGeometry = new THREE.SphereBufferGeometry(10, 50, 50)
+    const planetMaterial = new THREE.MeshPhongMaterial({ map: planetTexture })
+    const planet = new THREE.Mesh(planetGeometry, planetMaterial)
+    planet.position.set(30, -2, 30)
+    planet.rotation.z = Math.PI / 2
+    planet.receiveShadow = true
+    planet.name = 'planet'
     scene.add(planet)
 
+    // const geometry = new THREE.SphereGeometry(15, 32, 16);
+    // const material = new THREE.MeshPhongMaterial({ color: 0xffff00 });
+    // const sphere = new THREE.Mesh(geometry, material);
+    // sphere.position.set(30, -6, 40)
+    // scene.add(sphere)
   }
 
 
@@ -138,6 +187,11 @@ const Menu = () => {
     scene.background = background
   }
 
+  function setControls(camera: THREE.Camera, renderer: THREE.WebGLRenderer) {
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 0, 0)
+  }
+
   useEffect(() => {
     const canvasElement = document.getElementById('canvas');
     if (!canvasContainer.current || !canvasElement) {
@@ -145,24 +199,27 @@ const Menu = () => {
     }
     let renderScreenHeight = canvasContainer.current.clientHeight
     let renderScreenWidth = canvasContainer.current.clientWidth
+    const resolution = new THREE.Vector2(renderScreenWidth, renderScreenHeight)
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(75, renderScreenWidth / renderScreenHeight, 0.1, 1000)
     const renderer = new THREE.WebGLRenderer({ canvas: canvasElement })
-    setCameraPosition(camera, { x: 18, y: 10, z: 50 }, { x: -0.3, y: 0, z: 0 })
+    setControls(camera, renderer)
+    setCameraPosition(camera, { x: 30, y: 10, z: 40 }, { x: -0.3, y: 0, z: 0 })
     addSunLight(scene)
     const clock = new THREE.Clock()
-    addFallingLeaves(scene, renderer)
+    addAmbientParticles(scene, renderer, clock, resolution)
     addPlanet(scene, renderer)
-    setBackground(scene)
+    // setBackground(scene)
     renderer.setSize(renderScreenWidth, renderScreenHeight)
     window.addEventListener('resize', () => resize(renderer, camera, renderScreenWidth, renderScreenHeight))
+    console.log(scene)
     render(renderer, scene, camera)
 
     return () => {
       window.removeEventListener('resize', () => resize(renderer, camera, renderScreenWidth, renderScreenHeight))
     }
 
-  }, [render, resize])
+  }, [render, resize, addAmbientParticles])
 
 
 
