@@ -63,6 +63,9 @@ const Menu = () => {
     dirLight.shadow.mapSize.width = 1024
     dirLight.shadow.mapSize.height = 1024
     scene.add(dirLight)
+
+    const light = new THREE.AmbientLight( 0xFF0000 )
+    scene.add(light)
   }
   function hasCollidedWithPlanet(point: THREE.Vector3) {
     const planetOriginAxes = {
@@ -204,7 +207,7 @@ const Menu = () => {
       z: 30
     }
     const treeLoader = new GLTFLoader()
-    const TREE_COUNT = 15
+    const TREE_COUNT = 20
     treeLoader.load('/game/models/tree.glb', (tree) => {
       let treeGeometry: BufferGeometry | undefined
       let treeMaterial
@@ -223,21 +226,21 @@ const Menu = () => {
       let treePositionX, treePositionY, treePositionZ, treeRotationX, treeRotationY, treeRotationZ
       let xz2dApparentPointRadius
       let currentTreeAngleOnPlanetZ = 0
-      const currentTreeAngleOnPlanetZRadians = currentTreeAngleOnPlanetZ * Math.PI / 180
-      const START_NUMBER_FOR_TREE_POSITION_X = -1
-      const NUMBER_OF_POSIBILITIES_X = 3
+      const currentTreeAngleOnPlanetZRadians = (angle: number) => angle * Math.PI / 180
+      const START_NUMBER_FOR_TREE_POSITION_X = 0
+      const NUMBER_OF_POSIBILITIES_X = 6
       const PLANET_RADIUS = 10
       const AMOUNT_OF_DEGREES_TO_SUM = 360 / TREE_COUNT
       for (let j = 0; j < TREE_COUNT; j++) {
         dummyTree.scale.set(0.1, 0.1, 0.1)
         treePositionX = Math.floor(Math.random() * NUMBER_OF_POSIBILITIES_X) - START_NUMBER_FOR_TREE_POSITION_X
         xz2dApparentPointRadius = Math.sqrt(Math.pow(PLANET_RADIUS, 2) - Math.pow(treePositionX, 2))
-        treePositionZ = Math.sin(currentTreeAngleOnPlanetZRadians * (180 / Math.PI)) * xz2dApparentPointRadius
+        treePositionZ = Math.sin(currentTreeAngleOnPlanetZRadians(currentTreeAngleOnPlanetZ) * (180 / Math.PI)) * xz2dApparentPointRadius
         treeRotationZ = Math.asin(treePositionX / PLANET_RADIUS)
-        treeRotationX = -currentTreeAngleOnPlanetZRadians * (180 / Math.PI)
-        treePositionY = Math.cos(currentTreeAngleOnPlanetZRadians * (180 / Math.PI)) * xz2dApparentPointRadius
+        treeRotationX = -currentTreeAngleOnPlanetZRadians(currentTreeAngleOnPlanetZ) * (180 / Math.PI)
+        treePositionY = Math.cos(currentTreeAngleOnPlanetZRadians(currentTreeAngleOnPlanetZ) * (180 / Math.PI)) * xz2dApparentPointRadius
         dummyTree.position.set(treePositionX, treePositionY, -treePositionZ)
-        dummyTree.rotation.set(treeRotationX, 5, -treeRotationZ)
+        dummyTree.rotation.set(treeRotationX, 0, -treeRotationZ)
         dummyTree.updateMatrix()
         treesInstancedMesh.setMatrixAt(j, dummyTree.matrix)
         if(currentTreeAngleOnPlanetZ === 360) {
