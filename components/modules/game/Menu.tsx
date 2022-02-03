@@ -3,6 +3,9 @@ import * as THREE from 'three';
 import { Lensflare, LensflareElement } from 'three/examples/jsm/objects/Lensflare.js';
 import { vertexShaderParticle, fragmentShaderParticle } from '../../../plugins/game/shaders/sphereParticle';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { BufferGeometry, BufferGeometryUtils, Object3D } from "three";
+
 
 interface Axes {
   x: number;
@@ -22,6 +25,7 @@ interface TrackedParticles {
   index: number;
   position: THREE.Vector3;
   wasSetAt: number;
+  angleOfRotation: number;
 }
 
 const Menu = () => {
@@ -72,6 +76,19 @@ const Menu = () => {
     return hasCollision
   }
 
+  function calculateParticleRotation(vector: THREE.Vector3, indexInArray: number, particlePositions: (THREE.BufferAttribute | THREE.InterleavedBufferAttribute), rotationAngle: number) {
+    const PLANET_ORIGIN_AXES = {
+      x: 30,
+      y: -2,
+      z: 30
+    }
+    const rotationAngleInRadians = rotationAngle * Math.PI / 180
+    const particleAfterRotationZ = Math.cos(rotationAngleInRadians) * (vector.z - PLANET_ORIGIN_AXES.z) - Math.sin(rotationAngleInRadians) * (vector.y - PLANET_ORIGIN_AXES.y) + PLANET_ORIGIN_AXES.z
+    const particleAfterRotationY = Math.sin(rotationAngleInRadians) * (vector.z - PLANET_ORIGIN_AXES.z) + Math.cos(rotationAngleInRadians) * (vector.y - PLANET_ORIGIN_AXES.y) + PLANET_ORIGIN_AXES.y
+    const particleAfterRotationX = vector.x
+    particlePositions.setXYZ(indexInArray, particleAfterRotationX, particleAfterRotationY, particleAfterRotationZ)
+  }
+
   const addAmbientParticles = useCallback((scene: THREE.Scene, renderer: THREE.WebGLRenderer, clock: THREE.Clock, resolution: THREE.Vector2) => {
     const PARTICLES_COUNT = 750
     const PARTICLES_DISTANCE = 53
@@ -118,22 +135,30 @@ const Menu = () => {
           particlesPosition.setY(i, particlesPosition.getY(i) + 30)
         }
         vectorCollision.set(particlesPosition.getX(i), particlesPosition.getY(i), particlesPosition.getZ(i))
-        if (hasCollidedWithPlanet(vectorCollision)) {     
+        if (hasCollidedWithPlanet(vectorCollision)) {
           trackedParticle = trackedStillParticles.find(particle => particle.index === i)
-          if(trackedParticle){
-            if(clock.getElapsedTime() - trackedParticle.wasSetAt > 2){
+          if (trackedParticle) {
+            if (clock.getElapsedTime() - trackedParticle.wasSetAt > 2) {
               trackedStillParticles.splice(trackedStillParticles.indexOf(trackedParticle), 1)
               particlesPosition.setY(i, particlesPosition.getY(i) + 30)
+              continue
             }
+            calculateParticleRotation(vectorCollision, i, particlesPosition, trackedParticle.angleOfRotation)
+            if (trackedParticle.angleOfRotation > 360) {
+              trackedParticle.angleOfRotation = 0
+              continue
+            }
+            trackedParticle.angleOfRotation -= 0.01
             continue
           }
-          trackedStillParticles.push({index: i, position: vectorCollision, wasSetAt: clock.getElapsedTime()})
+          trackedStillParticles.push({ index: i, position: vectorCollision, wasSetAt: clock.getElapsedTime(), angleOfRotation: 0 })
           continue
         }
         particlesPosition
-        .setY(i, particlesPosition.getY(i) - 0.01)
+          .setY(i, particlesPosition.getY(i) - 0.01)
         particlesSystem.geometry.attributes.position.needsUpdate = true
       }
+      rotatePlanet(scene, clock)
     })
     scene.add(particlesSystem)
   }, [])
@@ -170,14 +195,68 @@ const Menu = () => {
     planet.receiveShadow = true
     planet.name = 'planet'
     scene.add(planet)
-
-    // const geometry = new THREE.SphereGeometry(15, 32, 16);
-    // const material = new THREE.MeshPhongMaterial({ color: 0xffff00 });
-    // const sphere = new THREE.Mesh(geometry, material);
-    // sphere.position.set(30, -6, 40)
-    // scene.add(sphere)
   }
 
+  function addTrees(scene: THREE.Scene) {
+    const PLANET_ORIGIN_AXES = {
+      x: 30,
+      y: -2,
+      z: 30
+    }
+    const treeLoader = new GLTFLoader()
+    const TREE_COUNT = 15
+    treeLoader.load('/game/models/tree.glb', (tree) => {
+      let treeGeometry: BufferGeometry | undefined
+      let treeMaterial
+      tree.scene.traverse((child: Object3D) => {
+        if (child instanceof THREE.Mesh) {
+          child.castShadow = true
+          child.receiveShadow = true
+          treeGeometry = child.geometry.clone().applyMatrix4(child.matrixWorld)
+          treeMaterial = child.material
+        }
+      })
+      const treesInstancedMesh = new THREE.InstancedMesh(treeGeometry, treeMaterial, TREE_COUNT)
+      treesInstancedMesh.position.set(PLANET_ORIGIN_AXES.x, PLANET_ORIGIN_AXES.y, PLANET_ORIGIN_AXES.z)
+      treesInstancedMesh.name = 'trees'
+      const dummyTree = new THREE.Object3D()
+      let treePositionX, treePositionY, treePositionZ, treeRotationX, treeRotationY, treeRotationZ
+      let xz2dApparentPointRadius
+      let currentTreeAngleOnPlanetZ = 0
+      const currentTreeAngleOnPlanetZRadians = currentTreeAngleOnPlanetZ * Math.PI / 180
+      const START_NUMBER_FOR_TREE_POSITION_X = -1
+      const NUMBER_OF_POSIBILITIES_X = 3
+      const PLANET_RADIUS = 10
+      const AMOUNT_OF_DEGREES_TO_SUM = 360 / TREE_COUNT
+      for (let j = 0; j < TREE_COUNT; j++) {
+        dummyTree.scale.set(0.1, 0.1, 0.1)
+        treePositionX = Math.floor(Math.random() * NUMBER_OF_POSIBILITIES_X) - START_NUMBER_FOR_TREE_POSITION_X
+        xz2dApparentPointRadius = Math.sqrt(Math.pow(PLANET_RADIUS, 2) - Math.pow(treePositionX, 2))
+        treePositionZ = Math.sin(currentTreeAngleOnPlanetZRadians * (180 / Math.PI)) * xz2dApparentPointRadius
+        treeRotationZ = Math.asin(treePositionX / PLANET_RADIUS)
+        treeRotationX = -currentTreeAngleOnPlanetZRadians * (180 / Math.PI)
+        treePositionY = Math.cos(currentTreeAngleOnPlanetZRadians * (180 / Math.PI)) * xz2dApparentPointRadius
+        dummyTree.position.set(treePositionX, treePositionY, -treePositionZ)
+        dummyTree.rotation.set(treeRotationX, 5, -treeRotationZ)
+        dummyTree.updateMatrix()
+        treesInstancedMesh.setMatrixAt(j, dummyTree.matrix)
+        if(currentTreeAngleOnPlanetZ === 360) {
+          currentTreeAngleOnPlanetZ = 0
+          continue
+        }
+        currentTreeAngleOnPlanetZ += AMOUNT_OF_DEGREES_TO_SUM
+      }
+      treesInstancedMesh.instanceMatrix.needsUpdate = true
+      scene.add(treesInstancedMesh)
+    })
+  }
+
+
+  function rotatePlanet(scene: THREE.Scene, clock: THREE.Clock) {
+    const planet = scene.getObjectByName('planet')
+    if (!planet) return
+    planet.rotation.x += 0.01
+  }
 
   function setBackground(scene: THREE.Scene) {
     const background = new THREE
@@ -207,8 +286,9 @@ const Menu = () => {
     setCameraPosition(camera, { x: 30, y: 10, z: 40 }, { x: -0.3, y: 0, z: 0 })
     addSunLight(scene)
     const clock = new THREE.Clock()
-    addAmbientParticles(scene, renderer, clock, resolution)
     addPlanet(scene, renderer)
+    addTrees(scene)
+    addAmbientParticles(scene, renderer, clock, resolution)
     // setBackground(scene)
     renderer.setSize(renderScreenWidth, renderScreenHeight)
     window.addEventListener('resize', () => resize(renderer, camera, renderScreenWidth, renderScreenHeight))
