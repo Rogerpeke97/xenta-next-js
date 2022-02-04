@@ -40,6 +40,8 @@ const Menu = () => {
 
   const modelLoader = new GLTFLoader()
 
+  const animationFrameId = useRef<number>(0)
+
   const characterAnimationMixer = useRef<THREE.AnimationMixer>()
 
   function setCameraPosition(camera: THREE.PerspectiveCamera, position: Axes, rotation: Axes) {
@@ -178,15 +180,13 @@ const Menu = () => {
     trees.rotation.x += 0.01
   }
 
-  const valueToCheckRerender = Math.random()
 
 
   const render = useCallback((renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.PerspectiveCamera, clock: THREE.Clock, oldTime: number) => {
-    console.log(valueToCheckRerender)
     const currentTime = clock.getElapsedTime()
     characterAnimationMixer.current?.update(currentTime - oldTime) // deltaTime = currentTime - oldTime.
     renderer.render(scene, camera)
-    requestAnimationFrame(() => render(renderer, scene, camera, clock, currentTime))//  Not using THREE.getDelta because it wasn't working properly and I was lazy to research about it
+    animationFrameId.current = requestAnimationFrame(() => render(renderer, scene, camera, clock, currentTime))//  Not using THREE.getDelta because it wasn't working properly and I was lazy to research about it
   }, [])
 
   const resize = useCallback((renderer: THREE.WebGLRenderer, camera: THREE.PerspectiveCamera, renderScreenWidth: number, renderScreenHeight: number) => {
@@ -336,6 +336,7 @@ const Menu = () => {
 
     return () => {
       window.removeEventListener('resize', () => resize(renderer, camera, renderScreenWidth, renderScreenHeight))
+      window.cancelAnimationFrame(animationFrameId.current)
     }
 
   }, [render, resize, addAmbientParticles])
