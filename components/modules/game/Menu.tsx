@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from 'three';
 import { Lensflare, LensflareElement } from 'three/examples/jsm/objects/Lensflare.js';
 import { vertexShaderParticle, fragmentShaderParticle } from '../../../plugins/game/shaders/sphereParticle';
@@ -38,6 +38,8 @@ const Menu = () => {
     z: 30
   }
 
+  const PLANET_RADIUS = 10
+
   const modelLoader = new GLTFLoader()
 
   const animationFrameId = useRef<number>(0)
@@ -49,38 +51,27 @@ const Menu = () => {
     camera.rotation.set(rotation.x, rotation.y, rotation.z)
   }
 
-  function addSunLight(scene: THREE.Scene) {
-    const spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.angle = Math.PI / 5
-    spotLight.penumbra = 0.2
-    spotLight.position.set(20, 10, 40)
-    spotLight.castShadow = true
-    spotLight.shadow.camera.near = 3
-    spotLight.shadow.camera.far = 10
-    spotLight.shadow.mapSize.width = 1024
-    spotLight.shadow.mapSize.height = 1024
-    scene.add(spotLight)
+  function addLight(scene: THREE.Scene) {
+    const directionalLight = new THREE.DirectionalLight(0xBC2732, 1)
+    directionalLight.position.set(PLANET_ORIGIN_AXES.x, PLANET_ORIGIN_AXES.y + PLANET_RADIUS * 2, PLANET_ORIGIN_AXES.z - 8)
+    directionalLight.castShadow = true
+    directionalLight.shadow.camera.near = 0.1
+    directionalLight.shadow.camera.far = 50
+    directionalLight.shadow.mapSize.width = 1024
+    directionalLight.shadow.mapSize.height = 1024
+    directionalLight.intensity = 3
+    const planet = scene.getObjectByName('planet')
+    if(!planet) return
+    directionalLight.target = planet
+    const helper = new THREE.DirectionalLightHelper( directionalLight )
+    scene.add(directionalLight)
 
-    const dirLight = new THREE.DirectionalLight(0x55505a, 1);
-    dirLight.position.set(0, 10, 0)
-    dirLight.castShadow = true
-    dirLight.shadow.camera.near = 1
-    dirLight.shadow.camera.far = 10
+    const ambientLight = new THREE.AmbientLight(0xffffff)
+    ambientLight.intensity = 0.2
 
-    dirLight.shadow.camera.right = 1
-    dirLight.shadow.camera.left = - 1
-    dirLight.shadow.camera.top = 1
-    dirLight.shadow.camera.bottom = - 1
-
-    dirLight.shadow.mapSize.width = 1024
-    dirLight.shadow.mapSize.height = 1024
-    scene.add(dirLight)
-
-    const light = new THREE.AmbientLight(0xFF0000)
-    scene.add(light)
+    scene.add(ambientLight)
   }
   function hasCollidedWithPlanet(point: THREE.Vector3) {
-    const PLANET_RADIUS = 10
     const coordinatesForCollisionCalc = Math.pow(point.x - PLANET_ORIGIN_AXES.x, 2) + Math.pow(point.y - PLANET_ORIGIN_AXES.y, 2) + Math.pow(point.z - PLANET_ORIGIN_AXES.z, 2)
     const hasCollision = Math.sqrt(coordinatesForCollisionCalc) <= PLANET_RADIUS
     return hasCollision
@@ -94,7 +85,7 @@ const Menu = () => {
     particlePositions.setXYZ(indexInArray, particleAfterRotationX, particleAfterRotationY, particleAfterRotationZ)
   }
 
-  const moveParticles = useCallback((particles: THREE.BufferGeometry, clock: THREE.Clock, particlesSystem: THREE.Points, PARTICLES_COUNT: number, trackedStillParticles: Array<TrackedParticles>) => {
+  const moveParticles = (particles: THREE.BufferGeometry, clock: THREE.Clock, particlesSystem: THREE.Points, PARTICLES_COUNT: number, trackedStillParticles: Array<TrackedParticles>) => {
     let trackedParticle
     const particlesPosition = particles.getAttribute('position')
     const PARTICLE_AXES = 3
@@ -128,9 +119,9 @@ const Menu = () => {
         .setY(i, particlesPosition.getY(i) - 0.01)
       particlesSystem.geometry.attributes.position.needsUpdate = true
     }
-  }, [])
+  }
 
-  const addAmbientParticles = useCallback((scene: THREE.Scene, renderer: THREE.WebGLRenderer, clock: THREE.Clock, resolution: THREE.Vector2) => {
+  const addAmbientParticles = (scene: THREE.Scene, renderer: THREE.WebGLRenderer, clock: THREE.Clock, resolution: THREE.Vector2) => {
     const PARTICLES_COUNT = 750
     const PARTICLES_DISTANCE = 53
     const particleTexture = new THREE.TextureLoader().load('/game/textures/particle.png')
@@ -161,9 +152,10 @@ const Menu = () => {
       blending: THREE.AdditiveBlending,
       depthTest: true,
       depthWrite: false,
-      transparent: true
+      transparent: true,
     })
     const particlesSystem = new THREE.Points(particles, particleShaderMaterial)
+    particlesSystem.castShadow = true
     const trackedStillParticles: Array<TrackedParticles> = []
     renderer.setAnimationLoop(() => {
       moveParticles(particles, clock, particlesSystem, PARTICLES_COUNT, trackedStillParticles)
@@ -171,7 +163,7 @@ const Menu = () => {
       rotateTrees(scene, clock)
     })
     scene.add(particlesSystem)
-  }, [moveParticles])
+  }
 
 
   function rotateTrees(scene: THREE.Scene, clock: THREE.Clock) {
@@ -182,21 +174,21 @@ const Menu = () => {
 
 
 
-  const render = useCallback((renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.PerspectiveCamera, clock: THREE.Clock, oldTime: number) => {
+  const render = (renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.PerspectiveCamera, clock: THREE.Clock, oldTime: number) => {
     const currentTime = clock.getElapsedTime()
     characterAnimationMixer.current?.update(currentTime - oldTime) // deltaTime = currentTime - oldTime.
     renderer.render(scene, camera)
     animationFrameId.current = requestAnimationFrame(() => render(renderer, scene, camera, clock, currentTime))//  Not using THREE.getDelta because it wasn't working properly and I was lazy to research about it
-  }, [])
+  }
 
-  const resize = useCallback((renderer: THREE.WebGLRenderer, camera: THREE.PerspectiveCamera, renderScreenWidth: number, renderScreenHeight: number) => {
+  const resize = (renderer: THREE.WebGLRenderer, camera: THREE.PerspectiveCamera, renderScreenWidth: number, renderScreenHeight: number) => {
     if (canvasContainer.current === null) return
     renderScreenWidth = canvasContainer.current.clientWidth
     renderScreenHeight = canvasContainer.current.clientHeight
     renderer.setSize(renderScreenWidth, renderScreenHeight);
     camera.aspect = renderScreenWidth / renderScreenHeight;
     camera.updateProjectionMatrix();
-  }, [])
+  }
 
   function addPlanet(scene: THREE.Scene, renderer: THREE.WebGLRenderer) {
     const planetTexture = new THREE
@@ -209,7 +201,7 @@ const Menu = () => {
           .set(2, 2)
       })
     const planetGeometry = new THREE.SphereBufferGeometry(10, 50, 50)
-    const planetMaterial = new THREE.MeshPhongMaterial({ map: planetTexture })
+    const planetMaterial = new THREE.MeshStandardMaterial({ map: planetTexture, color: 0x55505a })
     const planet = new THREE.Mesh(planetGeometry, planetMaterial)
     planet.position.set(30, -2, 30)
     planet.rotation.z = Math.PI / 2
@@ -225,13 +217,12 @@ const Menu = () => {
       let treeMaterial
       tree.scene.traverse((child: Object3D) => {
         if (child instanceof THREE.Mesh) {
-          child.castShadow = true
-          child.receiveShadow = true
           treeGeometry = child.geometry.clone().applyMatrix4(child.matrixWorld)
           treeMaterial = child.material
         }
       })
       const treesInstancedMesh = new THREE.InstancedMesh(treeGeometry, treeMaterial, TREE_COUNT)
+      treesInstancedMesh.castShadow = true
       const DISTANCE_TO_MERGE_TREES_TO_PLANET = 0.1
       treesInstancedMesh.position.set(PLANET_ORIGIN_AXES.x, PLANET_ORIGIN_AXES.y - DISTANCE_TO_MERGE_TREES_TO_PLANET, PLANET_ORIGIN_AXES.z)
       treesInstancedMesh.name = 'trees'
@@ -242,7 +233,6 @@ const Menu = () => {
       const currentTreeAngleOnPlanetZRadians = (angle: number) => angle * Math.PI / 180
       const START_NUMBER_FOR_TREE_POSITION_X = 2
       const NUMBER_OF_POSIBILITIES_X = 6
-      const PLANET_RADIUS = 10
       const AMOUNT_OF_DEGREES_TO_SUM = 360 / TREE_COUNT
       for (let j = 0; j < TREE_COUNT; j++) {
         dummyTree.scale.set(0.1, 0.1, 0.1)
@@ -268,8 +258,12 @@ const Menu = () => {
   }
 
   function addCharacter(scene: THREE.Scene) {
-    const PLANET_RADIUS = 10
     modelLoader.load('/game/models/knight.gltf', (character) => {
+      character.scene.traverse((child: Object3D) => {
+        if (child instanceof THREE.Mesh) {
+          child.castShadow = true
+        }
+      })
       character.scene.position.set(PLANET_ORIGIN_AXES.x, PLANET_ORIGIN_AXES.y + PLANET_RADIUS, PLANET_ORIGIN_AXES.z)
       character.scene.scale.set(0.4, 0.4, 0.4)
       character.scene.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI)
@@ -278,6 +272,7 @@ const Menu = () => {
       const idleAnimation = characterAnimationMixer.current.clipAction(character.animations[15])
       idleAnimation.play()
       idleAnimation.clampWhenFinished = true
+      character.scene.castShadow = true
       scene.add(character.scene)
 
       characterAnimationMixer
@@ -311,6 +306,7 @@ const Menu = () => {
   }
 
   useEffect(() => {
+    console.log('render')
     const canvasElement = document.getElementById('canvas');
     if (!canvasContainer.current || !canvasElement) {
       return
@@ -321,14 +317,17 @@ const Menu = () => {
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(75, renderScreenWidth / renderScreenHeight, 0.1, 1000)
     const renderer = new THREE.WebGLRenderer({ canvas: canvasElement })
+    renderer.shadowMap.enabled = true
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap
+    const CHARACTER_POSITION_ON_PLANET_Y_AXIS = PLANET_ORIGIN_AXES.y + PLANET_RADIUS + 1.5
     setControls(camera, renderer)
-    setCameraPosition(camera, { x: 30, y: 10, z: 40 }, { x: -0.3, y: 0, z: 0 })
-    addSunLight(scene)
+    setCameraPosition(camera, { x: PLANET_ORIGIN_AXES.x, y: CHARACTER_POSITION_ON_PLANET_Y_AXIS, z: PLANET_ORIGIN_AXES.z + 1.2 }, { x: -0.7, y: 0, z: 0 })
     const clock = new THREE.Clock()
     addPlanet(scene, renderer)
     addTrees(scene)
     addCharacter(scene)
     addAmbientParticles(scene, renderer, clock, resolution)
+    addLight(scene)
     // setBackground(scene)
     renderer.setSize(renderScreenWidth, renderScreenHeight)
     window.addEventListener('resize', () => resize(renderer, camera, renderScreenWidth, renderScreenHeight))
@@ -339,7 +338,7 @@ const Menu = () => {
       window.cancelAnimationFrame(animationFrameId.current)
     }
 
-  }, [render, resize, addAmbientParticles])
+  }, [])
 
   return (
     <div className="h-screen block" ref={canvasContainer}>

@@ -1,7 +1,7 @@
 import type react from 'react'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
-import IconButton from '../../atoms/buttons/IconButton'
+import IconButtonLink from '../../atoms/buttons/IconButtonLink'
 import { AppContextHelpers } from '../../../context/AppContextHelpers'
 import { useContext } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -43,7 +43,7 @@ const NavigationBar: react.FC<NavProps> = ({ name, sideBar }) => {
         </div>
         <div className="flex grow align-center px-5">
           <div className="flex grow justify-end items-center">
-            <IconButton iconName={faGithub} link={"https://github.com/Rogerpeke97"} iconSize={'iconRegular'} />
+            <IconButtonLink iconName={faGithub} link={"https://github.com/Rogerpeke97"} iconSize={'iconRegular'} />
           </div>
         </div>
       </div>
