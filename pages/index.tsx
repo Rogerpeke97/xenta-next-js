@@ -30,9 +30,12 @@ const styles = {
   }
 }
 
+
 const Home = () => {
 
   const [currentLives, setCurrentLives] = useState(3)
+
+  const [currentKey, setCurrentKey] = useState('')
 
   const LIVES = 3
 
@@ -118,25 +121,11 @@ const Home = () => {
     )
   }
 
-  function afterKeyPressHandler(event: KeyboardEvent) {
-    if (event.key === ' '){
-      console.log('hello, you pressed space')
-    }
-  }
-
-
-  const setKeyDownListener = useCallback(() => {
-    window.addEventListener('keydown', afterKeyPressHandler)
-  }, [])
 
   useEffect(() => {
     checkIfFirstTime()
     getUserData()
-    setKeyDownListener()
-    return () => {
-      window.removeEventListener('keydown', afterKeyPressHandler)
-    }
-  }, [getUserData, setKeyDownListener])
+  }, [getUserData])
 
   return (
     <div>

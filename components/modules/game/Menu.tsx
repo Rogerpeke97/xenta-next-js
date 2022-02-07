@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from 'three';
 import { Lensflare, LensflareElement } from 'three/examples/jsm/objects/Lensflare.js';
 import { vertexShaderParticle, fragmentShaderParticle } from '../../../plugins/game/shaders/sphereParticle';
@@ -30,6 +30,8 @@ interface TrackedParticles {
 
 const Menu = () => {
 
+  const ALLOWED_KEYS = [' ', 'ArrowLeft', 'ArrowRight']
+
   const canvasContainer = useRef<HTMLDivElement>(null);
 
   const PLANET_ORIGIN_AXES = {
@@ -38,11 +40,94 @@ const Menu = () => {
     z: 30
   }
 
+  let characterIntervalCheckForMoves: NodeJS.Timeout
+
+  const treesTrackedPositions = useRef<THREE.Object3D[]>([])
+
+  const trackedKeys = useRef({ArrowRight: false, ArrowLeft: false})
+
   const PLANET_RADIUS = 10
 
   const modelLoader = new GLTFLoader()
 
   const animationFrameId = useRef<number>(0)
+
+
+  function afterKeyPressHandler(event: KeyboardEvent) {
+    const isAnAllowedKey = ALLOWED_KEYS.includes(event.key)
+    // console.log(event.key, isAnAllowedKey, trackedKeys)
+    if(isAnAllowedKey) {
+      console.log({...trackedKeys.current, [event.key]: true})
+      trackedKeys.current = {...trackedKeys.current, [event.key]: true}
+    }
+  }
+
+  function afterKeyUnpressedHandler(event: KeyboardEvent){
+    const isAnAllowedKey = ALLOWED_KEYS.includes(event.key)
+    console.log(event.key)
+    if(isAnAllowedKey) {
+      trackedKeys.current = {...trackedKeys.current, [event.key]: false}
+    }
+  }
+
+  function setKeyDownListener(){
+    window.addEventListener('keydown', afterKeyPressHandler)
+  }
+
+  function setKeyUpListener(){
+    window.addEventListener('keyup', afterKeyUnpressedHandler)
+  }
+
+
+  function setIntervalMovesCheck(scene: THREE.Scene){
+    characterIntervalCheckForMoves = setInterval(() => updateCharacterPosition(scene), 50)
+  }
+
+
+  function hasCharacterHitTree(scene: THREE.Scene){
+    const character = scene.getObjectByName('character')
+    const trees = scene.getObjectByName('trees') as THREE.InstancedMesh
+    if(!trees || !character) return
+    const treePositions = trees.geometry.getAttribute('position') as THREE.BufferAttribute
+    const amountOfTrees = trees.count
+    const characterPosition = character.position
+    /* TODO: SAVE TREE POSITIONS AND TRANSFORMATIONS TO COMPARE IF CHAR IS COLLIDING */
+    // const isBetweenTreeAxes = (character: THREE.Vector3, treePosition: THREE.Vector3) => {
+    //   const isBetweenY = (character.y - PLANET_ORIGIN_AXES.y < treePosition.y + 2 && character.y - PLANET_ORIGIN_AXES.y > treePosition.y - 2)
+    //   const isBetweenX = (character.x - PLANET_ORIGIN_AXES.x < treePosition.x + 2 && character.x - PLANET_ORIGIN_AXES.x > treePosition.x - 2)
+    //   const isBetweenZ = (character.z - PLANET_ORIGIN_AXES.z < treePosition.z + 2 && character.z - PLANET_ORIGIN_AXES.z > treePosition.z - 2)
+    //   return isBetweenY && isBetweenX && isBetweenZ
+    // }
+    // for(let i = 0; i < amountOfTrees; i++){
+    //   const treePosition = new THREE.Vector3(treePositions.getX(i), treePositions.getY(i), treePositions.getZ(i))
+    //   if(isBetweenTreeAxes(characterPosition, treePosition)){
+    //     console.log('hit')
+    //     break
+    //   }
+    // }
+    // return true
+  }
+
+
+  function updateCharacterPosition(scene: THREE.Scene){
+    const character = scene.getObjectByName('character')
+    if(!character) return
+    const ALLOWED_X_MAX_VALUE_LEFT = PLANET_ORIGIN_AXES.x - 4
+    const ALLOWED_X_MAX_VALUE_RIGHT = PLANET_ORIGIN_AXES.x + 4
+    if(trackedKeys.current.ArrowLeft && character.position.x > ALLOWED_X_MAX_VALUE_LEFT) {
+      const characterNewPositionX = character.position.x - 0.01
+      const characterPositionY = Math.sqrt(Math.pow(PLANET_RADIUS, 2) - Math.pow(characterNewPositionX - PLANET_ORIGIN_AXES.x, 2)) + PLANET_ORIGIN_AXES.y
+      console.log(characterPositionY, character.position.y, characterNewPositionX)
+      character.position.set(characterNewPositionX, characterPositionY, character.position.z)
+      
+    }
+    if(trackedKeys.current.ArrowRight && character.position.x < ALLOWED_X_MAX_VALUE_RIGHT) {
+      const characterNewPositionX = character.position.x + 0.01
+      const characterPositionY = Math.sqrt(Math.pow(PLANET_RADIUS, 2) - Math.pow(characterNewPositionX - PLANET_ORIGIN_AXES.x, 2)) + PLANET_ORIGIN_AXES.y
+      character.position.set(characterNewPositionX, characterPositionY, character.position.z)
+    }
+    hasCharacterHitTree(scene)
+  }
 
   const characterAnimationMixer = useRef<THREE.AnimationMixer>()
 
@@ -274,14 +359,6 @@ const Menu = () => {
       idleAnimation.clampWhenFinished = true
       character.scene.castShadow = true
       scene.add(character.scene)
-
-      characterAnimationMixer
-        .current
-        .addEventListener('loop', (e) => {
-          if (e.action._clip.name === "knight_jump_up_root") {
-            characterAnimationMixer.current?.stopAllAction()
-          }
-        })
     })
   }
 
@@ -320,6 +397,8 @@ const Menu = () => {
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = THREE.PCFSoftShadowMap
     const CHARACTER_POSITION_ON_PLANET_Y_AXIS = PLANET_ORIGIN_AXES.y + PLANET_RADIUS + 1.5
+    setKeyDownListener()
+    setKeyUpListener()
     setControls(camera, renderer)
     setCameraPosition(camera, { x: PLANET_ORIGIN_AXES.x, y: CHARACTER_POSITION_ON_PLANET_Y_AXIS, z: PLANET_ORIGIN_AXES.z + 1.2 }, { x: -0.7, y: 0, z: 0 })
     const clock = new THREE.Clock()
@@ -328,6 +407,7 @@ const Menu = () => {
     addCharacter(scene)
     addAmbientParticles(scene, renderer, clock, resolution)
     addLight(scene)
+    setIntervalMovesCheck(scene)
     // setBackground(scene)
     renderer.setSize(renderScreenWidth, renderScreenHeight)
     window.addEventListener('resize', () => resize(renderer, camera, renderScreenWidth, renderScreenHeight))
@@ -336,9 +416,13 @@ const Menu = () => {
     return () => {
       window.removeEventListener('resize', () => resize(renderer, camera, renderScreenWidth, renderScreenHeight))
       window.cancelAnimationFrame(animationFrameId.current)
+      window.removeEventListener('keydown', afterKeyPressHandler)
+      window.removeEventListener('keyup', afterKeyUnpressedHandler)
+      clearInterval(characterIntervalCheckForMoves)
+
     }
 
-  }, [])
+  }, [trackedKeys])
 
   return (
     <div className="h-screen block" ref={canvasContainer}>
