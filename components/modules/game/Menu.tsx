@@ -4,7 +4,7 @@ import { Lensflare, LensflareElement } from 'three/examples/jsm/objects/Lensflar
 import { vertexShaderParticle, fragmentShaderParticle } from '../../../plugins/game/shaders/sphereParticle';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { BufferGeometry, BufferGeometryUtils, Object3D } from "three";
+import { BufferAttribute, BufferGeometry, BufferGeometryUtils, Object3D } from "three";
 
 
 interface Axes {
@@ -42,9 +42,7 @@ const Menu = () => {
 
   let characterIntervalCheckForMoves: NodeJS.Timeout
 
-  const treesTrackedPositions = useRef<THREE.Object3D[]>([])
-
-  const trackedKeys = useRef({ArrowRight: false, ArrowLeft: false})
+  const trackedKeys = useRef({ ArrowRight: false, ArrowLeft: false })
 
   const PLANET_RADIUS = 10
 
@@ -52,78 +50,99 @@ const Menu = () => {
 
   const animationFrameId = useRef<number>(0)
 
+  const TREE_COUNT = 20
+
 
   function afterKeyPressHandler(event: KeyboardEvent) {
     const isAnAllowedKey = ALLOWED_KEYS.includes(event.key)
     // console.log(event.key, isAnAllowedKey, trackedKeys)
-    if(isAnAllowedKey) {
-      console.log({...trackedKeys.current, [event.key]: true})
-      trackedKeys.current = {...trackedKeys.current, [event.key]: true}
+    if (isAnAllowedKey) {
+      trackedKeys.current = { ...trackedKeys.current, [event.key]: true }
     }
   }
 
-  function afterKeyUnpressedHandler(event: KeyboardEvent){
+  function afterKeyUnpressedHandler(event: KeyboardEvent) {
     const isAnAllowedKey = ALLOWED_KEYS.includes(event.key)
-    console.log(event.key)
-    if(isAnAllowedKey) {
-      trackedKeys.current = {...trackedKeys.current, [event.key]: false}
+    if (isAnAllowedKey) {
+      trackedKeys.current = { ...trackedKeys.current, [event.key]: false }
     }
   }
 
-  function setKeyDownListener(){
+  function setKeyDownListener() {
     window.addEventListener('keydown', afterKeyPressHandler)
   }
 
-  function setKeyUpListener(){
+  function setKeyUpListener() {
     window.addEventListener('keyup', afterKeyUnpressedHandler)
   }
 
 
-  function setIntervalMovesCheck(scene: THREE.Scene){
+  function setIntervalMovesCheck(scene: THREE.Scene) {
     characterIntervalCheckForMoves = setInterval(() => updateCharacterPosition(scene), 50)
   }
 
 
-  function hasCharacterHitTree(scene: THREE.Scene){
+  function hasCharacterHitTree(scene: THREE.Scene) {
     const character = scene.getObjectByName('character')
-    const trees = scene.getObjectByName('trees') as THREE.InstancedMesh
-    if(!trees || !character) return
-    const treePositions = trees.geometry.getAttribute('position') as THREE.BufferAttribute
-    const amountOfTrees = trees.count
+    let trees: Array<THREE.Mesh> = []
+    scene.traverse((mesh) => {
+      if (mesh instanceof THREE.Mesh && mesh.name === 'tree') {
+        trees.push(mesh)
+      }
+    })
+    // console.log(trees)
+    if (trees.length === 0 || !character) return
     const characterPosition = character.position
-    /* TODO: SAVE TREE POSITIONS AND TRANSFORMATIONS TO COMPARE IF CHAR IS COLLIDING */
-    // const isBetweenTreeAxes = (character: THREE.Vector3, treePosition: THREE.Vector3) => {
-    //   const isBetweenY = (character.y - PLANET_ORIGIN_AXES.y < treePosition.y + 2 && character.y - PLANET_ORIGIN_AXES.y > treePosition.y - 2)
-    //   const isBetweenX = (character.x - PLANET_ORIGIN_AXES.x < treePosition.x + 2 && character.x - PLANET_ORIGIN_AXES.x > treePosition.x - 2)
-    //   const isBetweenZ = (character.z - PLANET_ORIGIN_AXES.z < treePosition.z + 2 && character.z - PLANET_ORIGIN_AXES.z > treePosition.z - 2)
-    //   return isBetweenY && isBetweenX && isBetweenZ
-    // }
-    // for(let i = 0; i < amountOfTrees; i++){
-    //   const treePosition = new THREE.Vector3(treePositions.getX(i), treePositions.getY(i), treePositions.getZ(i))
-    //   if(isBetweenTreeAxes(characterPosition, treePosition)){
-    //     console.log('hit')
-    //     break
-    //   }
-    // }
-    // return true
+    const TOLERABLE_MARGINS_FOR_COLLISION = {
+      x: 0.1,
+      y: 0.4,
+      z: 0.2
+    }
+    const isBetweenTreeAxes = (character: THREE.Vector3, treePosition: THREE.Vector3) => {
+      // console.log('character', character.x - PLANET_ORIGIN_AXES.x, character.y - PLANET_ORIGIN_AXES.y, character.z - PLANET_ORIGIN_AXES.z)
+      // console.log('tree-position', treePosition)
+      // console.log('tree-position', treePosition)
+      const isBetweenY = character.y < treePosition.y + TOLERABLE_MARGINS_FOR_COLLISION.y
+        && character.y > treePosition.y - TOLERABLE_MARGINS_FOR_COLLISION.y
+      const isBetweenX = character.x < treePosition.x + TOLERABLE_MARGINS_FOR_COLLISION.x
+        && character.x > treePosition.x - TOLERABLE_MARGINS_FOR_COLLISION.x
+      const isBetweenZ = character.z < treePosition.z + TOLERABLE_MARGINS_FOR_COLLISION.z
+        && character.z > treePosition.z - TOLERABLE_MARGINS_FOR_COLLISION.z
+      if (isBetweenY && isBetweenX && isBetweenZ) {
+        console.log('ypos', character.y, treePosition.y, isBetweenY)
+        console.log('xpos', character.x, treePosition.x, isBetweenX)
+        console.log('zpos', character.z, treePosition.z)
+      }
+
+      return isBetweenY && isBetweenX && isBetweenZ
+    }
+    let hasBeenHit = false
+    for (let i = 0; i < TREE_COUNT; i++) {
+      if (isBetweenTreeAxes(characterPosition, trees[i].position)) {
+        hasBeenHit = true
+        break
+      }
+    }
+    return hasBeenHit
   }
 
 
-  function updateCharacterPosition(scene: THREE.Scene){
+  function updateCharacterPosition(scene: THREE.Scene) {
     const character = scene.getObjectByName('character')
-    if(!character) return
+    if (!character) return
     const ALLOWED_X_MAX_VALUE_LEFT = PLANET_ORIGIN_AXES.x - 4
     const ALLOWED_X_MAX_VALUE_RIGHT = PLANET_ORIGIN_AXES.x + 4
-    if(trackedKeys.current.ArrowLeft && character.position.x > ALLOWED_X_MAX_VALUE_LEFT) {
-      const characterNewPositionX = character.position.x - 0.01
+    if (trackedKeys.current.ArrowLeft && character.position.x > ALLOWED_X_MAX_VALUE_LEFT) {
+      const characterNewPositionX = character.position.x - 0.05
       const characterPositionY = Math.sqrt(Math.pow(PLANET_RADIUS, 2) - Math.pow(characterNewPositionX - PLANET_ORIGIN_AXES.x, 2)) + PLANET_ORIGIN_AXES.y
-      console.log(characterPositionY, character.position.y, characterNewPositionX)
+      // console.log(characterNewPositionX, characterPositionY, character.position.z)
       character.position.set(characterNewPositionX, characterPositionY, character.position.z)
-      
+
     }
-    if(trackedKeys.current.ArrowRight && character.position.x < ALLOWED_X_MAX_VALUE_RIGHT) {
-      const characterNewPositionX = character.position.x + 0.01
+    if (trackedKeys.current.ArrowRight && character.position.x < ALLOWED_X_MAX_VALUE_RIGHT) {
+      const characterNewPositionX = character.position.x + 0.05
       const characterPositionY = Math.sqrt(Math.pow(PLANET_RADIUS, 2) - Math.pow(characterNewPositionX - PLANET_ORIGIN_AXES.x, 2)) + PLANET_ORIGIN_AXES.y
+      // console.log(characterNewPositionX, characterPositionY, character.position.z)
       character.position.set(characterNewPositionX, characterPositionY, character.position.z)
     }
     hasCharacterHitTree(scene)
@@ -146,9 +165,9 @@ const Menu = () => {
     directionalLight.shadow.mapSize.height = 1024
     directionalLight.intensity = 3
     const planet = scene.getObjectByName('planet')
-    if(!planet) return
+    if (!planet) return
     directionalLight.target = planet
-    const helper = new THREE.DirectionalLightHelper( directionalLight )
+    const helper = new THREE.DirectionalLightHelper(directionalLight)
     scene.add(directionalLight)
 
     const ambientLight = new THREE.AmbientLight(0xffffff)
@@ -168,6 +187,20 @@ const Menu = () => {
     const particleAfterRotationY = Math.sin(rotationAngleInRadians) * (vector.z - PLANET_ORIGIN_AXES.z) + Math.cos(rotationAngleInRadians) * (vector.y - PLANET_ORIGIN_AXES.y) + PLANET_ORIGIN_AXES.y
     const particleAfterRotationX = vector.x
     particlePositions.setXYZ(indexInArray, particleAfterRotationX, particleAfterRotationY, particleAfterRotationZ)
+  }
+
+  function getTreePositionAfterRotation(position: THREE.Vector3, rotation: number) {
+    const AMOUNT_TO_ROTATE_RADIANS = 0.00001
+    let rotationInRadians = rotation * Math.PI / 180
+    let rotationAngle = (rotationInRadians - AMOUNT_TO_ROTATE_RADIANS) * 180 / Math.PI
+    if(rotationAngle <= 0){
+      rotationAngle = 360
+    }
+    rotationInRadians = rotationAngle * Math.PI / 180
+    const treeAfterRotationZ = Math.cos(rotationInRadians) * (position.z) - Math.sin(rotationInRadians) * (position.y)
+    const treeAfterRotationY = Math.sin(rotationInRadians) * (position.z) + Math.cos(rotationInRadians) * (position.y)
+    const treeAfterRotationX = position.x
+    return { position: new THREE.Vector3(treeAfterRotationX, treeAfterRotationY, treeAfterRotationZ), rotationAngle }
   }
 
   const moveParticles = (particles: THREE.BufferGeometry, clock: THREE.Clock, particlesSystem: THREE.Points, PARTICLES_COUNT: number, trackedStillParticles: Array<TrackedParticles>) => {
@@ -190,8 +223,8 @@ const Menu = () => {
             continue
           }
           calculateParticleRotation(vectorCollision, i, particlesPosition, trackedParticle.angleOfRotation)
-          if (trackedParticle.angleOfRotation > 360) {
-            trackedParticle.angleOfRotation = 0
+          if (trackedParticle.angleOfRotation <= 0) {
+            trackedParticle.angleOfRotation = 360
             continue
           }
           trackedParticle.angleOfRotation -= 0.01
@@ -252,9 +285,18 @@ const Menu = () => {
 
 
   function rotateTrees(scene: THREE.Scene, clock: THREE.Clock) {
-    const trees = scene.getObjectByName('trees')
-    if (!trees) return
-    trees.rotation.x += 0.01
+    let trees: Array<THREE.Mesh> = []
+    scene.traverse((mesh) => {
+      if (mesh instanceof THREE.Mesh && mesh.name === 'tree') {
+        trees.push(mesh)
+      }
+    })
+    if (trees.length === 0) return
+    trees.forEach((tree) => {
+      const treePosition = getTreePositionAfterRotation(tree.position, tree.rotation.y)
+      tree.position.set(treePosition.position.x, treePosition.position.y, treePosition.position.z)
+      // tree.rotation.y += treePosition.rotationAngle * AMOUNT_TO_ROTATE_RADIANS
+    })
   }
 
 
@@ -296,7 +338,6 @@ const Menu = () => {
   }
 
   function addTrees(scene: THREE.Scene) {
-    const TREE_COUNT = 20
     modelLoader.load('/game/models/tree.glb', (tree) => {
       let treeGeometry: BufferGeometry | undefined
       let treeMaterial
@@ -306,12 +347,7 @@ const Menu = () => {
           treeMaterial = child.material
         }
       })
-      const treesInstancedMesh = new THREE.InstancedMesh(treeGeometry, treeMaterial, TREE_COUNT)
-      treesInstancedMesh.castShadow = true
       const DISTANCE_TO_MERGE_TREES_TO_PLANET = 0.1
-      treesInstancedMesh.position.set(PLANET_ORIGIN_AXES.x, PLANET_ORIGIN_AXES.y - DISTANCE_TO_MERGE_TREES_TO_PLANET, PLANET_ORIGIN_AXES.z)
-      treesInstancedMesh.name = 'trees'
-      const dummyTree = new THREE.Object3D()
       let treePositionX, treePositionY, treePositionZ, treeRotationX, treeRotationY, treeRotationZ
       let xz2dApparentPointRadius
       let currentTreeAngleOnPlanetZ = 0
@@ -320,6 +356,7 @@ const Menu = () => {
       const NUMBER_OF_POSIBILITIES_X = 6
       const AMOUNT_OF_DEGREES_TO_SUM = 360 / TREE_COUNT
       for (let j = 0; j < TREE_COUNT; j++) {
+        const dummyTree = new THREE.Mesh(treeGeometry, treeMaterial)
         dummyTree.scale.set(0.1, 0.1, 0.1)
         treePositionX = Math.floor(Math.random() * NUMBER_OF_POSIBILITIES_X) - START_NUMBER_FOR_TREE_POSITION_X
         xz2dApparentPointRadius = Math.sqrt(Math.pow(PLANET_RADIUS, 2) - Math.pow(treePositionX, 2))
@@ -327,18 +364,17 @@ const Menu = () => {
         treeRotationZ = Math.asin(treePositionX / PLANET_RADIUS)
         treeRotationX = -currentTreeAngleOnPlanetZRadians(currentTreeAngleOnPlanetZ) * (180 / Math.PI)
         treePositionY = Math.cos(currentTreeAngleOnPlanetZRadians(currentTreeAngleOnPlanetZ) * (180 / Math.PI)) * xz2dApparentPointRadius
-        dummyTree.position.set(treePositionX, treePositionY, -treePositionZ)
+        dummyTree.position.set(treePositionX + PLANET_ORIGIN_AXES.x, treePositionY + PLANET_ORIGIN_AXES.y - DISTANCE_TO_MERGE_TREES_TO_PLANET, -treePositionZ + PLANET_ORIGIN_AXES.z)
         dummyTree.rotation.set(treeRotationX, 0, -treeRotationZ)
-        dummyTree.updateMatrix()
-        treesInstancedMesh.setMatrixAt(j, dummyTree.matrix)
         if (currentTreeAngleOnPlanetZ === 360) {
           currentTreeAngleOnPlanetZ = 0
           continue
         }
         currentTreeAngleOnPlanetZ += AMOUNT_OF_DEGREES_TO_SUM
+        dummyTree.castShadow = true
+        dummyTree.name = 'tree'
+        scene.add(dummyTree)
       }
-      treesInstancedMesh.instanceMatrix.needsUpdate = true
-      scene.add(treesInstancedMesh)
     })
   }
 

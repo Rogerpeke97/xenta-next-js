@@ -129,8 +129,8 @@ const Home = () => {
 
   return (
     <div>
-      {isLoading ?
-        <Loading isLoading={isLoading} loadingText="Loading your profile..." /> :
+      {!isLoading ?
+        <Menu />                  :
         <div className="smooth-render relative">
           <div className="h-16 flex justify-between">
             <h3 className="heading-2">
