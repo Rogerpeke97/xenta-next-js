@@ -291,11 +291,25 @@ const Menu = () => {
         trees.push(mesh)
       }
     })
+    const AMOUNT_TO_ROTATE_DEG = 0.001
     if (trees.length === 0) return
+    let treePositionX, treePositionY, treePositionZ, treeRotationX, treeRotationZ, xz2dApparentPointRadius
+    const currentTreeAngleOnPlanetZRadians = (angle: number) => angle * Math.PI / 180
     trees.forEach((tree) => {
-      const treePosition = getTreePositionAfterRotation(tree.position, tree.rotation.y)
-      tree.position.set(treePosition.position.x, treePosition.position.y, treePosition.position.z)
-      // tree.rotation.y += treePosition.rotationAngle * AMOUNT_TO_ROTATE_RADIANS
+      console.log(tree, trees)
+      if(!tree.userData.treeAngleOnPlanetZ) return
+      tree.userData.treeAngleOnPlanetZ -= AMOUNT_TO_ROTATE_DEG
+      if(tree.userData.treeAngleOnPlanetZ <= 0) {
+        tree.userData.treeAngleOnPlanetZ = 360
+      }
+      treePositionX = Math.cos(currentTreeAngleOnPlanetZRadians(tree.userData.treeAngleOnPlanetZ)) * PLANET_ORIGIN_AXES.x
+      xz2dApparentPointRadius = Math.sqrt(Math.pow(PLANET_RADIUS, 2) - Math.pow(treePositionX, 2))
+      treePositionZ = Math.sin(currentTreeAngleOnPlanetZRadians(tree.userData.treeAngleOnPlanetZ) * (180 / Math.PI)) * xz2dApparentPointRadius
+      treeRotationZ = Math.asin(treePositionX / PLANET_RADIUS)
+      treeRotationX = -currentTreeAngleOnPlanetZRadians(tree.userData.treeAngleOnPlanetZ) * (180 / Math.PI)
+      treePositionY = Math.cos(currentTreeAngleOnPlanetZRadians(tree.userData.treeAngleOnPlanetZ) * (180 / Math.PI)) * xz2dApparentPointRadius
+      tree.position.set(treePositionX + PLANET_ORIGIN_AXES.x, treePositionY + PLANET_ORIGIN_AXES.y, -treePositionZ + PLANET_ORIGIN_AXES.z)
+      tree.rotation.set(treeRotationX, 0, -treeRotationZ)
     })
   }
 
@@ -371,6 +385,8 @@ const Menu = () => {
           continue
         }
         currentTreeAngleOnPlanetZ += AMOUNT_OF_DEGREES_TO_SUM
+        console.log(currentTreeAngleOnPlanetZ)
+        dummyTree.userData.treeAngleOnPlanetZ = currentTreeAngleOnPlanetZ
         dummyTree.castShadow = true
         dummyTree.name = 'tree'
         scene.add(dummyTree)
