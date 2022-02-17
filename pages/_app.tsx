@@ -7,7 +7,7 @@ import { AppContextHelpers } from '../context/AppContextHelpers'
 import Api from './api/Api'
 import { useRouter } from 'next/router'
 import Toast from '../components/atoms/notifications/Toast'
-import Overlay from '../components/modules/overlays/Overlay'
+import Overlay from '../components/overlays/Overlay'
 import NavigationLayout from '../components/layouts/NavigationLayout'
 import Login from './login'
 

@@ -1,14 +1,14 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { useCallback, useContext, useEffect, useState } from 'react'
-import SideBar from '../components/modules/navigation/SideBar'
-import MenuContent from '../components/modules/navigation/MenuContent'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import SideBar from '../components/navigation/SideBar'
+import MenuContent from '../components/navigation/MenuContent'
 import { AppContextHelpers } from '../context/AppContextHelpers'
-import NavigationBar from '../components/modules/navigation/NavigationBar'
+import NavigationBar from '../components/navigation/NavigationBar'
 import NavigationLayout from '../components/layouts/NavigationLayout'
-import Overlay from '../components/modules/overlays/Overlay'
+import Overlay from '../components/overlays/Overlay'
 import Loading from '../components/atoms/loaders/Loading'
-import Menu from '../components/modules/game/Menu'
+import Menu from '../components/game/Menu'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart, faHeartBroken, faArrowLeft, faArrowRight, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import TextLink from '../components/atoms/links/TextLink'
@@ -30,20 +30,31 @@ const styles = {
   }
 }
 
+interface Lives {
+  index: number;
+  isActive: boolean;
+}
+
 
 const Home = () => {
 
-  const [currentLives, setCurrentLives] = useState(3)
+  const [currentLives, setCurrentLives] = useState<Lives[]>([
+    { index: 0, isActive: true },
+    { index: 1, isActive: true },
+    { index: 2, isActive: true }
+  ])
 
-  const [currentKey, setCurrentKey] = useState('')
+  const loadingHit = useRef(false)
 
   const LIVES = 3
 
-  const { showSideBar, setShowSideBar, api, setToast, windowWidth } = useContext(AppContextHelpers)
+  const { api, setToast, windowWidth } = useContext(AppContextHelpers)
 
   const [isLoading, setIsLoading] = useState(true)
 
   const [showTutorialOverlay, setTutorialOverlay] = useState(false)
+
+  const isGameFinished = useRef(false)
 
 
   const [userData, setUserData] = useState({
@@ -56,7 +67,6 @@ const Home = () => {
   const getUserData = useCallback(async () => {
     setIsLoading(true)
     const response = await api.get('/api/user')
-    console.log(response)
     if (response.error) {
       setToast({
         messages: [{
@@ -121,16 +131,39 @@ const Home = () => {
     )
   }
 
+  function onCharacterHit() {
+    if (loadingHit.current) return
+    loadingHit.current = true
+    for (let i = currentLives.length - 1; i >= 0; i--) {
+      if (currentLives[i].isActive) {
+        currentLives[i].isActive = false
+        setCurrentLives([...currentLives])
+        setTimeout(() => loadingHit.current = false, 2000)
+        if (i === 0) {
+          console.log('game over')
+          isGameFinished.current = true
+        }
+        return
+      }
+    }
+  }
+
+  function isActiveHeart(heartIndex: number) {
+    const isActive = currentLives.find((_, index) => index === heartIndex)?.isActive
+    return isActive ? faHeart : faHeartBroken
+  }
+
 
   useEffect(() => {
+    console.log('render')
     checkIfFirstTime()
     getUserData()
   }, [getUserData])
 
   return (
     <div>
-      {!isLoading ?
-        <Menu />                  :
+      {isLoading ?
+        <Loading isLoading={isLoading} loadingText="Loading your profile..." /> :
         <div className="smooth-render relative">
           <div className="h-16 flex justify-between">
             <h3 className="heading-2">
@@ -139,18 +172,18 @@ const Home = () => {
             </h3>
             <IconButton iconName={faQuestionCircle} onClick={() => setTutorialOverlay(!showTutorialOverlay)} iconSize={'iconRegular'} />
           </div>
-          <Menu />
+          <Menu onCharacterHit={() => onCharacterHit()} isGameFinished={isGameFinished} />
           <div className="absolute top-16 h-full w-full">
             <div className="flex justify-between">
               <div className="flex items-center">
                 <div className="flex">
                   {Array(LIVES).fill(0).map((_, index) => {
                     return (
-                      <FontAwesomeIcon className="icon-large pr-3" color="red" key={index} icon={faHeart} />
+                      <FontAwesomeIcon className="icon-large pr-3" color={currentLives[index].isActive ? 'red' : 'white'} key={index} icon={isActiveHeart(index)} />
                     )
                   })}
                 </div>
-                <h3 className="subtitle-2">x{LIVES}</h3>
+                <h3 className="subtitle-2">x{currentLives.filter(heart => heart.isActive).length}</h3>
               </div>
               <div>
                 <h3 className="heading-3">

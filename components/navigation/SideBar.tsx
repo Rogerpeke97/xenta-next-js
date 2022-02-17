@@ -1,10 +1,10 @@
 import type react from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
-import Divider from '../../atoms/dividers/Divider'
+import Divider from '../atoms/dividers/Divider'
 import SideBarMenus from './SideBarMenus'
 import { useContext, useEffect, useState } from 'react'
-import { AppContextHelpers } from '../../../context/AppContextHelpers'
+import { AppContextHelpers } from '../../context/AppContextHelpers'
 
 interface NavProps {
   name: string,

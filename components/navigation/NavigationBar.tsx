@@ -1,8 +1,8 @@
 import type react from 'react'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
-import IconButtonLink from '../../atoms/buttons/IconButtonLink'
-import { AppContextHelpers } from '../../../context/AppContextHelpers'
+import IconButtonLink from '../atoms/buttons/IconButtonLink'
+import { AppContextHelpers } from '../../context/AppContextHelpers'
 import { useContext } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
