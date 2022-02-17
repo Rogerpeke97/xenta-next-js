@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart, faHeartBroken, faArrowLeft, faArrowRight, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import TextLink from '../components/atoms/links/TextLink'
 import IconButton from '../components/atoms/buttons/IconButton'
+import Button from '../components/atoms/buttons/Button'
 
 
 const styles = {
@@ -173,9 +174,9 @@ const Home = () => {
             <IconButton iconName={faQuestionCircle} onClick={() => setTutorialOverlay(!showTutorialOverlay)} iconSize={'iconRegular'} />
           </div>
           <Menu onCharacterHit={() => onCharacterHit()} isGameFinished={isGameFinished} />
-          <div className="absolute top-16 h-full w-full">
-            <div className="flex justify-between">
-              <div className="flex items-center">
+          <div className="absolute top-16 h-screen w-full">
+            <div className="flex justify-between h-1/2">
+              <div className="flex">
                 <div className="flex">
                   {Array(LIVES).fill(0).map((_, index) => {
                     return (
@@ -191,6 +192,9 @@ const Home = () => {
                   <span className="text-card">{' ' + userData.score}</span>
                 </h3>
               </div>
+            </div>
+            <div className="h-1/2 flex">
+              <Button size="regular" color="bg-card" onClick={() => isGameFinished.current = !isGameFinished.current} text={'Pause / Play Again'}></Button>
             </div>
             {showTutorialOverlay && gameInstructions()}
           </div>
