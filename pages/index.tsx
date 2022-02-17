@@ -10,7 +10,7 @@ import Overlay from '../components/overlays/Overlay'
 import Loading from '../components/atoms/loaders/Loading'
 import Menu from '../components/game/Menu'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHeart, faHeartBroken, faArrowLeft, faArrowRight, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+import { faHeart, faHeartBroken, faArrowLeft, faArrowRight, faQuestionCircle, faPlay } from '@fortawesome/free-solid-svg-icons'
 import TextLink from '../components/atoms/links/TextLink'
 import IconButton from '../components/atoms/buttons/IconButton'
 import Button from '../components/atoms/buttons/Button'
@@ -133,6 +133,7 @@ const Home = () => {
   }
 
   function onCharacterHit() {
+    console.log('hit') //TODO: USE MEMOIZE FOR GAME MENU PERHAPS??
     if (loadingHit.current) return
     loadingHit.current = true
     for (let i = currentLives.length - 1; i >= 0; i--) {
@@ -154,12 +155,44 @@ const Home = () => {
     return isActive ? faHeart : faHeartBroken
   }
 
+  function playAgain(){
+    isGameFinished.current = false
+    loadingHit.current = false
+    setCurrentLives([
+      { index: 0, isActive: true },
+      { index: 1, isActive: true },
+      { index: 2, isActive: true }
+    ])
+  }
+
 
   useEffect(() => {
     console.log('render')
     checkIfFirstTime()
     getUserData()
   }, [getUserData])
+
+
+  function gameOverOverlay() {
+    return (
+      <div className="m-9 absolute mt-14 p-9 flex flex-col bg-success"
+        style={{ background: 'black', height: '70vh', width: '320px', left: '50%', marginLeft: '-160px' }}>
+        <h3 className="heading-2">
+          You lost!
+        </h3>
+        <div>
+          <div className="flex pt-14 items-center">
+            <h3 className="subtitle-1">Score:</h3>
+          </div>
+          <div className="flex pt-14 items-center justify-center">
+            <Button size="regular" color="bg-primary" 
+            text="Play again" icon={faPlay} onClick={() => playAgain()} 
+            disabled={isLoading} />
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -175,7 +208,7 @@ const Home = () => {
           </div>
           <Menu onCharacterHit={() => onCharacterHit()} isGameFinished={isGameFinished} />
           <div className="absolute top-16 h-screen w-full">
-            <div className="flex justify-between h-1/2">
+            <div className="flex justify-between">
               <div className="flex">
                 <div className="flex">
                   {Array(LIVES).fill(0).map((_, index) => {
@@ -193,10 +226,8 @@ const Home = () => {
                 </h3>
               </div>
             </div>
-            <div className="h-1/2 flex">
-              <Button size="regular" color="bg-card" onClick={() => isGameFinished.current = !isGameFinished.current} text={'Pause / Play Again'}></Button>
-            </div>
             {showTutorialOverlay && gameInstructions()}
+            {currentLives.filter(heart => heart.isActive).length === 0 && gameOverOverlay()}
           </div>
         </div>
       }
