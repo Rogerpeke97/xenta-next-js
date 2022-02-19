@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState, useMemo } from 'react'
 import SideBar from '../components/navigation/SideBar'
 import MenuContent from '../components/navigation/MenuContent'
 import { AppContextHelpers } from '../context/AppContextHelpers'
@@ -31,32 +31,19 @@ const styles = {
   }
 }
 
-interface Lives {
-  index: number;
-  isActive: boolean;
-}
-
 
 const Home = () => {
 
-  const [currentLives, setCurrentLives] = useState<Lives[]>([
-    { index: 0, isActive: true },
-    { index: 1, isActive: true },
-    { index: 2, isActive: true }
-  ])
-
-  const loadingHit = useRef(false)
 
   const LIVES = 3
 
-  const { api, setToast, windowWidth } = useContext(AppContextHelpers)
+  const { api, gameHelpers, setToast, windowWidth } = useContext(AppContextHelpers)
 
   const [isLoading, setIsLoading] = useState(true)
 
   const [showTutorialOverlay, setTutorialOverlay] = useState(false)
 
   const isGameFinished = useRef(false)
-
 
   const [userData, setUserData] = useState({
     username: '',
@@ -132,48 +119,23 @@ const Home = () => {
     )
   }
 
-  function onCharacterHit() {
-    console.log('hit') //TODO: USE MEMOIZE FOR GAME MENU PERHAPS??
-    if (loadingHit.current) return
-    loadingHit.current = true
-    for (let i = currentLives.length - 1; i >= 0; i--) {
-      if (currentLives[i].isActive) {
-        currentLives[i].isActive = false
-        setCurrentLives([...currentLives])
-        setTimeout(() => loadingHit.current = false, 2000)
-        if (i === 0) {
-          console.log('game over')
-          isGameFinished.current = true
-        }
-        return
-      }
-    }
-  }
 
   function isActiveHeart(heartIndex: number) {
-    const isActive = currentLives.find((_, index) => index === heartIndex)?.isActive
+    const isActive = gameHelpers.lives.find((_, index) => index === heartIndex)?.isActive
     return isActive ? faHeart : faHeartBroken
-  }
-
-  function playAgain(){
-    isGameFinished.current = false
-    loadingHit.current = false
-    setCurrentLives([
-      { index: 0, isActive: true },
-      { index: 1, isActive: true },
-      { index: 2, isActive: true }
-    ])
   }
 
 
   useEffect(() => {
-    console.log('render')
+    console.log('rendering index')
+    console.log(gameHelpers.gameInterval)
     checkIfFirstTime()
     getUserData()
-  }, [getUserData])
+  }, [getUserData, gameHelpers])
 
 
-  function gameOverOverlay() {
+  const gameOverOverlay = useCallback(() => {
+    if (!gameHelpers.lives.every(life => !life.isActive)) return null
     return (
       <div className="m-9 absolute mt-14 p-9 flex flex-col bg-success"
         style={{ background: 'black', height: '70vh', width: '320px', left: '50%', marginLeft: '-160px' }}>
@@ -185,52 +147,53 @@ const Home = () => {
             <h3 className="subtitle-1">Score:</h3>
           </div>
           <div className="flex pt-14 items-center justify-center">
-            <Button size="regular" color="bg-primary" 
-            text="Play again" icon={faPlay} onClick={() => playAgain()} 
-            disabled={isLoading} />
+            <Button size="regular" color="bg-primary"
+              text="Play again" icon={faPlay} onClick={() => {
+                gameHelpers.resetFields()
+                isGameFinished.current = false
+              }}
+              disabled={isLoading} />
           </div>
         </div>
       </div>
     )
-  }
+  }, [gameHelpers, isLoading])
+
 
   return (
     <div>
-      {isLoading ?
-        <Loading isLoading={isLoading} loadingText="Loading your profile..." /> :
-        <div className="smooth-render relative">
-          <div className="h-16 flex justify-between">
-            <h3 className="heading-2">
-              Welcome back
-              <span className="text-card">{' ' + userData.name}</span>!
-            </h3>
-            <IconButton iconName={faQuestionCircle} onClick={() => setTutorialOverlay(!showTutorialOverlay)} iconSize={'iconRegular'} />
-          </div>
-          <Menu onCharacterHit={() => onCharacterHit()} isGameFinished={isGameFinished} />
-          <div className="absolute top-16 h-screen w-full">
-            <div className="flex justify-between">
-              <div className="flex">
-                <div className="flex">
-                  {Array(LIVES).fill(0).map((_, index) => {
-                    return (
-                      <FontAwesomeIcon className="icon-large pr-3" color={currentLives[index].isActive ? 'red' : 'white'} key={index} icon={isActiveHeart(index)} />
-                    )
-                  })}
-                </div>
-                <h3 className="subtitle-2">x{currentLives.filter(heart => heart.isActive).length}</h3>
-              </div>
-              <div>
-                <h3 className="heading-3">
-                  Score:
-                  <span className="text-card">{' ' + userData.score}</span>
-                </h3>
-              </div>
-            </div>
-            {showTutorialOverlay && gameInstructions()}
-            {currentLives.filter(heart => heart.isActive).length === 0 && gameOverOverlay()}
-          </div>
+      <div className="smooth-render relative">
+        <div className="h-16 flex justify-between">
+          <h3 className="heading-2" onClick={() => { gameHelpers.resetFields(); console.log(gameHelpers) }}>
+            Welcome back
+            <span className="text-card">{' ' + userData.name}</span>!
+          </h3>
+          <IconButton iconName={faQuestionCircle} onClick={() => setTutorialOverlay(!showTutorialOverlay)} iconSize={'iconRegular'} />
         </div>
-      }
+        <Menu isGameFinished={isGameFinished} />
+        <div className="absolute top-16 h-screen w-full">
+          <div className="flex justify-between">
+            <div className="flex">
+              <div className="flex">
+                {Array(LIVES).fill(0).map((_, index) => {
+                  return (
+                    <FontAwesomeIcon className="icon-large pr-3" color={gameHelpers.lives[index].isActive ? 'red' : 'white'} key={index} icon={isActiveHeart(index)} />
+                  )
+                })}
+              </div>
+              <h3 className="subtitle-2">x{gameHelpers.lives.filter(heart => heart.isActive).length}</h3>
+            </div>
+            <div>
+              <h3 className="heading-3">
+                Score:
+                <span className="text-card">{' ' + userData.score}</span>
+              </h3>
+            </div>
+          </div>
+          {showTutorialOverlay && gameInstructions()}
+          {gameOverOverlay()}
+        </div>
+      </div>
     </div>
   )
 }

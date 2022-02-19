@@ -11,6 +11,20 @@ import Overlay from '../components/overlays/Overlay'
 import NavigationLayout from '../components/layouts/NavigationLayout'
 import Login from './login'
 
+interface Lives {
+  index: number;
+  isActive: boolean;
+}
+
+interface GameHelpers {
+  lives: Array<Lives>;
+  setLives: (lives: Array<Lives>, isCharacterBeingHit: boolean) => void;
+  intervalIds: Array<number>;
+  isCharacterBeingHit: boolean;
+  resetFields: () => void;
+  gameInterval: NodeJS.Timeout;
+}
+
 function MyApp({ Component, pageProps }: AppProps) {
 
 
@@ -29,6 +43,36 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   const [refreshTokenInterval, setRefreshTokenInterval] = useState<NodeJS.Timer>()
+
+  const [gameHelpers, setGameHelpers] = useState<GameHelpers>({
+    lives: [
+      { index: 0, isActive: true },
+      { index: 1, isActive: true },
+      { index: 2, isActive: true }
+    ],
+    setLives: (lives: Array<Lives>) => {
+      setGameHelpers({ ...gameHelpers, lives })
+    },
+    isCharacterBeingHit: false,
+    intervalIds: [],
+    resetFields: () => {
+      gameHelpers.intervalIds.forEach((id, index) => {
+        clearInterval(id)
+      })
+      gameHelpers.intervalIds = []
+      setGameHelpers({
+        ...gameHelpers,
+        lives: [
+          { index: 0, isActive: true },
+          { index: 1, isActive: true },
+          { index: 2, isActive: true }
+        ],
+        isCharacterBeingHit: false,
+        gameInterval: null
+      })
+    },
+    gameInterval: null
+  })
 
   const [toast, setToast] = useState({
     messages: [{message: '', type: ''}],
@@ -107,7 +151,8 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="description" content="Xenta the game" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <AppContextHelpers.Provider value={{ isAuthenticated, currentMenu, setCurrentMenu, windowWidth, showSideBar, setShowSideBar, api, setToast }}>
+      <AppContextHelpers.Provider value={{ isAuthenticated, currentMenu, gameHelpers, setGameHelpers,
+        setCurrentMenu, windowWidth, showSideBar, setShowSideBar, api, setToast }}>
         {!isAuthenticated ? 
           (router.pathname === '/login' && !isLoading) && <Login /> :
           <NavigationLayout>
