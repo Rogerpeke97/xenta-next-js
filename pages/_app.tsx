@@ -18,7 +18,7 @@ interface Lives {
 
 interface GameHelpers {
   lives: Array<Lives>;
-  setLives: (lives: Array<Lives>, isCharacterBeingHit: boolean) => void;
+  setLives: (lives: Array<Lives>) => void;
   intervalIds: Array<number>;
   isCharacterBeingHit: boolean;
   resetFields: () => void;

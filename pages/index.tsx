@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { AppContextHelpers } from '../context/AppContextHelpers'
 import Menu from '../components/game/Menu'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHeart, faHeartBroken, faArrowLeft, faArrowRight, faQuestionCircle, faPlay, faDizzy, faCrown } from '@fortawesome/free-solid-svg-icons'
+import { faHeart, faHeartBroken, faArrowLeft, faArrowRight, faQuestionCircle, faPlay, faDizzy, faCrown, faSmile } from '@fortawesome/free-solid-svg-icons'
 import TextLink from '../components/atoms/links/TextLink'
 import IconButton from '../components/atoms/buttons/IconButton'
 import Button from '../components/atoms/buttons/Button'
@@ -33,9 +33,15 @@ const Home = () => {
 
   const [isLoading, setIsLoading] = useState(true)
 
+  const [score, setScore] = useState(0)
+
+  const intervalForScoreSum = useRef<NodeJS.Timeout>()
+
   const [showTutorialOverlay, setTutorialOverlay] = useState(false)
 
-  const isGameFinished = useRef(false)
+  const isGameFinished = useRef(true)
+
+  const [firstTime, setFirstTime] = useState(true)
 
   const [userData, setUserData] = useState({
     username: '',
@@ -117,17 +123,52 @@ const Home = () => {
     return isActive ? faHeart : faHeartBroken
   }
 
+  const setIntervalForScoreSum = useCallback(()=>{
+    intervalForScoreSum.current = setInterval(() => {
+      if(isGameFinished.current) return
+      setScore(score + 1)
+    }, 250)
+  }, [score])
+
 
   useEffect(() => {
-    console.log('rendering index')
-    console.log(gameHelpers.gameInterval)
     checkIfFirstTime()
     getUserData()
-  }, [getUserData, gameHelpers])
+    setIntervalForScoreSum()
+    return () => {
+      if(!intervalForScoreSum.current) return
+      clearInterval(intervalForScoreSum.current)
+    }
+  }, [getUserData, gameHelpers, setIntervalForScoreSum])
 
 
   const gameOverOverlay = useCallback(() => {
-    if (!gameHelpers.lives.every(life => !life.isActive)) return null
+    if (!gameHelpers.lives.every(life => !life.isActive) && !firstTime) return null
+    if(firstTime){
+      return (
+        <div className="pop-in m-9 absolute bg-background mt-14 p-9 flex flex-col bg-success rounded-lg"
+        style={{ height: '300px', width: '300px', left: '50%', marginLeft: '-150px' }}>
+          <div className="flex items-center justify-center">
+            <FontAwesomeIcon className="icon" color="yellow" icon={faSmile} />
+            <h3 className="pl-4 md:heading-3 sm:subtitle-1 font-bold underline">
+            Click play to start!
+            </h3>
+          </div>
+        <div>
+          <div className="flex pt-14 items-center justify-center">
+            <Button size="regular" color="bg-primary"
+              text="Play" icon={faPlay} onClick={() => {
+                setFirstTime(false)
+                setScore(0)
+                gameHelpers.resetFields()
+                isGameFinished.current = false
+              }}
+              disabled={isLoading} />
+          </div>
+        </div>
+      </div>       
+      )
+    }
     return (
       <div className="pop-in m-9 absolute bg-background mt-14 p-9 flex flex-col bg-success rounded-lg"
         style={{ height: '300px', width: '300px', left: '50%', marginLeft: '-150px' }}>
@@ -140,11 +181,12 @@ const Home = () => {
         <div>
           <div className="flex pt-14 items-center">
             <FontAwesomeIcon className="icon" color="yellow" icon={faCrown} />
-            <h3 className="md:subtitle-1 sm:subtitle-3 font-bold pl-4">Score:</h3>
+            <h3 className="md:subtitle-1 sm:subtitle-3 font-bold pl-4">Score: {score}</h3>
           </div>
           <div className="flex pt-14 items-center justify-center">
             <Button size="regular" color="bg-primary"
               text="Play again" icon={faPlay} onClick={() => {
+                setScore(0)
                 gameHelpers.resetFields()
                 isGameFinished.current = false
               }}
@@ -153,7 +195,7 @@ const Home = () => {
         </div>
       </div>
     )
-  }, [gameHelpers, isLoading])
+  }, [gameHelpers, isLoading, firstTime])
 
 
   return (
@@ -182,7 +224,7 @@ const Home = () => {
             <div>
               <h3 className="md:heading-3 sm:subtitle-1">
                 Score:
-                <span className="text-card">{' ' + userData.score}</span>
+                <span className="text-card">{score}</span>
               </h3>
             </div>
           </div>

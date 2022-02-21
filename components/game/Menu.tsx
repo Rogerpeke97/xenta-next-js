@@ -119,7 +119,6 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
 
 
   function updateCharacterPosition(scene: THREE.Scene) {
-    console.log('inderval')
     const character = scene.getObjectByName('character')
     if (!character || !characterAnimationMixer.current) return
     characterAnimationMixer.current.clipAction(
@@ -291,10 +290,12 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
     const trackedStillParticles: Array<TrackedParticles> = []
     renderer.setAnimationLoop(() => {
       if (isGameFinished.current) {
-        if(characterAnimationMixer.current)
-        characterAnimationMixer.current._actions[1].stop()
-        if(characterAnimationMixer.current._actions.length >= 2) return
-        characterAnimationMixer.current._actions[0].play()
+        if(characterAnimationMixer.current){
+          characterAnimationMixer.current?._actions[1]?.stop()
+          if(characterAnimationMixer.current?._actions.length >= 2) return
+          characterAnimationMixer.current?._actions[0].play()
+          return
+        }
         return
       }
       moveParticles(particles, clock, particlesSystem, PARTICLES_COUNT, trackedStillParticles)
