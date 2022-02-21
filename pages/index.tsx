@@ -1,16 +1,8 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import { useCallback, useContext, useEffect, useRef, useState, useMemo } from 'react'
-import SideBar from '../components/navigation/SideBar'
-import MenuContent from '../components/navigation/MenuContent'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { AppContextHelpers } from '../context/AppContextHelpers'
-import NavigationBar from '../components/navigation/NavigationBar'
-import NavigationLayout from '../components/layouts/NavigationLayout'
-import Overlay from '../components/overlays/Overlay'
-import Loading from '../components/atoms/loaders/Loading'
 import Menu from '../components/game/Menu'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHeart, faHeartBroken, faArrowLeft, faArrowRight, faQuestionCircle, faPlay } from '@fortawesome/free-solid-svg-icons'
+import { faHeart, faHeartBroken, faArrowLeft, faArrowRight, faQuestionCircle, faPlay, faDizzy, faCrown } from '@fortawesome/free-solid-svg-icons'
 import TextLink from '../components/atoms/links/TextLink'
 import IconButton from '../components/atoms/buttons/IconButton'
 import Button from '../components/atoms/buttons/Button'
@@ -137,14 +129,18 @@ const Home = () => {
   const gameOverOverlay = useCallback(() => {
     if (!gameHelpers.lives.every(life => !life.isActive)) return null
     return (
-      <div className="m-9 absolute mt-14 p-9 flex flex-col bg-success"
-        style={{ background: 'black', height: '70vh', width: '320px', left: '50%', marginLeft: '-160px' }}>
-        <h3 className="heading-2">
-          You lost!
-        </h3>
+      <div className="pop-in m-9 absolute bg-background mt-14 p-9 flex flex-col bg-success rounded-lg"
+        style={{ height: '300px', width: '300px', left: '50%', marginLeft: '-150px' }}>
+          <div className="flex items-center justify-center">
+            <FontAwesomeIcon className="icon" color="red" icon={faDizzy} />
+            <h3 className="pl-4 md:heading-3 sm:subtitle-1 font-bold underline">
+            You lost!
+            </h3>
+          </div>
         <div>
           <div className="flex pt-14 items-center">
-            <h3 className="subtitle-1">Score:</h3>
+            <FontAwesomeIcon className="icon" color="yellow" icon={faCrown} />
+            <h3 className="md:subtitle-1 sm:subtitle-3 font-bold pl-4">Score:</h3>
           </div>
           <div className="flex pt-14 items-center justify-center">
             <Button size="regular" color="bg-primary"
@@ -163,8 +159,8 @@ const Home = () => {
   return (
     <div>
       <div className="smooth-render relative">
-        <div className="h-16 flex justify-between">
-          <h3 className="heading-2" onClick={() => { gameHelpers.resetFields(); console.log(gameHelpers) }}>
+        <div className="h-16 flex items-center justify-between">
+          <h3 className="md:heading-3 sm:subtitle-1" onClick={() => gameHelpers.resetFields() }>
             Welcome back
             <span className="text-card">{' ' + userData.name}</span>!
           </h3>
@@ -184,7 +180,7 @@ const Home = () => {
               <h3 className="subtitle-2">x{gameHelpers.lives.filter(heart => heart.isActive).length}</h3>
             </div>
             <div>
-              <h3 className="heading-3">
+              <h3 className="md:heading-3 sm:subtitle-1">
                 Score:
                 <span className="text-card">{' ' + userData.score}</span>
               </h3>

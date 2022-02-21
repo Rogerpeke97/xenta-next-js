@@ -51,7 +51,9 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
 
   const animationFrameId = useRef<number>(0)
 
-  const TREE_COUNT = 20
+  const TREE_COUNT = 40
+
+  const GRASS_COUNT = 40
 
   const scene = useRef<THREE.Scene>(new THREE.Scene())
 
@@ -119,7 +121,10 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
   function updateCharacterPosition(scene: THREE.Scene) {
     console.log('inderval')
     const character = scene.getObjectByName('character')
-    if (!character) return
+    if (!character || !characterAnimationMixer.current) return
+    characterAnimationMixer.current.clipAction(
+      characterAnimations.current[0]
+    ).play()
     const ALLOWED_X_MAX_VALUE_LEFT = PLANET_ORIGIN_AXES.x - 2.5
     const ALLOWED_X_MAX_VALUE_RIGHT = PLANET_ORIGIN_AXES.x + 2.5
     if (trackedKeys.current.ArrowLeft && character.position.x > ALLOWED_X_MAX_VALUE_LEFT) {
@@ -155,6 +160,8 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
   }
 
   const characterAnimationMixer = useRef<THREE.AnimationMixer>()
+
+  const characterAnimations = useRef<THREE.AnimationClip[]>([])
 
   function setCameraPosition(camera: THREE.PerspectiveCamera, position: Axes, rotation: Axes) {
     camera.position.set(position.x, position.y, position.z)
@@ -283,7 +290,13 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
     particlesSystem.castShadow = true
     const trackedStillParticles: Array<TrackedParticles> = []
     renderer.setAnimationLoop(() => {
-      if (isGameFinished.current) return
+      if (isGameFinished.current) {
+        if(characterAnimationMixer.current)
+        characterAnimationMixer.current._actions[1].stop()
+        if(characterAnimationMixer.current._actions.length >= 2) return
+        characterAnimationMixer.current._actions[0].play()
+        return
+      }
       moveParticles(particles, clock, particlesSystem, PARTICLES_COUNT, trackedStillParticles)
       rotatePlanet(scene, clock)
       rotateTrees(scene, clock)
@@ -301,22 +314,31 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
       }
     })
     const AMOUNT_TO_ROTATE_DEG = 0.01
+    const ALLOWED_X_MAX_VALUE_LEFT = -2.5
+    const ALLOWED_X_MAX_VALUE_RIGHT = 2.5
     if (trees.length === 0) return
     let treePositionX, treePositionY, treePositionZ, treeRotationX, treeRotationZ, xz2dApparentPointRadius
     const currentTreeAngleOnPlanetZRadians = (angle: number) => angle * Math.PI / 180
     trees.forEach((tree) => {
+      const MOVE_ON_X_AXIS = 0.03 * (Math.random() < 0.5 ? -1 : 1)
       if (!tree.userData.treeAngleOnPlanetZ) return
       tree.userData.treeAngleOnPlanetZ -= AMOUNT_TO_ROTATE_DEG
       if (tree.userData.treeAngleOnPlanetZ <= 0) {
         tree.userData.treeAngleOnPlanetZ = 360
       }
-      treePositionX = tree.position.x - PLANET_ORIGIN_AXES.x
+      treePositionX = tree.position.x - PLANET_ORIGIN_AXES.x + MOVE_ON_X_AXIS
+      if(treePositionX > ALLOWED_X_MAX_VALUE_RIGHT){
+        treePositionX = ALLOWED_X_MAX_VALUE_RIGHT
+      }
+      if(treePositionX < ALLOWED_X_MAX_VALUE_LEFT){
+        treePositionX = ALLOWED_X_MAX_VALUE_LEFT
+      }
       xz2dApparentPointRadius = Math.sqrt(Math.pow(PLANET_RADIUS, 2) - Math.pow(treePositionX, 2))
       treePositionZ = Math.sin(currentTreeAngleOnPlanetZRadians(tree.userData.treeAngleOnPlanetZ) * (180 / Math.PI)) * xz2dApparentPointRadius
-      treeRotationZ = Math.asin(treePositionX / PLANET_RADIUS)
+      treeRotationZ = Math.asin(treePositionX / PLANET_RADIUS) 
       treeRotationX = -currentTreeAngleOnPlanetZRadians(tree.userData.treeAngleOnPlanetZ) * (180 / Math.PI)
       treePositionY = Math.cos(currentTreeAngleOnPlanetZRadians(tree.userData.treeAngleOnPlanetZ) * (180 / Math.PI)) * xz2dApparentPointRadius
-      tree.position.set(tree.position.x, treePositionY + PLANET_ORIGIN_AXES.y, -treePositionZ + PLANET_ORIGIN_AXES.z)
+      tree.position.set(treePositionX + PLANET_ORIGIN_AXES.x, treePositionY + PLANET_ORIGIN_AXES.y, -treePositionZ + PLANET_ORIGIN_AXES.z)
       tree.rotation.set(treeRotationX, 0, -treeRotationZ)
     })
   }
@@ -417,6 +439,7 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
       idleAnimation.play()
       idleAnimation.clampWhenFinished = true
       character.scene.castShadow = true
+      characterAnimations.current = character.animations
       scene.add(character.scene)
     })
   }
