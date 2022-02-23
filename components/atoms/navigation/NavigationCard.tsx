@@ -15,10 +15,10 @@ const NavigationCard: react.FC<NavCardProps> = ({ text, icon, active, onClick })
     <div className={"flex my-1 h-12 card items-center justify-center rounded-full " + (active ? "card-active": "")} onClick={onClick}>
       <div className="flex w-4/5">
         <div className="flex items-center justify-center">
-          <FontAwesomeIcon className="icon-small" icon={icon} fixedWidth />
+          <FontAwesomeIcon className="icon-small" color={active ? 'black' : 'gray'} icon={icon} fixedWidth />
         </div>
         <div className="flex pl-5 grow items-center justify-start">
-          <h3 className="body-1">
+          <h3 className="body-1 font-bold">
             {text}
           </h3>
         </div>
