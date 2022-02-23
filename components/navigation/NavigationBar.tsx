@@ -21,7 +21,7 @@ const NavigationBar: react.FC<NavProps> = ({ name, sideBar }) => {
     if (windowWidth.description === "small") {
       return (
         <div className="flex pl-5 flex-col items-center justify-center">
-          <FontAwesomeIcon className="icon" icon={faBars} onClick={()=>setShowSideBar(!showSideBar)} />
+          <FontAwesomeIcon className="icon cursor-pointer" icon={faBars} onClick={()=>setShowSideBar(!showSideBar)} />
         </div>
       )
     }

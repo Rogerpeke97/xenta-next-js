@@ -29,9 +29,6 @@ const SideBarMenus = () => {
   }
 
   useEffect(() => {
-    if(Router.pathname === '/'){
-      return
-    }
     updateMenu(menus.findIndex(menu => menu.route === Router.pathname))
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

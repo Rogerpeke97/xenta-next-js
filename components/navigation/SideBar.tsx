@@ -51,7 +51,7 @@ const SideBar: react.FC<NavProps> = ({ name }) => {
           </h3>
           {windowWidth.description === 'small' && (
             <div className="pr-6">
-              <FontAwesomeIcon icon={faTimes} className="icon" onClick={() => setShowSideBar(false)} />
+              <FontAwesomeIcon icon={faTimes} className="icon cursor-pointer" onClick={() => setShowSideBar(false)} />
             </div>
           )}
         </div>
