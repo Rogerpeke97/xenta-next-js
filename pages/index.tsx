@@ -147,7 +147,7 @@ const Home = () => {
     if(firstTime){
       return (
         <div className="pop-in m-9 absolute bg-background mt-14 p-9 flex flex-col bg-success rounded-lg"
-        style={{ height: '300px', width: '300px', left: '50%', marginLeft: '-150px' }}>
+        style={{ height: '200px', width: '300px', left: '50%', marginLeft: '-150px' }}>
           <div className="flex items-center justify-center">
             <FontAwesomeIcon className="icon" color="yellow" icon={faSmile} />
             <h3 className="pl-4 md:heading-3 sm:subtitle-1 font-bold underline">

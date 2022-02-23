@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import Divider from '../atoms/dividers/Divider'
 import SideBarMenus from './SideBarMenus'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { AppContextHelpers } from '../../context/AppContextHelpers'
 
 interface NavProps {
@@ -14,54 +14,51 @@ const SideBar: react.FC<NavProps> = ({ name }) => {
 
   const { windowWidth, showSideBar, setShowSideBar } = useContext(AppContextHelpers)
 
-  const displaySideBarMobile = () => {
-    const display = showSideBar
-    if (display) {
-      return 'show-side-bar-mobile flex w-full absolute z-50'
-    }
-    else{
-      return 'hidden'
-    }
-  }
+  const sideBar = useRef<HTMLDivElement>(null)
 
-  const whichSideBarContent = () => {
-    if (windowWidth.description === 'small') {
-      return (
-        <nav className={`${displaySideBarMobile()}`}>
-          <div className="h-screen w-full bg-background rounded-lg">
-            <div className="h-24 flex items-center justify-between">
-              <h3 className="pl-6 subtitle-1 font-bold">
-                {name}
-              </h3>
-              <div className="pr-6">
-                <FontAwesomeIcon icon={faTimes} className="icon" onClick={()=>setShowSideBar(false)} />
-              </div>
-            </div>
-            <Divider color={"grey"} />
-            <SideBarMenus />
-          </div>
-        </nav>
-      )
+  const classForSideBar = useCallback(() => {
+    const sideBarWidth = sideBar.current?.clientWidth
+    if (!showSideBar && windowWidth.description === 'small') {
+      if (sideBarWidth) {
+        if (sideBarWidth === windowWidth.size) {
+          return 'flex absolute z-50 collapse-menu'
+        }
+        if (sideBarWidth > 0) {
+          return 'absolute hide-side-bar-mobile'
+        }
+      }
+      return 'absolute hidden'
     }
     else {
-      return (
-        <nav className="flex w-60 show-side-bar">
-          <div className="h-screen w-full bg-background rounded-lg">
-            <div className="h-24 flex items-center justify-center">
-              <h3 className="subtitle-1 font-bold">
-                {name}
-              </h3>
-            </div>
-            <Divider color={"grey"} />
-            <SideBarMenus />
-          </div>
-        </nav>
-      )
+      if (sideBarWidth === 0) {
+        if (showSideBar) {
+          return 'show-side-bar-mobile flex w-full absolute z-50'
+        }
+        if (sideBarWidth) {
+          return 'flex w-60 show-side-bar expand'
+        }
+      }
+      return 'flex w-60 show-side-bar'
     }
-  }
+  }, [showSideBar, windowWidth])
 
   return (
-    whichSideBarContent()
+    <nav ref={sideBar} className={`${classForSideBar()}`}>
+      <div className="h-screen w-full bg-background rounded-lg">
+        <div className={`h-24 flex items-center ${windowWidth.description === 'small' ? 'justify-between' : 'justify-center'}`}>
+          <h3 className={`${windowWidth.description === 'small' && 'pl-6'} subtitle-1 font-bold`}>
+            {name}
+          </h3>
+          {windowWidth.description === 'small' && (
+            <div className="pr-6">
+              <FontAwesomeIcon icon={faTimes} className="icon" onClick={() => setShowSideBar(false)} />
+            </div>
+          )}
+        </div>
+        <Divider color={"grey"} />
+        <SideBarMenus />
+      </div>
+    </nav>
   )
 }
 

@@ -279,6 +279,32 @@ input{
     }
   }
 
+  .collapse-menu{
+    animation: collapseMenu 0.5s ease-out forwards;
+    transition: all 0.2s ease-out;
+  }
+
+  @keyframes collapseMenu{
+    from{
+      left: 0;
+      width: 100%;
+    }
+    to{
+      left: -100%;
+      width: 0px;
+    }
+  }
+
+  .expand{
+    animation: expand 0.5s ease-out forwards;
+    transition: all 0.2s ease-out;
+  }
+  @keyframes expand{
+    to{
+      width: 100%;
+    }
+  }
+
 
 
   .spinner {
@@ -355,7 +381,7 @@ input{
   @keyframes hide-side-bar-mobile{
     from{
       transform: translateX(0%);
-      width: 100%;
+      width: 15rem;
     }
     to{
       transform: translateX(-100%);

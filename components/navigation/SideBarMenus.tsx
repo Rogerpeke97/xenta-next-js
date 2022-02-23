@@ -21,9 +21,9 @@ const SideBarMenus = () => {
 
   const updateMenu = (menu: number) => {
     if(menu !== currentMenu){
-      setShowSideBar(false)
       setCurrentMenu(menu)
     }
+    setShowSideBar(false)
     const menuRoute = menus[menu]?.route
     Router.push(menuRoute)
   }

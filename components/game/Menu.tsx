@@ -253,7 +253,7 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
 
 
   function addAmbientParticles(scene: THREE.Scene, renderer: THREE.WebGLRenderer, clock: THREE.Clock, resolution: THREE.Vector2) {
-    const PARTICLES_COUNT = 750
+    const PARTICLES_COUNT = 1800
     const PARTICLES_DISTANCE = 53
     const particleTexture = new THREE.TextureLoader().load('/game/textures/particle.png')
     const particles = new THREE.BufferGeometry()

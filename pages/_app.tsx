@@ -107,6 +107,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           description: window.innerWidth < 1100 ? "small" : "big", size: window.innerWidth
         }
         if (windowSize.description === 'big') {
+          setShowSideBar(true)
+        }
+        else {
           setShowSideBar(false)
         }
         return windowSize
