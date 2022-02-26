@@ -1,6 +1,7 @@
 import react from 'react'
 import { useContext, useEffect } from 'react'
 import { AppContextHelpers } from '../../context/AppContextHelpers'
+import InvalidUrl from './InvalidUrl'
 
 
 
@@ -20,7 +21,7 @@ const MenuContent = ({ children }: { children: React.ReactElement }) => {
   const loadContent = (): JSX.Element => {
     const findScreen = screens.find(screen => screen.index === currentMenu)
     if(!findScreen){
-      return <div>Not Found</div>
+      return <InvalidUrl />
     }
     return findScreen.component
   }

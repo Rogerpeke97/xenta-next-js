@@ -8,12 +8,10 @@ const Logout = () => {
 
   const [isLoading, setIsLoading] = useState(true)
 
-  function removeTokenAndLogout(){
-    setTimeout(() => {
-      localStorage.removeItem('token')
-      Router.push('/login')
-      setIsLoading(false)
-    }, 3000)
+  function removeTokenAndLogout() {
+    localStorage.removeItem('token')
+    Router.push('/login')
+    setIsLoading(false)
   }
 
 
@@ -28,7 +26,7 @@ const Logout = () => {
 
 
 
-  return(
+  return (
     <Loading isLoading={isLoading} loadingText="Logging out..." />
   )
 }
