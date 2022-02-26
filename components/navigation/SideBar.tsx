@@ -45,8 +45,8 @@ const SideBar: react.FC<NavProps> = ({ name }) => {
   return (
     <nav ref={sideBar} className={`${classForSideBar()}`}>
       <div className="h-screen w-full bg-background rounded-lg">
-        <div className={`h-24 flex items-center ${windowWidth.description === 'small' ? 'justify-between' : 'justify-center'}`}>
-          <h3 className={`${windowWidth.description === 'small' && 'pl-6'} subtitle-1 font-bold`}>
+        <div className="h-24 flex items-center mdAndDown:justify-between justify-center">
+          <h3 className="mdAndDown:pl-6 subtitle-1 font-bold">
             {name}
           </h3>
           {windowWidth.description === 'small' && (

@@ -104,7 +104,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     window.addEventListener('resize', () => {
       setWindowWidth(() => {
         const windowSize = {
-          description: window.innerWidth < 1100 ? "small" : "big", size: window.innerWidth
+          description: window.innerWidth < 1024 ? "small" : "big", size: window.innerWidth
         }
         if (windowSize.description === 'big') {
           setShowSideBar(true)
