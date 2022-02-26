@@ -1,7 +1,5 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
-
 @font-face {
   font-family: 'Inter';
   src: local('Inter'), url(../fonts/Inter/Inter-VariableFont_slnt\,wght.ttf) format('opentype');
@@ -33,7 +31,7 @@ html, body {
     color: white;
     /* scrollbar-color: rgb(24 8 100) transparent; */
 }
-
+@tailwind utilities;
 
 /*
  * Scrollbar
@@ -204,6 +202,10 @@ input{
 .icon-large{
   width: 40px;
   height: 40px;
+}
+.icon-big{
+  width: 180px;
+  height: 180px;
 }
 
   /*
