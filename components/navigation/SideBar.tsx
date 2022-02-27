@@ -31,12 +31,10 @@ const SideBar: react.FC<NavProps> = ({ name }) => {
     }
     else {
       if (sideBarWidth === 0) {
-        if (showSideBar) {
+        if (showSideBar && windowWidth.description === 'small') {
           return 'show-side-bar-mobile flex w-full absolute z-50'
         }
-        if (sideBarWidth) {
-          return 'flex w-60 show-side-bar expand'
-        }
+        return 'flex w-60 show-side-bar expand'
       }
       return 'flex w-60 show-side-bar'
     }
