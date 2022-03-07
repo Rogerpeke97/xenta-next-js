@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUser, faUserTag, faExclamationCircle, faHome, faKey, faSignOutAlt, faTag, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import FormField from "../../components/atoms/inputs/FormField"
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import FormWarning from "../../components/atoms/forms/FormWarning"
 import Button from "../../components/atoms/buttons/Button"
 import { validatePassword, validateRepeatPassword, validateUserName } from "../../plugins/validators/inputValidator"
@@ -10,16 +10,11 @@ import InputsCard from "../../components/molecules/forms/InputsCard"
 
 
 const Settings = () => {
-
-
   const { api, setToast } = useContext(AppContextHelpers)
-
   const [userData, setUserData] = useState({
     name: '',
     username: ''
   })
-
-
   const [accountInputs, setAccountInputs] = useState(
     [
       {
@@ -46,6 +41,48 @@ const Settings = () => {
 
   const [isLoading, setIsLoading] = useState(false)
 
+  const changePassword = useCallback(async () => {
+    setIsLoading(true)
+    const params = accountInputs.reduce((acc, input, index) => {
+      if(index === 1) {
+        return {
+          [acc.name]: acc.value,
+          [input.name]: input.value
+        }
+      }
+      return {...acc, [input.name]: input.value }
+    })
+    console.log(params)
+    const response = await api.put('/api/change-password', params)
+    if(response.error){
+      setToast({
+        messages: [{
+          message: response.error,
+          type: 'error'
+        }],
+        displayToast: true
+      })
+    }
+    setIsLoading(false)
+    console.log(response)
+    // const response = await api.changePassword()
+  }, [accountInputs])
+
+  const updateEmail = useCallback(async () => {
+    // Commented until I have the api call
+    // const response = await api.put('/api/update-email', { email: emailInput[0].value })
+    // if(response.error){
+    //   setToast({
+    //     messages: [{
+    //       message: response.error,
+    //       type: 'error'
+    //     }],
+    //     displayToast: true
+    //   })
+    // }
+    // setIsLoading(false)
+    // console.log(response)
+  }, [])
 
   async function getUserData() {
     setIsLoading(true)
@@ -59,8 +96,8 @@ const Settings = () => {
         displayToast: true
       })
     }
-    const { name, username, email } = response.data
-    setUserData({ ...userData, name, username, email })
+    const { name, username } = response.data
+    setUserData({ ...userData, name, username })
     setIsLoading(false)
   }
 
@@ -74,10 +111,10 @@ const Settings = () => {
       <div className="flex items-center pb-8">
         <h1 className="heading-2 font-semibold">Settings</h1>
       </div>
-      <InputsCard title={'Account'} subtitle={userData.name} subtitleIcon={faTag} titleIcon={faUser} inputsAttrs={accountInputs} 
-      setInputsAttrs={(attrs) => setAccountInputs(attrs)} onSave={() => null} isLoading={isLoading} />
-      <InputsCard subtitle={userData.username} subtitleIcon={faEnvelope} inputsAttrs={emailInput} 
-      setInputsAttrs={(attrs) => setEmailInput(attrs)} onSave={() => null} isLoading={isLoading} />
+      <InputsCard title={'Account'} subtitle={userData.name} subtitleIcon={faTag} titleIcon={faUser} inputsAttrs={accountInputs}
+        setInputsAttrs={(attrs) => setAccountInputs(attrs)} onSave={changePassword} isLoading={isLoading} />
+      <InputsCard subtitle={userData.username} subtitleIcon={faEnvelope} inputsAttrs={emailInput}
+        setInputsAttrs={(attrs) => setEmailInput(attrs)} onSave={updateEmail} isLoading={isLoading} />
     </div>
   )
 }

@@ -2,7 +2,7 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import DefaultLayout from '../components/layouts/DefaultLayout'
 import Head from 'next/head'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AppContextHelpers } from '../context/AppContextHelpers'
 import Api from './api/Api'
 import { useRouter } from 'next/router'
@@ -99,22 +99,24 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
   }
 
+  const onResize = useCallback(() => {
+    setWindowWidth(() => {
+      const windowSize = {
+        description: window.innerWidth < 1024 ? "small" : "big", size: window.innerWidth
+      }
+      if (windowSize.description === 'big') {
+        setShowSideBar(true)
+      }
+      else {
+        setShowSideBar(false)
+      }
+      return windowSize
+    })
+  }, [router.pathname])
+
   function setWindowListener() {
     setWindowWidth({ description: window.innerWidth < 1100 ? "small" : "big", size: window.innerWidth })
-    window.addEventListener('resize', () => {
-      setWindowWidth(() => {
-        const windowSize = {
-          description: window.innerWidth < 1024 ? "small" : "big", size: window.innerWidth
-        }
-        if (windowSize.description === 'big') {
-          setShowSideBar(true)
-        }
-        else {
-          setShowSideBar(false)
-        }
-        return windowSize
-      })
-    })
+    window.addEventListener('resize', onResize)
   }
 
   const REFRESH_TOKEN_EVERY = 900000
@@ -135,17 +137,17 @@ function MyApp({ Component, pageProps }: AppProps) {
       if(refreshTokenInterval){
         clearInterval(refreshTokenInterval)
       }
-      window.removeEventListener('resize', () => { })
+      window.removeEventListener('resize', onResize)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.pathname])
 
-  function displayComponent(){
+  const displayComponent = useCallback(() => {
     if(isLoading){
       return <Overlay isLoading={isLoading}/>
     }
     return <Component {...pageProps} />
-  }
+  }, [isLoading, pageProps])
 
   return (
     <DefaultLayout>

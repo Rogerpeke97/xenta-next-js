@@ -5,33 +5,15 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core'
 interface iconProps {
   iconName: IconProp
   iconSize: string,
-  onClick?: () => void
+  onClick?: () => void,
+  disabled?: boolean
 }
 
-const styles = [
-  ['iconSmall', {
-    width: '32px',
-    height: '32px',
-  }],
-  ['iconRegular', {
-    width: '45px',
-    height: '45px',
-  }],
-  ['iconLarge', {
-    width: '64px',
-    height: '64px',
-  }]
-]
-
-const IconButton: react.FC<iconProps> = ({ iconName, iconSize, onClick }) => {
-  const findIconDefinition = () => {
-    const styleForIcon = styles.find(style => style[0] === iconSize)[1]
-    return styleForIcon || {}
-  }
+const IconButton: react.FC<iconProps> = ({ iconName, iconSize, onClick, disabled }) => {
   return (
-    <div className="flex items-center justify-center">
-      <FontAwesomeIcon className="icon custom-button cursor-pointer" icon={iconName} color="white" onClick={() => onClick && onClick()} />
-    </div>
+    <button className="flex items-center justify-center bg-primary p-2 rounded-full cursor-pointer" disabled={disabled} onClick={() => onClick && onClick()}>
+      <FontAwesomeIcon className={`${iconSize}`} icon={iconName} color="white" />
+    </button>
   )
 }
 

@@ -2,7 +2,7 @@ import type react from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faExclamationTriangle, faCheck, faQuestionCircle, faWindowClose } from '@fortawesome/free-solid-svg-icons'
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { AppContextHelpers } from '../../../context/AppContextHelpers'
 
 
@@ -30,7 +30,7 @@ const Toast = (props: toastProps): JSX.Element => {
     return toastStyles.find(style => style.type === type)?.style || {}
   }
 
-  const removeToast = () => {
+  const removeToast = useCallback(() => {
     setDisplayToast(false)
     const toastContent = toast?.current
     if(toastContent) {
@@ -45,7 +45,7 @@ const Toast = (props: toastProps): JSX.Element => {
         })
       }
     }
-  }
+  }, [])
 
   useEffect(() => {
     setTimeout(() => removeToast(), 5000)
@@ -60,12 +60,12 @@ const Toast = (props: toastProps): JSX.Element => {
   const [displayToast, setDisplayToast] = useState(true)
 
   return (
-    <div ref={toast} className={`toast flex flex-col rounded-lg pop-in ${!displayToast && 'fade-out '} ${animationStatus === 'finished' && 'hidden'}`}
+    <div ref={toast} className={`toast flex flex-col pb-8 rounded-lg pop-in ${!displayToast && 'fade-out '} ${animationStatus === 'finished' && 'hidden'}`}
       style={findStyle(props.type)}>
       <div className="flex h-5 pr-1 justify-end">
         <FontAwesomeIcon className="icon-small icon-hover" icon={faWindowClose} onClick={() => removeToast()} />
       </div>
-      <div className="flex grow justify-center">
+      <div className="flex grow justify-center px-5">
         <FontAwesomeIcon className="icon-small" icon={findToastIcon(props.type)} />
         <h1 className="pl-2 body-2 font-bold">{props.text}</h1>
       </div>

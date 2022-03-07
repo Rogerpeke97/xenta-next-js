@@ -77,9 +77,9 @@ const Home = () => {
   function gameInstructions() {
     const isMobile = windowWidth.description === 'small'
     return (
-      <div className="h-96 m-24 flex flex-col items-center justify-center bg-success"
+      <div className="pop-in h-96 m-24 flex flex-col items-center justify-center bg-success"
         style={{ opacity: 0.9 }}>
-        <h3 className="heading-3">
+        <h3 className="heading-3 font-bold">
           Game controls
         </h3>
         <div className={`${isMobile ? '' : 'flex'} items-center mt-6`}>
@@ -123,9 +123,9 @@ const Home = () => {
     return isActive ? faHeart : faHeartBroken
   }
 
-  const setIntervalForScoreSum = useCallback(()=>{
+  const setIntervalForScoreSum = useCallback(() => {
     intervalForScoreSum.current = setInterval(() => {
-      if(isGameFinished.current) return
+      if (isGameFinished.current) return
       setScore(score + 1)
     }, 250)
   }, [score])
@@ -136,7 +136,7 @@ const Home = () => {
     getUserData()
     setIntervalForScoreSum()
     return () => {
-      if(!intervalForScoreSum.current) return
+      if (!intervalForScoreSum.current) return
       clearInterval(intervalForScoreSum.current)
     }
   }, [getUserData, gameHelpers, setIntervalForScoreSum])
@@ -144,18 +144,16 @@ const Home = () => {
 
   const gameOverOverlay = useCallback(() => {
     if (!gameHelpers.lives.every(life => !life.isActive) && !firstTime) return null
-    if(firstTime){
+    if (firstTime) {
       return (
-        <div className="pop-in m-9 absolute bg-background mt-14 p-9 flex flex-col bg-success rounded-lg"
-        style={{ height: '200px', width: '300px', left: '50%', marginLeft: '-150px' }}>
-          <div className="flex items-center justify-center">
-            <FontAwesomeIcon className="icon" color="yellow" icon={faSmile} />
-            <h3 className="pl-4 md:heading-3 sm:subtitle-1 font-bold underline">
-            Click play to start!
+        <div className="pop-in m-9 absolute mt-14 p-9 flex flex-col bg-background rounded-lg"
+          style={{ height: '200px', width: '300px', left: '50%', marginLeft: '-150px' }}>
+          <div className="font-bold flex items-center justify-center">
+            <h3 className="heading-3">
+              Xenta
             </h3>
           </div>
-        <div>
-          <div className="flex pt-14 items-center justify-center">
+          <div className="flex py-7 items-center justify-center">
             <Button size="regular" color="bg-primary"
               text="Play" icon={faPlay} onClick={() => {
                 setFirstTime(false)
@@ -166,32 +164,28 @@ const Home = () => {
               disabled={isLoading} />
           </div>
         </div>
-      </div>       
       )
     }
     return (
       <div className="pop-in m-9 absolute bg-background mt-14 p-9 flex flex-col bg-success rounded-lg"
         style={{ height: '300px', width: '300px', left: '50%', marginLeft: '-150px' }}>
-          <div className="flex items-center justify-center">
-            <FontAwesomeIcon className="icon" color="red" icon={faDizzy} />
-            <h3 className="pl-4 md:heading-3 sm:subtitle-1 font-bold underline">
+        <div className="font-bold flex items-center justify-center">
+          <h3 className="heading-3">
             You lost!
-            </h3>
-          </div>
-        <div>
-          <div className="flex pt-14 items-center">
-            <FontAwesomeIcon className="icon" color="yellow" icon={faCrown} />
-            <h3 className="md:subtitle-1 sm:subtitle-3 font-bold pl-4">Score: {score}</h3>
-          </div>
-          <div className="flex pt-14 items-center justify-center">
-            <Button size="regular" color="bg-primary"
-              text="Play again" icon={faPlay} onClick={() => {
-                setScore(0)
-                gameHelpers.resetFields()
-                isGameFinished.current = false
-              }}
-              disabled={isLoading} />
-          </div>
+          </h3>
+        </div>
+        <div className="flex pt-10 items-center">
+          <FontAwesomeIcon className="icon" color="yellow" icon={faCrown} />
+          <h3 className="subtitle-1 font-bold pl-2">Score: {score}</h3>
+        </div>
+        <div className="flex pt-7 items-center justify-center">
+          <Button size="regular" color="bg-primary"
+            text="Play again" icon={faPlay} onClick={() => {
+              setScore(0)
+              gameHelpers.resetFields()
+              isGameFinished.current = false
+            }}
+            disabled={isLoading} />
         </div>
       </div>
     )
@@ -202,11 +196,11 @@ const Home = () => {
     <div>
       <div className="smooth-render relative">
         <div className="h-16 flex items-center justify-between">
-          <h3 className="md:heading-3 sm:subtitle-1" onClick={() => gameHelpers.resetFields() }>
+          <h3 className="subtitle-1 font-bold" onClick={() => gameHelpers.resetFields()}>
             Welcome back
             <span className="text-card">{' ' + userData.name}</span>!
           </h3>
-          <IconButton iconName={faQuestionCircle} onClick={() => setTutorialOverlay(!showTutorialOverlay)} iconSize={'iconRegular'} />
+          <IconButton iconName={faQuestionCircle} onClick={() => setTutorialOverlay(!showTutorialOverlay)} iconSize={'icon'} />
         </div>
         <Menu isGameFinished={isGameFinished} />
         <div className="absolute top-16 h-screen w-full">
@@ -219,17 +213,16 @@ const Home = () => {
                   )
                 })}
               </div>
-              <h3 className="subtitle-2">x{gameHelpers.lives.filter(heart => heart.isActive).length}</h3>
+              <h3 className="subtitle-2 font-bold">x{gameHelpers.lives.filter(heart => heart.isActive).length}</h3>
             </div>
             <div>
-              <h3 className="md:heading-3 sm:subtitle-1">
+              <h3 className="font-bold subtitle-1">
                 Score:
-                <span className="text-card">{score}</span>
+                <span className="text-card">{" " + score}</span>
               </h3>
             </div>
           </div>
-          {showTutorialOverlay && gameInstructions()}
-          {gameOverOverlay()}
+          {showTutorialOverlay ? gameInstructions() : gameOverOverlay()}
         </div>
       </div>
     </div>

@@ -1,10 +1,9 @@
 import { MutableRefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from 'three';
-import { Lensflare, LensflareElement } from 'three/examples/jsm/objects/Lensflare.js';
 import { vertexShaderParticle, fragmentShaderParticle } from '../../plugins/game/shaders/sphereParticle';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { BufferAttribute, BufferGeometry, BufferGeometryUtils, Object3D } from "three";
+import { BufferGeometry, Object3D } from "three";
 import { AppContextHelpers } from "../../context/AppContextHelpers";
 
 
@@ -52,8 +51,6 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
   const animationFrameId = useRef<number>(0)
 
   const TREE_COUNT = 40
-
-  const GRASS_COUNT = 40
 
   const scene = useRef<THREE.Scene>(new THREE.Scene())
 
