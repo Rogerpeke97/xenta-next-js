@@ -7,11 +7,10 @@ import { useContext } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 interface NavProps {
-  name: string,
   sideBar: [boolean, Function]
 }
 
-const NavigationBar: react.FC<NavProps> = ({ name, sideBar }) => {
+const NavigationBar: react.FC<NavProps> = ({ sideBar }) => {
 
   const { windowWidth } = useContext(AppContextHelpers)
 
@@ -21,22 +20,16 @@ const NavigationBar: react.FC<NavProps> = ({ name, sideBar }) => {
     if (windowWidth.description === "small") {
       return (
         <div className="flex pl-5 flex-col items-center justify-center">
-          <FontAwesomeIcon className="icon cursor-pointer" icon={faBars} onClick={()=>setShowSideBar(!showSideBar)} />
+          <FontAwesomeIcon className="icon cursor-pointer" icon={faBars} onClick={() => setShowSideBar(!showSideBar)} />
         </div>
       )
     }
-    else {
-      return (
-        <div className="pl-4 flex justify-center items-center">
-          {name}
-        </div>
-      )
-    }
+    return
   }
 
 
   return (
-    <nav className="flex w-full px-5" style={{minHeight: '120px'}}>
+    <nav className="flex w-full px-5" style={{ minHeight: '120px' }}>
       <div className="w-full flex bg-background rounded-lg">
         <div className="h-full flex grow content-center">
           {leftSide()}

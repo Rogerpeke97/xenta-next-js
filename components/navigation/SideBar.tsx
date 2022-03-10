@@ -1,16 +1,12 @@
-import type react from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import Divider from '../atoms/dividers/Divider'
 import SideBarMenus from './SideBarMenus'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { AppContextHelpers } from '../../context/AppContextHelpers'
+import Image from 'next/image'
 
-interface NavProps {
-  name: string,
-}
-
-const SideBar: react.FC<NavProps> = ({ name }) => {
+const SideBar= () => {
 
   const { windowWidth, showSideBar, setShowSideBar } = useContext(AppContextHelpers)
 
@@ -44,16 +40,14 @@ const SideBar: react.FC<NavProps> = ({ name }) => {
     <nav ref={sideBar} className={`${classForSideBar()}`}>
       <div className="h-screen w-full bg-background rounded-lg">
         <div className="h-24 flex items-center mdAndDown:justify-between justify-center">
-          <h3 className="mdAndDown:pl-6 subtitle-1 font-bold">
-            {name}
-          </h3>
+          <Image src="/logos/xenta.png" width={80} height={80} alt="profile-pic" />
           {windowWidth.description === 'small' && (
             <div className="pr-6">
               <FontAwesomeIcon icon={faTimes} className="icon cursor-pointer" onClick={() => setShowSideBar(false)} />
             </div>
           )}
         </div>
-        <Divider color={"grey"} />
+        <Divider className="pt-3" color={"grey"} />
         <SideBarMenus />
       </div>
     </nav>

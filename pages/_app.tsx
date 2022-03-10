@@ -154,7 +154,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>Xenta</title>
         <meta name="description" content="Xenta the game" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/logos/xenta.png" />
       </Head>
       <AppContextHelpers.Provider value={{ isAuthenticated, currentMenu, gameHelpers, setGameHelpers,
         setCurrentMenu, windowWidth, showSideBar, setShowSideBar, api, setToast }}>

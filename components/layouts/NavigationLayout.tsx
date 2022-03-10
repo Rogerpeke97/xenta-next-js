@@ -12,9 +12,9 @@ const NavigationLayout = ({ children }: { children: React.ReactElement }) => {
   return (
       <div>
           <div className="h-screen flex w-screen">
-            <SideBar name={"Logo"} />
+            <SideBar />
             <div className="flex flex-col grow max-w-screen" style={{minWidth: '70vw'}}>
-              <NavigationBar name={"Xenta Web"} sideBar={[showSideBar, setShowSideBar]} />
+              <NavigationBar sideBar={[showSideBar, setShowSideBar]} />
               <MenuContent>
                 {children}
               </MenuContent>

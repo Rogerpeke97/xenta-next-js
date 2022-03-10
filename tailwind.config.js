@@ -8,6 +8,7 @@ module.exports = {
       colors: {
         "primary": "#020A33",
         "background": "#1e2429",
+        "pop-up": "#3636db",
         "button": {
           light:  "#E9ECEF",
           dark:   "#020A33",
@@ -19,6 +20,7 @@ module.exports = {
         'sm': {min: '640px', max: '768px'},  
         'md': {min: '768px', max: '1024px'}, 
         'mdAndDown': {min: '320px', max: '1024px'},
+        'mdAndUp': {min: '1024px', max: '9999px'},
         'lg': {min: '1024px', max: '1280px'},  
         'xl': {min: '1280px', max: '1536px'},  
         '2xl': '1536px',
