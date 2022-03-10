@@ -2,11 +2,11 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { AppContextHelpers } from '../context/AppContextHelpers'
 import Menu from '../components/game/Menu'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHeart, faHeartBroken, faArrowLeft, faArrowRight, faQuestionCircle, faPlay, faDizzy, faCrown, faSmile } from '@fortawesome/free-solid-svg-icons'
+import { faHeart, faHeartBroken, faArrowLeft, faArrowRight, faPlay, faDizzy, faCrown, faSmile, faKeyboard } from '@fortawesome/free-solid-svg-icons'
 import TextLink from '../components/atoms/links/TextLink'
 import IconButton from '../components/atoms/buttons/IconButton'
 import Button from '../components/atoms/buttons/Button'
-
+import Image from 'next/image'
 
 const styles = {
   keyboardKey: {
@@ -146,14 +146,15 @@ const Home = () => {
     if (!gameHelpers.lives.every(life => !life.isActive) && !firstTime) return null
     if (firstTime) {
       return (
-        <div className="pop-in m-9 absolute mt-14 p-9 flex flex-col bg-background rounded-lg"
-          style={{ height: '200px', width: '300px', left: '50%', marginLeft: '-150px' }}>
+        <div className="pop-in m-9 absolute mt-14 p-5 flex flex-col bg-pop-up rounded-lg"
+          style={{ height: '280px', width: '300px', left: '50%', marginLeft: '-150px' }}>
           <div className="font-bold flex items-center justify-center">
+            <Image src="/logos/xenta.png" width={100} height={100} alt="profile-pic" />
             <h3 className="heading-3">
               Xenta
             </h3>
           </div>
-          <div className="flex py-7 items-center justify-center">
+          <div className="flex py-16 items-center justify-center">
             <Button size="regular" color="bg-primary"
               text="Play" icon={faPlay} onClick={() => {
                 setFirstTime(false)
@@ -167,18 +168,24 @@ const Home = () => {
       )
     }
     return (
-      <div className="pop-in m-9 absolute bg-background mt-14 p-9 flex flex-col bg-success rounded-lg"
-        style={{ height: '300px', width: '300px', left: '50%', marginLeft: '-150px' }}>
+      <div className="pop-in m-9 absolute bg-pop-up mt-14 p-9 flex flex-col rounded-lg"
+        style={{ height: '400px', width: '300px', left: '50%', marginLeft: '-150px' }}>
         <div className="font-bold flex items-center justify-center">
+          <Image src="/logos/xenta.png" width={100} height={100} alt="profile-pic" />
           <h3 className="heading-3">
+            Xenta
+          </h3>
+        </div>
+        <div className="font-bold flex pt-10 items-center">
+          <h3 className="subtitle-1">
             You lost!
           </h3>
         </div>
-        <div className="flex pt-10 items-center">
+        <div className="flex pt-3 items-center">
           <FontAwesomeIcon className="icon" color="yellow" icon={faCrown} />
           <h3 className="subtitle-1 font-bold pl-2">Score: {score}</h3>
         </div>
-        <div className="flex pt-7 items-center justify-center">
+        <div className="flex pt-12 items-center justify-center">
           <Button size="regular" color="bg-primary"
             text="Play again" icon={faPlay} onClick={() => {
               setScore(0)
@@ -200,7 +207,7 @@ const Home = () => {
             Welcome back
             <span className="text-card">{' ' + userData.name}</span>!
           </h3>
-          <IconButton iconName={faQuestionCircle} onClick={() => setTutorialOverlay(!showTutorialOverlay)} iconSize={'icon'} />
+          <IconButton iconName={faKeyboard} onClick={() => setTutorialOverlay(!showTutorialOverlay)} iconSize={'icon'} />
         </div>
         <Menu isGameFinished={isGameFinished} />
         <div className="absolute top-16 h-screen w-full">
