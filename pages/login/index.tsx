@@ -46,7 +46,7 @@ const Login: NextPage = () => {
       <div style={loginStyle} className="flex mdAndUp:h-screen h-full flex-col bg-background rounded-lg">
         <div className="py-4 flex flex-col">
           <div className="flex items-center">
-            <Image src="/logos/xenta.png" width={50} height={50} alt="profile-pic" />
+            <Image priority={true} src="/logos/xenta.png" width={50} height={50} alt="profile-pic" />
             <h3 className="subtitle-2 font-bold">Xenta</h3>
           </div>
           <div className="flex pt-4 justify-center">

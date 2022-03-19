@@ -458,7 +458,7 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
     console.log(gameHelpers)
     if(gameHelpers.gameInterval) return
     if(gameHelpers.intervalIds.length > 1){
-      gameHelpers.intervalIds.forEach((id, index) => {
+      gameHelpers.intervalIds.forEach((id: number, index: number) => {
         clearInterval(id)
       })
       gameHelpers.intervalIds = []

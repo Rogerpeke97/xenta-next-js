@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { AppContextHelpers } from '../context/AppContextHelpers'
 import Menu from '../components/game/Menu'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHeart, faHeartBroken, faArrowLeft, faArrowRight, faPlay, faDizzy, faCrown, faSmile, faKeyboard } from '@fortawesome/free-solid-svg-icons'
+import { faHeart, faHeartBroken, faArrowLeft, faArrowRight, faPlay, faCrown, faKeyboard } from '@fortawesome/free-solid-svg-icons'
 import TextLink from '../components/atoms/links/TextLink'
 import IconButton from '../components/atoms/buttons/IconButton'
 import Button from '../components/atoms/buttons/Button'
@@ -29,7 +29,7 @@ const Home = () => {
 
   const LIVES = 3
 
-  const { api, gameHelpers, setToast, windowWidth } = useContext(AppContextHelpers)
+  const { api, gameHelpers, setToast } = useContext(AppContextHelpers)
 
   const [isLoading, setIsLoading] = useState(true)
 
@@ -50,7 +50,7 @@ const Home = () => {
   })
 
 
-  const getUserData = useCallback(async () => {
+  async function getUserData(){
     setIsLoading(true)
     const response = await api.get('/api/user')
     if (response.error) {
@@ -64,7 +64,7 @@ const Home = () => {
     }
     setUserData(response.data)
     setIsLoading(false)
-  }, [])
+  }
 
   function checkIfFirstTime() {
     const hasGameStorage = localStorage.getItem('xenta-tutorial')
@@ -75,14 +75,12 @@ const Home = () => {
   }
 
   function gameInstructions() {
-    const isMobile = windowWidth.description === 'small'
     return (
-      <div className="pop-in h-96 m-24 flex flex-col items-center justify-center bg-success"
-        style={{ opacity: 0.9 }}>
+      <div className="smooth-render h-96 m-24 opacity-90 flex flex-col items-center justify-center bg-success">
         <h3 className="heading-3 font-bold">
           Game controls
         </h3>
-        <div className={`${isMobile ? '' : 'flex'} items-center mt-6`}>
+        <div className="mdAndUp:flex items-center mt-6">
           <div className="flex items-center p-2">
             <h3 className="subtitle-2">Jump:</h3>
             <div className="pl-2">
@@ -118,10 +116,10 @@ const Home = () => {
   }
 
 
-  function isActiveHeart(heartIndex: number) {
+  const isActiveHeart = useCallback((heartIndex: number) => {
     const isActive = gameHelpers.lives.find((_, index) => index === heartIndex)?.isActive
     return isActive ? faHeart : faHeartBroken
-  }
+  }, [gameHelpers.lives])
 
   const setIntervalForScoreSum = useCallback(() => {
     intervalForScoreSum.current = setInterval(() => {
@@ -139,17 +137,18 @@ const Home = () => {
       if (!intervalForScoreSum.current) return
       clearInterval(intervalForScoreSum.current)
     }
-  }, [getUserData, gameHelpers, setIntervalForScoreSum])
+  }, [gameHelpers, setIntervalForScoreSum])
 
 
   const gameOverOverlay = useCallback(() => {
-    if (!gameHelpers.lives.every(life => !life.isActive) && !firstTime) return null
+    const hasNoLives = gameHelpers.lives.every(life => !life.isActive)
+    if (!hasNoLives && !firstTime) return
     if (firstTime) {
       return (
         <div className="pop-in m-9 absolute mt-14 p-5 flex flex-col bg-pop-up rounded-lg"
           style={{ height: '280px', width: '300px', left: '50%', marginLeft: '-150px' }}>
           <div className="font-bold flex items-center justify-center">
-            <Image src="/logos/xenta.png" width={100} height={100} alt="profile-pic" />
+            <Image priority={true} src="/logos/xenta.png" width={100} height={100} alt="profile-pic" />
             <h3 className="heading-3">
               Xenta
             </h3>
@@ -196,7 +195,7 @@ const Home = () => {
         </div>
       </div>
     )
-  }, [gameHelpers, isLoading, firstTime])
+  }, [gameHelpers, isLoading, firstTime, score])
 
 
   return (

@@ -22,7 +22,7 @@ interface GameHelpers {
   intervalIds: Array<number>;
   isCharacterBeingHit: boolean;
   resetFields: () => void;
-  gameInterval: NodeJS.Timeout;
+  gameInterval: NodeJS.Timeout | null;
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -119,7 +119,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     window.addEventListener('resize', onResize)
   }
 
-  const REFRESH_TOKEN_EVERY = 900000
+  const REFRESH_TOKEN_EVERY = 1 * (60 * 1000)
 
 
   useEffect(() => {

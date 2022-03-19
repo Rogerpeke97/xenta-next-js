@@ -60,14 +60,14 @@ const Toast = (props: toastProps): JSX.Element => {
   const [displayToast, setDisplayToast] = useState(true)
 
   return (
-    <div ref={toast} className={`toast flex flex-col pb-8 rounded-lg pop-in ${!displayToast && 'fade-out '} ${animationStatus === 'finished' && 'hidden'}`}
+    <div ref={toast} className={`toast flex flex-col pb-5 rounded-lg pop-in ${!displayToast && 'fade-out '} ${animationStatus === 'finished' && 'hidden'}`}
       style={findStyle(props.type)}>
       <div className="flex h-5 pr-1 justify-end">
         <FontAwesomeIcon className="icon-small icon-hover" icon={faWindowClose} onClick={() => removeToast()} />
       </div>
       <div className="flex grow justify-center px-5">
         <FontAwesomeIcon className="icon-small" icon={findToastIcon(props.type)} />
-        <h1 className="pl-2 body-2 font-bold">{props.text}</h1>
+        <h1 className="pl-2 body-2 whitespace-nowrap overflow-hidden text-ellipsis font-bold">{props.text}</h1>
       </div>
     </div>
   )

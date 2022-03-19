@@ -40,7 +40,7 @@ const SideBar= () => {
     <nav ref={sideBar} className={`${classForSideBar()}`}>
       <div className="h-screen w-full bg-background rounded-lg">
         <div className="h-24 flex items-center mdAndDown:justify-between justify-center">
-          <Image src="/logos/xenta.png" width={80} height={80} alt="profile-pic" />
+          <Image priority={true} src="/logos/xenta.png" width={80} height={80} alt="profile-pic" />
           {windowWidth.description === 'small' && (
             <div className="pr-6">
               <FontAwesomeIcon icon={faTimes} className="icon cursor-pointer" onClick={() => setShowSideBar(false)} />
