@@ -3,8 +3,10 @@ import { faCrown, faEgg, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
 import { useContext, useEffect, useState } from 'react'
 import IconButton from '../../components/atoms/buttons/IconButton'
+import ProfileEditDialog from '../../components/profile/ProfileEditDialog'
 import Stat from '../../components/profile/Stat'
 import { AppContextHelpers } from '../../context/AppContextHelpers'
+import { formatDate } from '../../plugins/time/time'
 
 interface Stat {
   stat: string
@@ -33,8 +35,8 @@ const Profile = () => {
     const { score, updated_at, created_at } = response.data
     setStats([
       { stat: 'Score', value: score, icon: faCrown },
-      { stat: 'Created', value: created_at, icon: faEgg },
-      { stat: 'Updated', value: updated_at, icon: faPencilAlt }
+      { stat: 'Created', value: formatDate(created_at), icon: faEgg },
+      { stat: 'Updated', value: formatDate(updated_at), icon: faPencilAlt }
     ])
     setIsLoading(false)
   }
@@ -53,7 +55,7 @@ const Profile = () => {
             <h3 className="heading-3 font-bold mr-3">
               Name
             </h3>
-            <IconButton iconName={faPencilAlt} onClick={() => null} iconSize={'icon-small'} />
+            <ProfileEditDialog />
           </div>
         </div>
       </div>
