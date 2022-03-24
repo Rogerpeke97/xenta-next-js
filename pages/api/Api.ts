@@ -15,7 +15,7 @@ export default class Api {
     this.headers = new Headers();
     this.headers.set('Content-Type', 'application/json');
     this.headers.set('Accept', 'application/json');
-    this.headers.set('Authorization', localStorage?.getItem('token') ?? '');
+    this.headers.set('Authorization', localStorage.getItem('token') ?? '');
   }
 
   async get(urlPath: string): Promise<ApiReturnValues> {

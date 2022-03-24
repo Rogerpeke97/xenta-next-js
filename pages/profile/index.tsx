@@ -4,21 +4,17 @@ import Image from 'next/image'
 import { useContext, useEffect, useState } from 'react'
 import IconButton from '../../components/atoms/buttons/IconButton'
 import ProfileEditDialog from '../../components/profile/ProfileEditDialog'
-import Stat from '../../components/profile/Stat'
-import { AppContextHelpers } from '../../context/AppContextHelpers'
+import Stat, { StatType } from '../../components/profile/Stat'
+import { AppContextHelpers } from '../../context/AppHelpers'
 import { formatDate } from '../../plugins/time/time'
+import { UserType } from '../../types/user'
 
-interface Stat {
-  stat: string
-  value: number
-  icon: IconProp
-}
 const Profile = () => {
   const { api, setToast } = useContext(AppContextHelpers)
 
   const [isLoading, setIsLoading] = useState(true)
 
-  const [stats, setStats] = useState<Array<Stat> | null>([])
+  const [stats, setStats] = useState<Array<StatType> | null>([])
 
   async function getUserData() {
     setIsLoading(true)
@@ -32,7 +28,8 @@ const Profile = () => {
         displayToast: true
       })
     }
-    const { score, updated_at, created_at } = response.data
+    const userData: UserType = response.data
+    const { score, updated_at, created_at } = userData
     setStats([
       { stat: 'Score', value: score, icon: faCrown },
       { stat: 'Created', value: formatDate(created_at), icon: faEgg },

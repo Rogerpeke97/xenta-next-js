@@ -8,7 +8,7 @@ import Button from '../../atoms/buttons/Button'
 import FormWarning from '../../atoms/forms/FormWarning'
 import Api from '../../../pages/api/Api'
 import Toast from '../../atoms/notifications/Toast'
-import { AppContextHelpers } from '../../../context/AppContextHelpers'
+import { AppHelpers } from '../../../context/AppHelpers'
 import Router from 'next/router'
 import { validateEmail, validatePassword } from '../../../plugins/validators/inputValidator'
 
@@ -16,7 +16,7 @@ import { validateEmail, validatePassword } from '../../../plugins/validators/inp
 
 const FormLogin = () => {
 
-  const { api, setToast } = useContext(AppContextHelpers)
+  const { api, setToast, toast } = AppHelpers()
 
   const [form, setForm] = useState({
     email: '',
@@ -58,11 +58,12 @@ const FormLogin = () => {
 
 
   const login = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent) => {
-    console.log(areAllFieldsValid())
     if (areAllFieldsValid()) {
       e.preventDefault()
       setIsLoading(true)
+      console.log(api)
       const { error, message } = await api.post('/signin', { username: form.email, password: form.password })
+      console.log(toast)
       if (error) {
         setToast({
           messages: [{

@@ -1,8 +1,10 @@
-
-
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
+export interface StatType {
+  stat: string
+  value: string | number
+  icon: IconProp
+}
 
 
 const Stat = ({ stat, value, icon }: { stat: String, value: String | number, icon?: IconProp }) => {

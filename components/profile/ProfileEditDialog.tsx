@@ -4,7 +4,7 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useCallback, useContext, useEffect, useState } from 'react'
-import { AppContextHelpers } from '../../context/AppContextHelpers'
+import { AppContextHelpers } from '../../context/AppHelpers'
 import IconButton from '../atoms/buttons/IconButton'
 import Dialog from '../molecules/dialogs/Dialog'
 
@@ -35,7 +35,7 @@ const ProfileEditDialog = () => {
 
   return (
     <>
-      <Dialog onOpen={() => getUserData()}>
+      <Dialog onOpen={getUserData}>
         <div>
           asdasd
         </div>

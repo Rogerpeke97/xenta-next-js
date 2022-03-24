@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { AppContextHelpers } from '../../context/AppContextHelpers'
+import { AppContextHelpers } from '../../context/AppHelpers'
 import MenuContent from '../navigation/MenuContent'
 import NavigationBar from '../navigation/NavigationBar'
 import SideBar from '../navigation/SideBar'

@@ -2,98 +2,42 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import DefaultLayout from '../components/layouts/DefaultLayout'
 import Head from 'next/head'
-import { useCallback, useEffect, useState } from 'react'
-import { AppContextHelpers } from '../context/AppContextHelpers'
-import Api from './api/Api'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Toast from '../components/atoms/notifications/Toast'
 import Overlay from '../components/overlays/Overlay'
 import NavigationLayout from '../components/layouts/NavigationLayout'
 import Login from './login'
-
-interface Lives {
-  index: number;
-  isActive: boolean;
-}
-
-interface GameHelpers {
-  lives: Array<Lives>;
-  setLives: (lives: Array<Lives>) => void;
-  intervalIds: Array<number>;
-  isCharacterBeingHit: boolean;
-  resetFields: () => void;
-  gameInterval: NodeJS.Timeout | null;
-}
+import Api from './api/Api'
+import AppHelpersWrapper, { AppHelpers } from '../context/AppHelpers'
 
 function MyApp({ Component, pageProps }: AppProps) {
-
-
-  const [api, setApi] = useState<Api>()
 
   const router = useRouter()
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const [currentMenu, setCurrentMenu] = useState<Number>(0)
-
-  const [windowWidth, setWindowWidth] = useState({ description: '', size: 0 })
-
-  const [showSideBar, setShowSideBar] = useState(false)
-
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-
   const [refreshTokenInterval, setRefreshTokenInterval] = useState<NodeJS.Timer>()
 
-  const [gameHelpers, setGameHelpers] = useState<GameHelpers>({
-    lives: [
-      { index: 0, isActive: true },
-      { index: 1, isActive: true },
-      { index: 2, isActive: true }
-    ],
-    setLives: (lives: Array<Lives>) => {
-      setGameHelpers({ ...gameHelpers, lives })
-    },
-    isCharacterBeingHit: false,
-    intervalIds: [],
-    resetFields: () => {
-      gameHelpers.intervalIds.forEach((id, index) => {
-        clearInterval(id)
-      })
-      gameHelpers.intervalIds = []
-      setGameHelpers({
-        ...gameHelpers,
-        lives: [
-          { index: 0, isActive: true },
-          { index: 1, isActive: true },
-          { index: 2, isActive: true }
-        ],
-        isCharacterBeingHit: false,
-        gameInterval: null
-      })
-    },
-    gameInterval: null
-  })
+  const { setIsAuthenticated, setWindowWidth, setShowSideBar, setToast, isAuthenticated, toast, api } = AppHelpers()
 
-  const [toast, setToast] = useState({
-    messages: [{message: '', type: ''}],
-    displayToast: false
-  })
+  const appHelpers = AppHelpers()
 
-  async function checkIfAuthenticated(apiInit: Api){
-    try{
-      const response = await apiInit.get('/api/ping')
+  async function checkIfAuthenticated() {
+    try {
+      const response = await api.get('/api/ping')
       if (response.error) {
         setIsAuthenticated(false)
         router.push('login')
         return
       }
       setIsAuthenticated(true)
-      if(router.pathname === '/login') {
+      if (router.pathname === '/login') {
         router.push('/')
         return
       }
     }
-    catch{
+    catch {
       router.push('login')
       setIsAuthenticated(false)
     }
@@ -115,36 +59,40 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, [router.pathname])
 
   function setWindowListener() {
-    setWindowWidth({ description: window.innerWidth < 1100 ? "small" : "big", size: window.innerWidth })
+    // setWindowWidth({ description: window.innerWidth < 1100 ? "small" : "big", size: window.innerWidth })
     window.addEventListener('resize', onResize)
   }
 
   const REFRESH_TOKEN_EVERY = 1 * (60 * 1000)
 
+  useEffect(() => {
+    console.log(toast)
+  }, [toast])
 
   useEffect(() => {
+    console.log(appHelpers)
     setWindowListener()
-    const apiInit = new Api()
-    setApi(apiInit)
-    checkIfAuthenticated(apiInit)
+    checkIfAuthenticated()
     setRefreshTokenInterval(
       setInterval(() => {
-        checkIfAuthenticated(apiInit)
+        checkIfAuthenticated()
       }, REFRESH_TOKEN_EVERY)
     )
     setIsLoading(false)
     return () => {
-      if(refreshTokenInterval){
+      if (refreshTokenInterval) {
         clearInterval(refreshTokenInterval)
       }
       window.removeEventListener('resize', onResize)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.pathname])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.pathname, appHelpers])
 
   const displayComponent = useCallback(() => {
-    if(isLoading){
-      return <Overlay isLoading={isLoading}/>
+    if (isLoading) {
+      return (
+        <Overlay isLoading={isLoading} />
+      )
     }
     return <Component {...pageProps} />
   }, [isLoading, pageProps])
@@ -156,16 +104,15 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="description" content="Xenta the game" />
         <link rel="icon" href="/logos/xenta.png" />
       </Head>
-      <AppContextHelpers.Provider value={{ isAuthenticated, currentMenu, gameHelpers, setGameHelpers,
-        setCurrentMenu, windowWidth, showSideBar, setShowSideBar, api, setToast }}>
-        {!isAuthenticated ? 
+      <>
+        {!isAuthenticated ?
           (router.pathname === '/login' && !isLoading) && <Login /> :
           <NavigationLayout>
             {displayComponent()}
           </NavigationLayout>
         }
-        {toast.displayToast && toast.messages.map((message, index) => <Toast key={index} text={message.message} type={message.type} />)}
-      </AppContextHelpers.Provider>
+        {toast && toast.displayToast && toast.messages.map((message, index) => <Toast key={index} text={message.message} type={message.type} />)}
+      </>
     </DefaultLayout>
   )
 

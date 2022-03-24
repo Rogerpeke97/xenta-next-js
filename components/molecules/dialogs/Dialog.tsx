@@ -28,7 +28,7 @@ const Dialog = ({children, onOpen}: {children: React.ReactElement, onOpen: () =>
   return (
     <div ref={dialog}>
       <IconButton iconName={faPencilAlt} onClick={() => setShowDialog(true)} iconSize={'icon-small'} />
-      <div className={`absolute pop-in ${!showDialog && 'hidden'} h-40 w-40 bg-white`}>
+      <div className={`absolute pop-in  ${!showDialog && 'hidden'} h-96 top-0 left-0 -ml-24 bg-white`}>
         {children}
       </div>
     </div>

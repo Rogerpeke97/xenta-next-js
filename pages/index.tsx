@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { AppContextHelpers } from '../context/AppContextHelpers'
+import { AppContextHelpers } from '../context/AppHelpers'
 import Menu from '../components/game/Menu'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart, faHeartBroken, faArrowLeft, faArrowRight, faPlay, faCrown, faKeyboard } from '@fortawesome/free-solid-svg-icons'

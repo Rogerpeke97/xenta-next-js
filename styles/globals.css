@@ -362,6 +362,13 @@ input{
   * Specifics
   */
 
+  .dialog{
+    max-height: 400px;
+    width: 400px;
+    min-height: 300px;
+
+  }
+
   .show-side-bar{
     animation: show-side-bar 0.2s ease-out forwards;
   }

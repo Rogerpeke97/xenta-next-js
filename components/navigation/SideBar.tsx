@@ -3,7 +3,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import Divider from '../atoms/dividers/Divider'
 import SideBarMenus from './SideBarMenus'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { AppContextHelpers } from '../../context/AppContextHelpers'
+import { AppContextHelpers } from '../../context/AppHelpers'
 import Image from 'next/image'
 
 const SideBar= () => {

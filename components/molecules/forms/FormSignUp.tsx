@@ -4,7 +4,7 @@ import { faEnvelope, faExclamationCircle, faKey, faUser } from '@fortawesome/fre
 import FormField from '../../atoms/inputs/FormField'
 import Button from '../../atoms/buttons/Button'
 import FormWarning from '../../atoms/forms/FormWarning'
-import { AppContextHelpers } from '../../../context/AppContextHelpers'
+import { AppContextHelpers } from '../../../context/AppHelpers'
 import { validateEmail, validatePassword, validateUserName } from '../../../plugins/validators/inputValidator'
 
 

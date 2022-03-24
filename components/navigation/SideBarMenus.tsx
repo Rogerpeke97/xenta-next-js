@@ -3,7 +3,7 @@ import { faUser, faHome, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import NavigationCard from '../atoms/navigation/NavigationCard'
 import { useContext, useEffect, useState } from 'react'
-import { AppContextHelpers } from '../../context/AppContextHelpers'
+import { AppContextHelpers } from '../../context/AppHelpers'
 import Router from 'next/router'
 
 

@@ -5,7 +5,7 @@ import { useCallback, useContext, useEffect, useState } from "react"
 import FormWarning from "../../components/atoms/forms/FormWarning"
 import Button from "../../components/atoms/buttons/Button"
 import { validatePassword, validateRepeatPassword, validateUserName } from "../../plugins/validators/inputValidator"
-import { AppContextHelpers } from "../../context/AppContextHelpers"
+import { AppContextHelpers } from "../../context/AppHelpers"
 import InputsCard from "../../components/molecules/forms/InputsCard"
 
 

@@ -4,7 +4,7 @@ import { vertexShaderParticle, fragmentShaderParticle } from '../../plugins/game
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { BufferGeometry, Object3D } from "three";
-import { AppContextHelpers } from "../../context/AppContextHelpers";
+import { AppContextHelpers } from "../../context/AppHelpers";
 
 
 interface Axes {

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faExclamationTriangle, faCheck, faQuestionCircle, faWindowClose } from '@fortawesome/free-solid-svg-icons'
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { AppContextHelpers } from '../../../context/AppContextHelpers'
+import { AppHelpers } from '../../../context/AppHelpers'
 
 
 interface toastProps {
@@ -18,7 +18,7 @@ const toastStyles = [
 
 const Toast = (props: toastProps): JSX.Element => {
 
-  const { setToast } = useContext(AppContextHelpers)
+  const { setToast } = AppHelpers()
 
   const toast = useRef<HTMLDivElement>(null)
 
