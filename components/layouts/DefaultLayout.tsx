@@ -60,7 +60,7 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
   const displayToast = () => {
     if(!toast || !toast.displayToast) return
     return (
-      toast.messages.map((message, index) => <Toast key={index} text={message.message} type={message.type} />)
+      toast.messages.map((message: string, index: number) => <Toast key={index} text={message.message} type={message.type} />)
     )
   }
 
