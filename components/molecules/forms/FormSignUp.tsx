@@ -1,11 +1,11 @@
 
-import React, { MouseEventHandler, useContext, useEffect, useState } from 'react'
+import React, { MouseEventHandler, useEffect, useState } from 'react'
 import { faEnvelope, faExclamationCircle, faKey, faUser } from '@fortawesome/free-solid-svg-icons'
 import FormField from '../../atoms/inputs/FormField'
 import Button from '../../atoms/buttons/Button'
 import FormWarning from '../../atoms/forms/FormWarning'
-import { AppContextHelpers } from '../../../context/AppHelpers'
 import { validateEmail, validatePassword, validateUserName } from '../../../plugins/validators/inputValidator'
+import { AppHelpers } from '../../../context/AppHelpers'
 
 
 const FormSignUp = ({ onSignUpSuccess }: { onSignUpSuccess: () => void }) => {
@@ -21,7 +21,7 @@ const FormSignUp = ({ onSignUpSuccess }: { onSignUpSuccess: () => void }) => {
     popUpMessage: ''
   })
 
-  const { api, setToast } = useContext(AppContextHelpers)
+  const { api, setToast } = AppHelpers()
 
   const areAllFieldsValid = () => {
     const isValidEmail = validateEmail(form.email)

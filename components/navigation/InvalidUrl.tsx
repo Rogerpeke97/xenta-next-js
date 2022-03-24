@@ -1,12 +1,10 @@
 import { faRadiation, faBug, faExclamation } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useContext } from "react"
-import { AppContextHelpers } from "../../context/AppHelpers"
-
+import { AppHelpers } from "../../context/AppHelpers"
 
 const InvalidUrl = () => {
 
-  const { windowWidth } = useContext(AppContextHelpers)
+  const { windowWidth } = AppHelpers()
 
   return (
     <div className={`h-full flex w-full ${windowWidth.description === 'small' ? 'flex-col' : 'pt-40'}`}>

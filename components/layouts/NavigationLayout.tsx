@@ -1,26 +1,24 @@
-import { useContext, useEffect, useState } from 'react'
-import { AppContextHelpers } from '../../context/AppHelpers'
+import { AppHelpers } from '../../context/AppHelpers'
 import MenuContent from '../navigation/MenuContent'
 import NavigationBar from '../navigation/NavigationBar'
 import SideBar from '../navigation/SideBar'
 
 const NavigationLayout = ({ children }: { children: React.ReactElement }) => {
 
-  const { showSideBar, setShowSideBar, isAuthenticated } = useContext(AppContextHelpers)
-
+  const { showSideBar, setShowSideBar } = AppHelpers()
 
   return (
-      <div>
-          <div className="h-screen flex w-screen">
-            <SideBar />
-            <div className="flex flex-col grow max-w-screen" style={{minWidth: '70vw'}}>
-              <NavigationBar sideBar={[showSideBar, setShowSideBar]} />
-              <MenuContent>
-                {children}
-              </MenuContent>
-            </div>
-          </div>
+    <div>
+      <div className="h-screen flex w-screen">
+        <SideBar />
+        <div className="flex flex-col grow max-w-screen" style={{minWidth: '70vw'}}>
+          <NavigationBar sideBar={[showSideBar, setShowSideBar]} />
+          <MenuContent>
+            {children}
+          </MenuContent>
+        </div>
       </div>
+    </div>
   )
 }
 

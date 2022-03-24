@@ -17,7 +17,7 @@ interface GameHelpers {
 
 const AppContextHelpers = createContext<any>({})
 
-const AppHelpersWrapper = ({ children }: { children: React.ReactElement }) => {
+const AppHelpersWrapper = ({ children }: { children: Array<React.ReactElement> }) => {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
@@ -69,22 +69,6 @@ const AppHelpersWrapper = ({ children }: { children: React.ReactElement }) => {
     displayToast: false
   })
 
-  const [initStates, setInitStates] = useState(false)
-
-  useEffect(() => {
-    setInitStates(true)
-  }, [])
-
-  useEffect(() => {
-    console.log(initStates)
-  },[initStates])
-
-  if(!initStates) {
-    return(
-      <div></div>
-    )
-  }
-  console.log('here')
   return(
     <AppContextHelpers.Provider value={{
       isAuthenticated, setIsAuthenticated, currentMenu, setCurrentMenu,

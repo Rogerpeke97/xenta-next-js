@@ -1,6 +1,5 @@
 import react from 'react'
-import { useContext, useEffect } from 'react'
-import { AppContextHelpers } from '../../context/AppHelpers'
+import { AppHelpers } from '../../context/AppHelpers'
 import InvalidUrl from './InvalidUrl'
 
 
@@ -16,7 +15,7 @@ const MenuContent = ({ children }: { children: React.ReactElement }) => {
     { name: 'logout', component: children, index: 3},
   ]
 
-  const { currentMenu } = useContext(AppContextHelpers)
+  const { currentMenu } = AppHelpers()
 
   const loadContent = (): JSX.Element => {
     const findScreen = screens.find(screen => screen.index === currentMenu)

@@ -2,9 +2,8 @@ import type react from 'react'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import IconButtonLink from '../atoms/buttons/IconButtonLink'
-import { AppContextHelpers } from '../../context/AppHelpers'
-import { useContext } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { AppHelpers } from '../../context/AppHelpers'
 
 interface NavProps {
   sideBar: [boolean, Function]
@@ -12,7 +11,7 @@ interface NavProps {
 
 const NavigationBar: react.FC<NavProps> = ({ sideBar }) => {
 
-  const { windowWidth } = useContext(AppContextHelpers)
+  const { windowWidth } = AppHelpers()
 
   const [showSideBar, setShowSideBar] = sideBar
 

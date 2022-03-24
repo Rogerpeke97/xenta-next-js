@@ -1,5 +1,5 @@
 
-import React, { MouseEventHandler, useContext, useState } from 'react'
+import React, { MouseEventHandler, useState } from 'react'
 import { faEnvelope, faExclamationCircle, faKey } from '@fortawesome/free-solid-svg-icons'
 import { faGoogle } from '@fortawesome/free-brands-svg-icons'
 import FormField from '../../atoms/inputs/FormField'
@@ -61,9 +61,7 @@ const FormLogin = () => {
     if (areAllFieldsValid()) {
       e.preventDefault()
       setIsLoading(true)
-      console.log(api)
       const { error, message } = await api.post('/signin', { username: form.email, password: form.password })
-      console.log(toast)
       if (error) {
         setToast({
           messages: [{

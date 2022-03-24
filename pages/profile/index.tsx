@@ -1,16 +1,16 @@
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faCrown, faEgg, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import IconButton from '../../components/atoms/buttons/IconButton'
 import ProfileEditDialog from '../../components/profile/ProfileEditDialog'
 import Stat, { StatType } from '../../components/profile/Stat'
-import { AppContextHelpers } from '../../context/AppHelpers'
+import { AppHelpers } from '../../context/AppHelpers'
 import { formatDate } from '../../plugins/time/time'
 import { UserType } from '../../types/user'
 
 const Profile = () => {
-  const { api, setToast } = useContext(AppContextHelpers)
+  const { api, setToast } = AppHelpers()
 
   const [isLoading, setIsLoading] = useState(true)
 

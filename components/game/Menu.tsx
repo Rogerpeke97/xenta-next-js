@@ -1,10 +1,10 @@
-import { MutableRefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from 'three';
 import { vertexShaderParticle, fragmentShaderParticle } from '../../plugins/game/shaders/sphereParticle';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { BufferGeometry, Object3D } from "three";
-import { AppContextHelpers } from "../../context/AppHelpers";
+import { AppHelpers } from "../../context/AppHelpers"
 
 
 interface Axes {
@@ -40,7 +40,7 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
     z: 30
   }
 
-  const { gameHelpers } = useContext(AppContextHelpers)
+  const { gameHelpers } = AppHelpers()
 
   const trackedKeys = useRef({ ArrowRight: false, ArrowLeft: false })
 

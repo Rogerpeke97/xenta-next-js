@@ -2,13 +2,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import Divider from '../atoms/dividers/Divider'
 import SideBarMenus from './SideBarMenus'
-import { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { AppContextHelpers } from '../../context/AppHelpers'
+import { useCallback, useRef } from 'react'
+import { AppHelpers } from '../../context/AppHelpers'
 import Image from 'next/image'
 
 const SideBar= () => {
 
-  const { windowWidth, showSideBar, setShowSideBar } = useContext(AppContextHelpers)
+  const { windowWidth, showSideBar, setShowSideBar } = AppHelpers()
 
   const sideBar = useRef<HTMLDivElement>(null)
 

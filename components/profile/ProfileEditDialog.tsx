@@ -1,11 +1,7 @@
 
 
-import { IconProp } from '@fortawesome/fontawesome-svg-core'
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useCallback, useContext, useEffect, useState } from 'react'
-import { AppContextHelpers } from '../../context/AppHelpers'
-import IconButton from '../atoms/buttons/IconButton'
+import { useCallback, useState } from 'react'
+import { AppHelpers } from '../../context/AppHelpers'
 import Dialog from '../molecules/dialogs/Dialog'
 
 
@@ -14,7 +10,7 @@ const ProfileEditDialog = () => {
 
   const [isLoading, setIsLoading] = useState(true)
 
-  const { api, setToast } = useContext(AppContextHelpers)
+  const { api, setToast } = AppHelpers()
 
   const getUserData = useCallback(async() => {
     setIsLoading(true)

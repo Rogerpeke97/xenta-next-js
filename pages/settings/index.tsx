@@ -1,16 +1,11 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUser, faUserTag, faExclamationCircle, faHome, faKey, faSignOutAlt, faTag, faEnvelope } from '@fortawesome/free-solid-svg-icons'
-import FormField from "../../components/atoms/inputs/FormField"
-import { useCallback, useContext, useEffect, useState } from "react"
-import FormWarning from "../../components/atoms/forms/FormWarning"
-import Button from "../../components/atoms/buttons/Button"
-import { validatePassword, validateRepeatPassword, validateUserName } from "../../plugins/validators/inputValidator"
-import { AppContextHelpers } from "../../context/AppHelpers"
+import { useCallback, useEffect, useState } from "react"
+import { AppHelpers } from "../../context/AppHelpers"
 import InputsCard from "../../components/molecules/forms/InputsCard"
 
 
 const Settings = () => {
-  const { api, setToast } = useContext(AppContextHelpers)
+  const { api, setToast } = AppHelpers()
   const [userData, setUserData] = useState({
     name: '',
     username: ''

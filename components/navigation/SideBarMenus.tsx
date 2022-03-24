@@ -2,9 +2,9 @@ import type react from 'react'
 import { faUser, faHome, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import NavigationCard from '../atoms/navigation/NavigationCard'
-import { useContext, useEffect, useState } from 'react'
-import { AppContextHelpers } from '../../context/AppHelpers'
+import { useEffect } from 'react'
 import Router from 'next/router'
+import { AppHelpers } from '../../context/AppHelpers'
 
 
 
@@ -17,7 +17,7 @@ const SideBarMenus = () => {
     {text: 'Log out', icon: faSignOutAlt, route: '/logout'}
   ]
 
-	const { currentMenu, setCurrentMenu, setShowSideBar } = useContext(AppContextHelpers)
+	const { currentMenu, setCurrentMenu, setShowSideBar } = AppHelpers()
 
   const updateMenu = (menu: number) => {
     if(menu !== currentMenu){
