@@ -1,5 +1,4 @@
 import {createContext, useContext, useEffect, useState} from 'react';
-import Api from '../pages/api/Api';
 
 interface Lives {
   index: number;
@@ -17,7 +16,7 @@ interface GameHelpers {
 
 const AppContextHelpers = createContext<any>({})
 
-const AppHelpersWrapper = ({ children }: { children: Array<React.ReactElement> }) => {
+const AppHelpersWrapper = ({ children }: { children: React.ReactElement }) => {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
@@ -26,13 +25,6 @@ const AppHelpersWrapper = ({ children }: { children: Array<React.ReactElement> }
   const [windowWidth, setWindowWidth] = useState({ description: '', size: 0 })
 
   const [showSideBar, setShowSideBar] = useState(false)
-
-  const [api, setApi] = useState<Api>()
-
-  useEffect(() => {
-    const apiInit = new Api()
-    setApi(apiInit)
-  }, [])
 
   const [gameHelpers, setGameHelpers] = useState<GameHelpers>({
     lives: [
@@ -72,7 +64,7 @@ const AppHelpersWrapper = ({ children }: { children: Array<React.ReactElement> }
   return(
     <AppContextHelpers.Provider value={{
       isAuthenticated, setIsAuthenticated, currentMenu, setCurrentMenu,
-      windowWidth, setWindowWidth, showSideBar, setShowSideBar, api, setApi,
+      windowWidth, setWindowWidth, showSideBar, setShowSideBar,
       gameHelpers, setGameHelpers, toast, setToast
     }}>
       {children}

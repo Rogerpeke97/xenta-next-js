@@ -11,12 +11,15 @@ import Toast from '../../atoms/notifications/Toast'
 import { AppHelpers } from '../../../context/AppHelpers'
 import Router from 'next/router'
 import { validateEmail, validatePassword } from '../../../plugins/validators/inputValidator'
+import { ApiServicer } from '../../../context/ApiService'
 
 
 
 const FormLogin = () => {
 
-  const { api, setToast, toast } = AppHelpers()
+  const { setToast, setIsAuthenticated } = AppHelpers()
+
+  const { ApiService } = ApiServicer()
 
   const [form, setForm] = useState({
     email: '',
@@ -61,7 +64,7 @@ const FormLogin = () => {
     if (areAllFieldsValid()) {
       e.preventDefault()
       setIsLoading(true)
-      const { error, message } = await api.post('/signin', { username: form.email, password: form.password })
+      const { error, message } = await ApiService('POST', '/signin', { username: form.email, password: form.password })
       if (error) {
         setToast({
           messages: [{
@@ -80,6 +83,7 @@ const FormLogin = () => {
         }],
         displayToast: true
       })
+      setIsAuthenticated(true)
       setIsLoading(false)
       Router.push('/')
     }

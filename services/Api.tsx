@@ -1,16 +1,16 @@
+import { AppHelpers } from'../context/AppHelpers';
+
+
 interface ApiReturnValues {
   error: [String, any],
   ok: Boolean,
   message: String,
 }
 
-import { AppHelpers } from '../../context/AppHelpers';
-
 export default class Api {
 
   url: string
   headers: Headers
-  setIsAuthenticated: Function
 
   constructor() {
     this.url = 'http://localhost:8080';
@@ -18,7 +18,6 @@ export default class Api {
     this.headers.set('Content-Type', 'application/json');
     this.headers.set('Accept', 'application/json');
     this.headers.set('Authorization', localStorage.getItem('token') ?? '');
-    this.setIsAuthenticated = (isAuthenticated: boolean) => AppHelpers()?.setIsAuthenticated(isAuthenticated);
   }
 
   async get(urlPath: string): Promise<ApiReturnValues> {
@@ -54,7 +53,7 @@ export default class Api {
     }
   }
 
-  async put(urlPath: string, body: JSON): Promise<ApiReturnValues> {
+  async put(urlPath: string, body: Object): Promise<ApiReturnValues> {
     const requestOptions = {
       method: 'PUT',
       headers: this.headers,
@@ -85,10 +84,6 @@ export default class Api {
   }
 
   handleResponse(response: any) {
-    if(response.status === 401){
-      this.setIsAuthenticated(false);
-      return
-    }
     if(response.headers.get('Authorization')){
       const authHeader = response.headers.get('Authorization');
       this.headers.set('Authorization', authHeader);
@@ -98,5 +93,10 @@ export default class Api {
       const data = text && JSON.parse(text);
       return data;
     });
+  }
+
+  logout(){
+    this.headers.set('Authorization', '');
+    localStorage.removeItem('token');
   }
 }

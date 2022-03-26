@@ -7,6 +7,7 @@ import TextLink from '../components/atoms/links/TextLink'
 import IconButton from '../components/atoms/buttons/IconButton'
 import Button from '../components/atoms/buttons/Button'
 import Image from 'next/image'
+import { ApiServicer } from '../context/ApiService'
 
 const styles = {
   keyboardKey: {
@@ -26,10 +27,11 @@ const styles = {
 
 const Home = () => {
 
-
   const LIVES = 3
 
-  const { api, gameHelpers, setToast } = AppHelpers()
+  const { gameHelpers, setToast } = AppHelpers()
+
+  const { ApiService } = ApiServicer()
 
   const [isLoading, setIsLoading] = useState(true)
 
@@ -52,7 +54,7 @@ const Home = () => {
 
   async function getUserData(){
     setIsLoading(true)
-    const response = await api.get('/api/user')
+    const response = await ApiService('GET', '/api/user')
     if (response.error) {
       setToast({
         messages: [{

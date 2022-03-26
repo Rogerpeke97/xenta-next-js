@@ -6,6 +6,7 @@ import Button from '../../atoms/buttons/Button'
 import FormWarning from '../../atoms/forms/FormWarning'
 import { validateEmail, validatePassword, validateUserName } from '../../../plugins/validators/inputValidator'
 import { AppHelpers } from '../../../context/AppHelpers'
+import { ApiServicer } from '../../../context/ApiService'
 
 
 const FormSignUp = ({ onSignUpSuccess }: { onSignUpSuccess: () => void }) => {
@@ -21,7 +22,9 @@ const FormSignUp = ({ onSignUpSuccess }: { onSignUpSuccess: () => void }) => {
     popUpMessage: ''
   })
 
-  const { api, setToast } = AppHelpers()
+  const { setToast } = AppHelpers()
+
+  const { ApiService } = ApiServicer()
 
   const areAllFieldsValid = () => {
     const isValidEmail = validateEmail(form.email)
@@ -60,7 +63,7 @@ const FormSignUp = ({ onSignUpSuccess }: { onSignUpSuccess: () => void }) => {
     if (areAllFieldsValid()) {
       setIsLoading(true)
       console.log('signup')
-      const { error, message } = await api.post('/signup', {
+      const { error, message } = await ApiService('POST', '/signup', {
         username: form.email,
         name: form.name,
         password: form.password

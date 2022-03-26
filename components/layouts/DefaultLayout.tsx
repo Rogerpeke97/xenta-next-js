@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { ApiServicer } from '../../context/ApiService'
 import { AppHelpers } from '../../context/AppHelpers'
 import Login from '../../pages/login'
 import Toast from '../atoms/notifications/Toast'
@@ -9,18 +10,22 @@ import NavigationLayout from './NavigationLayout'
 export default function DefaultLayout({ children }: { children: React.ReactElement }) {
   const MINUTES = 1
   const REFRESH_TOKEN_EVERY = MINUTES * (60 * 1000)
-  const { setIsAuthenticated, setWindowWidth, setShowSideBar, isAuthenticated, toast, api } = AppHelpers()
+  const { setIsAuthenticated, setWindowWidth, setShowSideBar, isAuthenticated, toast } = AppHelpers()
+  const { ApiService } = ApiServicer()
   const [refreshTokenInterval, setRefreshTokenInterval] = useState<NodeJS.Timer>()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
   async function checkIfAuthenticated() {
     setIsLoading(true)
-    if (!api) {
+    if (!ApiService) {
       return
     }
     try {
-      const response = await api.get('/api/ping')
-      setIsAuthenticated(true)
+      const response = await ApiService('GET', '/api/ping', {})
+      console.log(response)
+      if(response){
+        setIsAuthenticated(true)
+      }
     }
     catch {
       setIsLoading(false)
@@ -79,7 +84,7 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
       window.removeEventListener('resize', onResize)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.pathname, api])
+  }, [router.pathname, ApiService])
 
   return (
     <>
