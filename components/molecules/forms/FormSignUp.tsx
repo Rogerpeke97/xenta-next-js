@@ -22,8 +22,6 @@ const FormSignUp = ({ onSignUpSuccess }: { onSignUpSuccess: () => void }) => {
     popUpMessage: ''
   })
 
-  const { setToast } = AppHelpers()
-
   const { signInUser } = UserServicer()
 
   const areAllFieldsValid = () => {
@@ -69,24 +67,9 @@ const FormSignUp = ({ onSignUpSuccess }: { onSignUpSuccess: () => void }) => {
         password: form.password
       })
       if (error) {
-        console.log(error)
-        setToast({
-          messages: [{
-            message: error,
-            type: 'error'
-          }],
-          displayToast: true
-        })
         setIsLoading(false)
         return
       }
-      setToast({
-        messages: [{
-          message: message,
-          type: 'success'
-        }],
-        displayToast: true
-      })
       setIsLoading(false)
       onSignUpSuccess()
     }

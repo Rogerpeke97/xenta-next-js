@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { AppHelpers } from '../../context/AppHelpers'
 import Login from '../../pages/login'
@@ -10,7 +10,7 @@ import NavigationLayout from './NavigationLayout'
 export default function DefaultLayout({ children }: { children: React.ReactElement }) {
   const MINUTES = 1
   const REFRESH_TOKEN_EVERY = MINUTES * (60 * 1000)
-  const { setIsAuthenticated, setWindowWidth, setShowSideBar, isAuthenticated, toast } = AppHelpers()
+  const { setWindowWidth, setShowSideBar, isAuthenticated, toast } = AppHelpers()
   const { pingUser, isServiceReady } = UserServicer()
   const [refreshTokenInterval, setRefreshTokenInterval] = useState<NodeJS.Timer>()
   const router = useRouter()
@@ -19,17 +19,7 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
   async function checkIfAuthenticated() {
     setIsLoading(true)
     if (!isServiceReady) return
-    try {
-      const response = await pingUser()
-      console.log(response)
-      if (response) {
-        setIsAuthenticated(true)
-      }
-    }
-    catch {
-      setIsLoading(false)
-      return
-    }
+    await pingUser()
     setIsLoading(false)
   }
 

@@ -455,7 +455,6 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
   }
 
   useEffect(() => {
-    console.log(gameHelpers)
     if(gameHelpers.gameInterval) return
     if(gameHelpers.intervalIds.length > 1){
       gameHelpers.intervalIds.forEach((id: number, index: number) => {
@@ -469,7 +468,6 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
   }, [gameHelpers])
 
   useEffect(() => {
-    console.log('render')
     const canvasElement = document.getElementById('canvas');
     if (!canvasContainer.current || !canvasElement) {
       return

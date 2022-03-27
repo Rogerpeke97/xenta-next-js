@@ -1,12 +1,13 @@
 import {createContext, useCallback, useContext, useEffect, useState} from 'react';
 import Api from '../services/Api';
 import { AppHelpers } from '../context/AppHelpers';
+import Router from 'next/router';
 
 const ApiServiceContext = createContext<any>({})
 
-const ApiServiceWrapper = ({ children }: { children: Array<React.ReactElement> }) => {
+const ApiServiceWrapper = ({ children }: { children: React.ReactElement }) => {
 
-  const { setIsAuthenticated } = AppHelpers()
+  const { setIsAuthenticated, setToast } = AppHelpers()
 
   const [apiService, setApiService] = useState<Api>()
 
@@ -33,14 +34,29 @@ const ApiServiceWrapper = ({ children }: { children: Array<React.ReactElement> }
   }
 
   const ApiService = useCallback(async (method: string, url?: string, params?: Object) => {
-    console.log(apiService)
     if(!apiService) return
     const response = await handler(method, url, params)
-    console.log(response)
     if(response?.status === 401){
-      console.log('here')
       setIsAuthenticated(false);
       return
+    }
+    if(response && response.error){
+      setToast({
+        messages: [{
+          message: response.error,
+          type: 'error'
+        }],
+        displayToast: true
+      })
+    }
+    if(response && response.message){
+      setToast({
+        messages: [{
+          message: response.message,
+          type: 'success'
+        }],
+        displayToast: true
+      })
     }
     return response
   }, [apiService])

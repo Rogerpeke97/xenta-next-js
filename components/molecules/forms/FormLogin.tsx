@@ -15,7 +15,7 @@ import { UserServicer } from '../../../services/user/User'
 
 const FormLogin = () => {
 
-  const { setToast, setIsAuthenticated } = AppHelpers()
+  const { setIsAuthenticated } = AppHelpers()
 
   const { loginUser } = UserServicer()
 
@@ -62,25 +62,7 @@ const FormLogin = () => {
     if (areAllFieldsValid()) {
       e.preventDefault()
       setIsLoading(true)
-      const { error, message } = await loginUser({ username: form.email, password: form.password })
-      if (error) {
-        setToast({
-          messages: [{
-            message: error,
-            type: 'error'
-          }],
-          displayToast: true
-        })
-        setIsLoading(false)
-        return
-      }
-      setToast({
-        messages: [{
-          message: message,
-          type: 'success'
-        }],
-        displayToast: true
-      })
+      await loginUser({ username: form.email, password: form.password })
       setIsAuthenticated(true)
       setIsLoading(false)
       Router.push('/')

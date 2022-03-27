@@ -23,8 +23,14 @@ const UserServiceWrapper = ({ children }: { children: Array<React.ReactElement> 
     return ApiService('POST', '/signup', params)
   }
 
-  const pingUser = () => {
-    return ApiService('GET', '/api/ping')
+  const pingUser = async() => {
+    const response = await ApiService('GET', '/api/ping')
+    console.log('here the response')
+    console.log(response)
+    if (response && !response.error) {
+      setIsAuthenticated(true)
+    }
+    return response
   }
 
   const logoutUser = () => {

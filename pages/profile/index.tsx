@@ -11,7 +11,6 @@ import { UserServicer } from '../../services/user/User'
 import { UserType } from '../../types/user'
 
 const Profile = () => {
-  const { setToast } = AppHelpers()
 
   const { getUser } = UserServicer()
 
@@ -22,15 +21,6 @@ const Profile = () => {
   async function getUserData() {
     setIsLoading(true)
     const response = await getUser()
-    if (response.error) {
-      setToast({
-        messages: [{
-          message: response.error,
-          type: 'error'
-        }],
-        displayToast: true
-      })
-    }
     const userData: UserType = response.data
     const { score, updated_at, created_at } = userData
     setStats([

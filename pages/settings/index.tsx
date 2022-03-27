@@ -6,8 +6,7 @@ import { UserServicer } from '../../services/user/User'
 
 
 const Settings = () => {
-  const { setToast } = AppHelpers()
-
+  
   const [userData, setUserData] = useState({
     name: '',
     username: ''
@@ -36,9 +35,6 @@ const Settings = () => {
     { name: 'email', type: 'email', placeholder: 'Email', icon: faEnvelope, value: '', isValid: true, warningMessage: 'Please enter a valid email' }
   ])
 
-
-
-
   const [isLoading, setIsLoading] = useState(false)
 
   const changePassword = useCallback(async () => {
@@ -52,34 +48,14 @@ const Settings = () => {
       }
       return {...acc, [input.name]: input.value }
     })
-    console.log(params)
     const response = await changePasswordUser(params)
-    if(response.error){
-      setToast({
-        messages: [{
-          message: response.error,
-          type: 'error'
-        }],
-        displayToast: true
-      })
-    }
     setIsLoading(false)
-    console.log(response)
     // const response = await api.changePassword()
   }, [accountInputs])
 
   const updateEmail = useCallback(async () => {
     // Commented until I have the api call
     // const response = await api.put('/api/update-email', { email: emailInput[0].value })
-    // if(response.error){
-    //   setToast({
-    //     messages: [{
-    //       message: response.error,
-    //       type: 'error'
-    //     }],
-    //     displayToast: true
-    //   })
-    // }
     // setIsLoading(false)
     // console.log(response)
   }, [])
@@ -87,15 +63,6 @@ const Settings = () => {
   async function getUserData() {
     setIsLoading(true)
     const response = await getUser()
-    if (response.error) {
-      setToast({
-        messages: [{
-          message: response.error,
-          type: 'error'
-        }],
-        displayToast: true
-      })
-    }
     const { name, username } = response.data
     setUserData({ ...userData, name, username })
     setIsLoading(false)

@@ -29,7 +29,7 @@ const Home = () => {
 
   const LIVES = 3
 
-  const { gameHelpers, setToast } = AppHelpers()
+  const { gameHelpers } = AppHelpers()
 
   const { getUser } = UserServicer()
 
@@ -55,15 +55,6 @@ const Home = () => {
   async function getUserData(){
     setIsLoading(true)
     const response = await getUser()
-    if (response.error) {
-      setToast({
-        messages: [{
-          message: response.error,
-          type: 'error'
-        }],
-        displayToast: true
-      })
-    }
     setUserData(response.data)
     setIsLoading(false)
   }

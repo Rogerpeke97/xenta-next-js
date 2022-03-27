@@ -12,22 +12,11 @@ const ProfileEditDialog = () => {
 
   const [isLoading, setIsLoading] = useState(true)
 
-  const { setToast } = AppHelpers()
-
   const { getUser } = UserServicer()
 
   const getUserData = useCallback(async() => {
     setIsLoading(true)
     const response = await getUser()
-    if (response.error) {
-      setToast({
-        messages: [{
-          message: response.error,
-          type: 'error'
-        }],
-        displayToast: true
-      })
-    }
     const { score, updated_at, created_at } = response.data
     setIsLoading(false)
   }, [])
