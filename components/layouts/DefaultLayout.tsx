@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { ApiServicer } from '../../context/ApiService'
 import { AppHelpers } from '../../context/AppHelpers'
 import Login from '../../pages/login'
+import { UserServicer } from '../../services/user/User'
 import Toast from '../atoms/notifications/Toast'
 import Overlay from '../overlays/Overlay'
 import NavigationLayout from './NavigationLayout'
@@ -11,19 +11,18 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
   const MINUTES = 1
   const REFRESH_TOKEN_EVERY = MINUTES * (60 * 1000)
   const { setIsAuthenticated, setWindowWidth, setShowSideBar, isAuthenticated, toast } = AppHelpers()
-  const { ApiService } = ApiServicer()
+  const { pingUser, isServiceReady } = UserServicer()
   const [refreshTokenInterval, setRefreshTokenInterval] = useState<NodeJS.Timer>()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
+
   async function checkIfAuthenticated() {
     setIsLoading(true)
-    if (!ApiService) {
-      return
-    }
+    if (!isServiceReady) return
     try {
-      const response = await ApiService('GET', '/api/ping', {})
+      const response = await pingUser()
       console.log(response)
-      if(response){
+      if (response) {
         setIsAuthenticated(true)
       }
     }
@@ -63,7 +62,7 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
   }
 
   const displayToast = () => {
-    if(!toast || !toast.displayToast) return
+    if (!toast || !toast.displayToast) return
     return (
       toast.messages.map((message: string, index: number) => <Toast key={index} text={message.message} type={message.type} />)
     )
@@ -84,7 +83,7 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
       window.removeEventListener('resize', onResize)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.pathname, ApiService])
+  }, [router.pathname, isServiceReady])
 
   return (
     <>
@@ -92,7 +91,7 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
         <Overlay isLoading={isLoading} />
         {showLoginOrHome()}
       </div>
-      { displayToast() }
+      {displayToast()}
     </>
   )
 }

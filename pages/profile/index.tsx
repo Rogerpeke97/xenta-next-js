@@ -5,15 +5,15 @@ import { useEffect, useState } from 'react'
 import IconButton from '../../components/atoms/buttons/IconButton'
 import ProfileEditDialog from '../../components/profile/ProfileEditDialog'
 import Stat, { StatType } from '../../components/profile/Stat'
-import { ApiServicer } from '../../context/ApiService'
 import { AppHelpers } from '../../context/AppHelpers'
 import { formatDate } from '../../plugins/time/time'
+import { UserServicer } from '../../services/user/User'
 import { UserType } from '../../types/user'
 
 const Profile = () => {
   const { setToast } = AppHelpers()
 
-  const { ApiService } = ApiServicer()
+  const { getUser } = UserServicer()
 
   const [isLoading, setIsLoading] = useState(true)
 
@@ -21,7 +21,7 @@ const Profile = () => {
 
   async function getUserData() {
     setIsLoading(true)
-    const response = await ApiService('GET', '/api/user')
+    const response = await getUser()
     if (response.error) {
       setToast({
         messages: [{

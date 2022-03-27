@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react'
 import { ApiServicer } from '../../context/ApiService'
 import { AppHelpers } from '../../context/AppHelpers'
+import { UserServicer } from '../../services/user/User'
 import Dialog from '../molecules/dialogs/Dialog'
 
 
@@ -13,11 +14,11 @@ const ProfileEditDialog = () => {
 
   const { setToast } = AppHelpers()
 
-  const { ApiService } = ApiServicer()
+  const { getUser } = UserServicer()
 
   const getUserData = useCallback(async() => {
     setIsLoading(true)
-    const response = await ApiService('GET', '/api/user')
+    const response = await getUser()
     if (response.error) {
       setToast({
         messages: [{

@@ -1,8 +1,7 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from "react"
 import Loading from "../../components/atoms/loaders/Loading"
-import { ApiServicer } from '../../context/ApiService'
-import { AppHelpers } from '../../context/AppHelpers'
+import { UserServicer } from '../../services/user/User'
 
 
 
@@ -10,12 +9,12 @@ const Logout = () => {
 
   const [isLoading, setIsLoading] = useState(true)
 
-  const { ApiService } = ApiServicer()
+  const { logoutUser } = UserServicer()
   
   const router = useRouter()
 
   function removeTokenAndLogout() {
-    ApiService('LOGOUT')
+    logoutUser()
     router.replace('/login')
     setIsLoading(false)
   }

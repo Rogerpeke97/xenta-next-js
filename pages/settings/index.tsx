@@ -2,7 +2,7 @@ import { faUser, faUserTag, faExclamationCircle, faHome, faKey, faSignOutAlt, fa
 import { useCallback, useEffect, useState } from "react"
 import { AppHelpers } from "../../context/AppHelpers"
 import InputsCard from "../../components/molecules/forms/InputsCard"
-import { ApiServicer } from '../../context/ApiService'
+import { UserServicer } from '../../services/user/User'
 
 
 const Settings = () => {
@@ -13,7 +13,7 @@ const Settings = () => {
     username: ''
   })
 
-  const { ApiService } = ApiServicer()
+  const { changePasswordUser, getUser } = UserServicer()
 
   const [accountInputs, setAccountInputs] = useState(
     [
@@ -53,7 +53,7 @@ const Settings = () => {
       return {...acc, [input.name]: input.value }
     })
     console.log(params)
-    const response = await ApiService('PUT', '/api/change-password', params)
+    const response = await changePasswordUser(params)
     if(response.error){
       setToast({
         messages: [{
@@ -86,7 +86,7 @@ const Settings = () => {
 
   async function getUserData() {
     setIsLoading(true)
-    const response = await ApiService('GET', '/api/user')
+    const response = await getUser()
     if (response.error) {
       setToast({
         messages: [{

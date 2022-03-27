@@ -2,20 +2,6 @@ import {createContext, useCallback, useContext, useEffect, useState} from 'react
 import Api from '../services/Api';
 import { AppHelpers } from '../context/AppHelpers';
 
-interface Lives {
-  index: number;
-  isActive: boolean;
-}
-
-interface GameHelpers {
-  lives: Array<Lives>;
-  setLives: (lives: Array<Lives>) => void;
-  intervalIds: Array<number>;
-  isCharacterBeingHit: boolean;
-  resetFields: () => void;
-  gameInterval: NodeJS.Timeout | null;
-}
-
 const ApiServiceContext = createContext<any>({})
 
 const ApiServiceWrapper = ({ children }: { children: Array<React.ReactElement> }) => {
