@@ -56,16 +56,12 @@ const FormLogin = () => {
 
   const [isLoading, setIsLoading] = useState(false)
 
-
-
   const login = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent) => {
     if (areAllFieldsValid()) {
       e.preventDefault()
       setIsLoading(true)
       await loginUser({ username: form.email, password: form.password })
-      setIsAuthenticated(true)
       setIsLoading(false)
-      Router.push('/')
     }
   }
 

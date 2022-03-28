@@ -136,7 +136,7 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
       // console.log(characterNewPositionX, characterPositionY, character.position.z)
       character.position.set(characterNewPositionX, characterPositionY, character.position.z)
     }
-    if (hasCharacterHitTree(scene)) {
+    if (hasCharacterHitTree(scene) && !isGameFinished.current) {
       if (gameHelpers.isCharacterBeingHit) return
       for (let i = gameHelpers.lives.length - 1; i >= 0; i--) {
         if (gameHelpers.lives[i].isActive) {

@@ -49,15 +49,6 @@ const ApiServiceWrapper = ({ children }: { children: React.ReactElement }) => {
         displayToast: true
       })
     }
-    if(response && response.message){
-      setToast({
-        messages: [{
-          message: response.message,
-          type: 'success'
-        }],
-        displayToast: true
-      })
-    }
     return response
   }, [apiService])
   

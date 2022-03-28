@@ -41,7 +41,7 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
   }
 
   const showLoginOrHome = () => {
-    if (router.pathname === '/login' || !isAuthenticated) {
+    if (!isAuthenticated) {
       return <Login />
     }
     return (

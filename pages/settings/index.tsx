@@ -1,12 +1,11 @@
 import { faUser, faUserTag, faExclamationCircle, faHome, faKey, faSignOutAlt, faTag, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import { useCallback, useEffect, useState } from "react"
-import { AppHelpers } from "../../context/AppHelpers"
 import InputsCard from "../../components/molecules/forms/InputsCard"
 import { UserServicer } from '../../services/user/User'
 
 
 const Settings = () => {
-  
+
   const [userData, setUserData] = useState({
     name: '',
     username: ''
@@ -14,7 +13,7 @@ const Settings = () => {
 
   const { changePasswordUser, getUser } = UserServicer()
 
-  const [accountInputs, setAccountInputs] = useState(
+  const [accountPasswordInputs, setAccountPasswordInputs] = useState(
     [
       {
         name: 'oldPassword', type: 'password', placeholder: 'Old Password', icon: faKey, value: '',
@@ -39,19 +38,20 @@ const Settings = () => {
 
   const changePassword = useCallback(async () => {
     setIsLoading(true)
-    const params = accountInputs.reduce((acc, input, index) => {
-      if(index === 1) {
+    console.log(accountPasswordInputs)
+    const params = accountPasswordInputs.reduce((accumulator, input, index) => {
+      console.log(index, accumulator)
+      if (index === 1) {
         return {
-          [acc.name]: acc.value,
+          [accumulator.name]: accumulator.value,
           [input.name]: input.value
         }
       }
-      return {...acc, [input.name]: input.value }
+      return { ...accumulator, [input.name]: input.value }
     })
     const response = await changePasswordUser(params)
     setIsLoading(false)
-    // const response = await api.changePassword()
-  }, [accountInputs])
+  }, [accountPasswordInputs])
 
   const updateEmail = useCallback(async () => {
     // Commented until I have the api call
@@ -78,8 +78,8 @@ const Settings = () => {
       <div className="flex items-center pb-8">
         <h1 className="heading-2 font-semibold">Settings</h1>
       </div>
-      <InputsCard title={'Account'} subtitle={userData.name} subtitleIcon={faTag} titleIcon={faUser} inputsAttrs={accountInputs}
-        setInputsAttrs={(attrs) => setAccountInputs(attrs)} onSave={changePassword} isLoading={isLoading} />
+      <InputsCard title={'Account'} subtitle={userData.name} subtitleIcon={faTag} titleIcon={faUser} inputsAttrs={accountPasswordInputs}
+        setInputsAttrs={(attrs) => setAccountPasswordInputs(attrs)} onSave={changePassword} isLoading={isLoading} />
       <InputsCard subtitle={userData.username} subtitleIcon={faEnvelope} inputsAttrs={emailInput}
         setInputsAttrs={(attrs) => setEmailInput(attrs)} onSave={updateEmail} isLoading={isLoading} />
     </div>

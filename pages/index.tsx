@@ -31,7 +31,7 @@ const Home = () => {
 
   const { gameHelpers } = AppHelpers()
 
-  const { getUser } = UserServicer()
+  const { getUser, isFirstTimeUser } = UserServicer()
 
   const [isLoading, setIsLoading] = useState(true)
 
@@ -43,28 +43,17 @@ const Home = () => {
 
   const isGameFinished = useRef(true)
 
-  const [firstTime, setFirstTime] = useState(true)
-
   const [userData, setUserData] = useState({
     username: '',
     name: '',
     score: 0,
   })
 
-
-  async function getUserData(){
+  async function getUserData() {
     setIsLoading(true)
     const response = await getUser()
     setUserData(response.data)
     setIsLoading(false)
-  }
-
-  function checkIfFirstTime() {
-    const hasGameStorage = localStorage.getItem('xenta-tutorial')
-    if (!hasGameStorage) {
-      setTutorialOverlay(true)
-      localStorage.setItem('xenta-tutorial', 'false')
-    }
   }
 
   function gameInstructions() {
@@ -108,10 +97,9 @@ const Home = () => {
     )
   }
 
-
   const isActiveHeart = useCallback((heartIndex: number) => {
     const isActive = gameHelpers.lives.find((_, index) => index === heartIndex)?.isActive
-    return isActive ? faHeart : faHeartBroken
+    return isActive
   }, [gameHelpers.lives])
 
   const setIntervalForScoreSum = useCallback(() => {
@@ -121,10 +109,7 @@ const Home = () => {
     }, 250)
   }, [score])
 
-
   useEffect(() => {
-    checkIfFirstTime()
-    getUserData()
     setIntervalForScoreSum()
     return () => {
       if (!intervalForScoreSum.current) return
@@ -132,11 +117,48 @@ const Home = () => {
     }
   }, [gameHelpers, setIntervalForScoreSum])
 
+  useEffect(() => {
+    setTutorialOverlay(isFirstTimeUser())
+    getUserData()
+    return () => {
+      gameHelpers.resetFields()
+    }
+  }, [])
 
-  const gameOverOverlay = useCallback(() => {
+  const gameMenu = useCallback(() => {
     const hasNoLives = gameHelpers.lives.every(life => !life.isActive)
-    if (!hasNoLives && !firstTime) return
-    if (firstTime) {
+    if (hasNoLives) {
+      return (
+        <div className="pop-in m-9 absolute bg-pop-up mt-14 p-9 flex flex-col rounded-lg"
+          style={{ height: '400px', width: '300px', left: '50%', marginLeft: '-150px' }}>
+          <div className="font-bold flex items-center justify-center">
+            <Image src="/logos/xenta.png" width={100} height={100} alt="profile-pic" />
+            <h3 className="heading-3">
+              Xenta
+            </h3>
+          </div>
+          <div className="font-bold flex pt-10 items-center">
+            <h3 className="subtitle-1">
+              You lost!
+            </h3>
+          </div>
+          <div className="flex pt-3 items-center">
+            <FontAwesomeIcon className="icon" color="yellow" icon={faCrown} />
+            <h3 className="subtitle-1 font-bold pl-2">Score: {score}</h3>
+          </div>
+          <div className="flex pt-12 items-center justify-center">
+            <Button size="regular" color="bg-primary"
+              text="Play again" icon={faPlay} onClick={() => {
+                setScore(0)
+                gameHelpers.resetFields()
+                isGameFinished.current = false
+              }}
+              disabled={isLoading} />
+          </div>
+        </div>
+      )
+    }
+    if (isGameFinished.current) {
       return (
         <div className="pop-in m-9 absolute mt-14 p-5 flex flex-col bg-pop-up rounded-lg"
           style={{ height: '280px', width: '300px', left: '50%', marginLeft: '-150px' }}>
@@ -149,7 +171,7 @@ const Home = () => {
           <div className="flex py-16 items-center justify-center">
             <Button size="regular" color="bg-primary"
               text="Play" icon={faPlay} onClick={() => {
-                setFirstTime(false)
+                setTutorialOverlay
                 setScore(0)
                 gameHelpers.resetFields()
                 isGameFinished.current = false
@@ -159,36 +181,11 @@ const Home = () => {
         </div>
       )
     }
-    return (
-      <div className="pop-in m-9 absolute bg-pop-up mt-14 p-9 flex flex-col rounded-lg"
-        style={{ height: '400px', width: '300px', left: '50%', marginLeft: '-150px' }}>
-        <div className="font-bold flex items-center justify-center">
-          <Image src="/logos/xenta.png" width={100} height={100} alt="profile-pic" />
-          <h3 className="heading-3">
-            Xenta
-          </h3>
-        </div>
-        <div className="font-bold flex pt-10 items-center">
-          <h3 className="subtitle-1">
-            You lost!
-          </h3>
-        </div>
-        <div className="flex pt-3 items-center">
-          <FontAwesomeIcon className="icon" color="yellow" icon={faCrown} />
-          <h3 className="subtitle-1 font-bold pl-2">Score: {score}</h3>
-        </div>
-        <div className="flex pt-12 items-center justify-center">
-          <Button size="regular" color="bg-primary"
-            text="Play again" icon={faPlay} onClick={() => {
-              setScore(0)
-              gameHelpers.resetFields()
-              isGameFinished.current = false
-            }}
-            disabled={isLoading} />
-        </div>
-      </div>
-    )
-  }, [gameHelpers, isLoading, firstTime, score])
+  }, [gameHelpers, isLoading, score])
+
+  const livesRemaining = useCallback(() => {
+    return gameHelpers.lives.filter(heart => heart.isActive).length
+  }, [gameHelpers.lives])
 
 
   return (
@@ -208,11 +205,13 @@ const Home = () => {
               <div className="flex">
                 {Array(LIVES).fill(0).map((_, index) => {
                   return (
-                    <FontAwesomeIcon className="icon-large pr-3" color={gameHelpers.lives[index].isActive ? 'red' : 'white'} key={index} icon={isActiveHeart(index)} />
+                    <FontAwesomeIcon className="icon-large pr-3" color={isActiveHeart(index) ? 'red' : 'white'}
+                      key={index}
+                      icon={isActiveHeart(index) ? faHeart : faHeartBroken} />
                   )
                 })}
               </div>
-              <h3 className="subtitle-2 font-bold">x{gameHelpers.lives.filter(heart => heart.isActive).length}</h3>
+              <h3 className="subtitle-2 font-bold">x{livesRemaining()}</h3>
             </div>
             <div>
               <h3 className="font-bold subtitle-1">
@@ -221,7 +220,7 @@ const Home = () => {
               </h3>
             </div>
           </div>
-          {showTutorialOverlay ? gameInstructions() : gameOverOverlay()}
+          {showTutorialOverlay ? gameInstructions() : gameMenu()}
         </div>
       </div>
     </div>
