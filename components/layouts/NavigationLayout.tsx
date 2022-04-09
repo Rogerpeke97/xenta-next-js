@@ -8,15 +8,13 @@ const NavigationLayout = ({ children }: { children: React.ReactElement }) => {
   const { showSideBar, setShowSideBar } = AppHelpers()
 
   return (
-    <div>
-      <div className="h-screen flex w-screen">
-        <SideBar />
-        <div className="flex flex-col grow max-w-screen" style={{minWidth: '70vw'}}>
-          <NavigationBar sideBar={[showSideBar, setShowSideBar]} />
-          <MenuContent>
-            {children}
-          </MenuContent>
-        </div>
+    <div className="h-full flex w-screen">
+      <SideBar />
+      <div className="flex flex-col grow max-w-screen" style={{minWidth: '70vw'}}>
+        <NavigationBar sideBar={[showSideBar, setShowSideBar]} />
+        <MenuContent>
+          {children}
+        </MenuContent>
       </div>
     </div>
   )

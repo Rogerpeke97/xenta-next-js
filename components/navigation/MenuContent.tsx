@@ -1,5 +1,7 @@
+import Router from 'next/router'
 import react from 'react'
 import { AppHelpers } from '../../context/AppHelpers'
+import Loading from '../atoms/loaders/Loading'
 import InvalidUrl from './InvalidUrl'
 
 
@@ -22,11 +24,14 @@ const MenuContent = ({ children }: { children: React.ReactElement }) => {
     if(!findScreen){
       return <InvalidUrl />
     }
+    if(Router.pathname === '/login'){
+      return <Loading isLoading={true} loadingText="Loading..." />
+    }
     return findScreen.component
   }
 
   return (
-    <div className="overflow-y-auto px-5 pt-6">
+    <div className="h-full overflow-y-auto px-5 py-6">
       {loadContent()}
     </div>
   )

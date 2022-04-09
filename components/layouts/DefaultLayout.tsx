@@ -27,6 +27,7 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
     const windowSize = {
       description: window.innerWidth < 1024 ? 'small' : 'big', size: window.innerWidth
     }
+    setViewHeightCssVar()
     setWindowWidth(windowSize)
     if (windowSize.description === 'big') {
       setShowSideBar(true)
@@ -51,12 +52,21 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
     )
   }
 
+  const setViewHeightCssVar = () => {
+    const viewHeight = window.innerHeight
+    document.documentElement.style.setProperty('--vh', `${viewHeight}px`)
+  }
+
   const displayToast = () => {
     if (!toast || !toast.displayToast) return
     return (
       toast.messages.map((message: string, index: number) => <Toast key={index} text={message.message} type={message.type} />)
     )
   }
+
+  useEffect(() => {
+    setViewHeightCssVar()
+  }, [])
 
   useEffect(() => {
     setWindowListener()
@@ -77,7 +87,7 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
 
   return (
     <>
-      <div className="h-screen smooth-render-long">
+      <div className="layout-wrapper smooth-render-long">
         <Overlay isLoading={isLoading} />
         {showLoginOrHome()}
       </div>

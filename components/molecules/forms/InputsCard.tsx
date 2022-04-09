@@ -4,7 +4,7 @@ import FormField from '../../atoms/inputs/FormField'
 import FormWarning from '../../atoms/forms/FormWarning'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons'
-import { validatePassword, validateRepeatPassword, validateUserName } from "../../../plugins/validators/inputValidator"
+import { validatePassword, validateRepeatPassword, validateUserName, validateEmail } from "../../../plugins/validators/inputValidator"
 import Button from '../../atoms/buttons/Button'
 
 
@@ -52,7 +52,8 @@ const InputsCard = ({ title, subtitle, subtitleIcon, titleIcon, inputsAttrs, set
           return validateRepeatPassword(repeatNewPassword, newPassword)
         },
         isValidName: 'isValidNewPassword'
-      }
+      },
+      { name: 'email', validate: (email: string) => validateEmail(email), isValidName: 'isValidEmail' }
     ]
 
 

@@ -1,5 +1,5 @@
 
-import React, { MouseEventHandler, useState } from 'react'
+import React, { MouseEventHandler, useEffect, useState } from 'react'
 import { faEnvelope, faExclamationCircle, faKey } from '@fortawesome/free-solid-svg-icons'
 import { faGoogle } from '@fortawesome/free-brands-svg-icons'
 import FormField from '../../atoms/inputs/FormField'
@@ -69,6 +69,12 @@ const FormLogin = () => {
     e.preventDefault()
     console.log('login with google')
   }
+
+  useEffect(() => {
+    return () => {
+      setIsLoading(false)
+    }
+  },[])
 
 
   return (

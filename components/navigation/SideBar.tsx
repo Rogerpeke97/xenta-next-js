@@ -14,7 +14,12 @@ const SideBar= () => {
 
   const classForSideBar = useCallback(() => {
     const sideBarWidth = sideBar.current?.clientWidth
-    if (!showSideBar && windowWidth.description === 'small') {
+    if(windowWidth.description === 'small'){
+      if(showSideBar){
+        if(sideBarWidth === windowWidth.size || sideBarWidth === 0){
+          return 'show-side-bar-mobile flex w-full absolute z-50'
+        }
+      }
       if (sideBarWidth) {
         if (sideBarWidth === windowWidth.size) {
           return 'flex absolute z-50 collapse-menu'
@@ -25,11 +30,8 @@ const SideBar= () => {
       }
       return 'absolute hidden'
     }
-    else {
+    else{
       if (sideBarWidth === 0) {
-        if (showSideBar && windowWidth.description === 'small') {
-          return 'show-side-bar-mobile flex w-full absolute z-50'
-        }
         return 'flex w-60 show-side-bar expand'
       }
       return 'flex w-60 show-side-bar'
@@ -37,8 +39,8 @@ const SideBar= () => {
   }, [showSideBar, windowWidth])
 
   return (
-    <nav ref={sideBar} className={`${classForSideBar()}`}>
-      <div className="h-screen w-full bg-background rounded-lg">
+    <nav ref={sideBar} className={`h-full ${classForSideBar()}`}>
+      <div className="h-full w-full bg-background rounded-lg">
         <div className="h-24 flex items-center mdAndDown:justify-between justify-center">
           <Image priority={true} src="/logos/xenta.png" width={80} height={80} alt="profile-pic" />
           {windowWidth.description === 'small' && (

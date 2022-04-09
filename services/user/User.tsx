@@ -33,7 +33,7 @@ const UserServiceWrapper = ({ children }: { children: Array<React.ReactElement> 
   }
 
   const signInUser = async(params: Object) => {
-    const response = await ApiService('POST', '/signup', params)
+    const response = await ApiService('PUT', '/signup', params)
     if(response && response.message){
       setToast({
         messages: [{
@@ -51,6 +51,10 @@ const UserServiceWrapper = ({ children }: { children: Array<React.ReactElement> 
     if (response && !response.error) {
       setIsAuthenticated(true)
     }
+    else{
+      ApiService('LOGOUT')
+      return Router.push('/login')
+    }
     return response
   }
 
@@ -67,7 +71,7 @@ const UserServiceWrapper = ({ children }: { children: Array<React.ReactElement> 
   }
 
   const changePasswordUser = async(params: Object) => {
-    const response = await ApiService('PUT', '/api/change-password', params)
+    const response = await ApiService('POST', '/api/change-password', params)
     if(response && response.message){
       setToast({
         messages: [{
@@ -90,6 +94,34 @@ const UserServiceWrapper = ({ children }: { children: Array<React.ReactElement> 
     return false
   }
 
+  const updateEmailUser = async(email: string) => {
+    const response = await ApiService('POST', '/api/update-email', { username: email })
+    if(response && response.message){
+      setToast({
+        messages: [{
+          message: response.message,
+          type: 'success'
+        }],
+        displayToast: true
+      })
+    }
+    return response
+  }
+
+  const updateScoreUser = async(score: number) => {
+    const response = await ApiService('PUT', '/api/update-score', score)
+    if(response && response.message){
+      setToast({
+        messages: [{
+          message: response.message,
+          type: 'success'
+        }],
+        displayToast: true
+      })
+    }
+    return response
+  }
+
   useEffect(() => {
     if (ApiService) {
       setIsServiceReady(true)
@@ -100,7 +132,7 @@ const UserServiceWrapper = ({ children }: { children: Array<React.ReactElement> 
     <UserServiceContext.Provider value={{
       getUser, loginUser, signInUser, pingUser,
       logoutUser, changePasswordUser, isServiceReady,
-      isFirstTimeUser
+      isFirstTimeUser, updateEmailUser, updateScoreUser
     }}>
       {children}
     </UserServiceContext.Provider>

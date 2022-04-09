@@ -54,7 +54,6 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
 
   const scene = useRef<THREE.Scene>(new THREE.Scene())
 
-
   function afterKeyPressHandler(event: KeyboardEvent) {
     const isAnAllowedKey = ALLOWED_KEYS.includes(event.key)
     if (isAnAllowedKey) {
@@ -86,7 +85,6 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
         trees.push(mesh)
       }
     })
-    // console.log(trees)
     if (trees.length === 0 || !character) return
     const characterPosition = character.position
     const TOLERABLE_MARGINS_FOR_COLLISION = {
@@ -126,14 +124,12 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
     if (trackedKeys.current.ArrowLeft && character.position.x > ALLOWED_X_MAX_VALUE_LEFT) {
       const characterNewPositionX = character.position.x - 0.05
       const characterPositionY = Math.sqrt(Math.pow(PLANET_RADIUS, 2) - Math.pow(characterNewPositionX - PLANET_ORIGIN_AXES.x, 2)) + PLANET_ORIGIN_AXES.y
-      // console.log(characterNewPositionX, characterPositionY, character.position.z)
       character.position.set(characterNewPositionX, characterPositionY, character.position.z)
 
     }
     if (trackedKeys.current.ArrowRight && character.position.x < ALLOWED_X_MAX_VALUE_RIGHT) {
       const characterNewPositionX = character.position.x + 0.05
       const characterPositionY = Math.sqrt(Math.pow(PLANET_RADIUS, 2) - Math.pow(characterNewPositionX - PLANET_ORIGIN_AXES.x, 2)) + PLANET_ORIGIN_AXES.y
-      // console.log(characterNewPositionX, characterPositionY, character.position.z)
       character.position.set(characterNewPositionX, characterPositionY, character.position.z)
     }
     if (hasCharacterHitTree(scene) && !isGameFinished.current) {
@@ -196,20 +192,6 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
     const particleAfterRotationY = Math.sin(rotationAngleInRadians) * (vector.z - PLANET_ORIGIN_AXES.z) + Math.cos(rotationAngleInRadians) * (vector.y - PLANET_ORIGIN_AXES.y) + PLANET_ORIGIN_AXES.y
     const particleAfterRotationX = vector.x
     particlePositions.setXYZ(indexInArray, particleAfterRotationX, particleAfterRotationY, particleAfterRotationZ)
-  }
-
-  function getTreePositionAfterRotation(position: THREE.Vector3, rotation: number) {
-    const AMOUNT_TO_ROTATE_RADIANS = 0.00001
-    let rotationInRadians = rotation * Math.PI / 180
-    let rotationAngle = (rotationInRadians - AMOUNT_TO_ROTATE_RADIANS) * 180 / Math.PI
-    if (rotationAngle <= 0) {
-      rotationAngle = 360
-    }
-    rotationInRadians = rotationAngle * Math.PI / 180
-    const treeAfterRotationZ = Math.cos(rotationInRadians) * (position.z) - Math.sin(rotationInRadians) * (position.y)
-    const treeAfterRotationY = Math.sin(rotationInRadians) * (position.z) + Math.cos(rotationInRadians) * (position.y)
-    const treeAfterRotationX = position.x
-    return { position: new THREE.Vector3(treeAfterRotationX, treeAfterRotationY, treeAfterRotationZ), rotationAngle }
   }
 
   const moveParticles = (particles: THREE.BufferGeometry, clock: THREE.Clock, particlesSystem: THREE.Points, PARTICLES_COUNT: number, trackedStillParticles: Array<TrackedParticles>) => {
@@ -504,8 +486,8 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
   }, [trackedKeys])
 
   return (
-    <div className="h-screen block" ref={canvasContainer}>
-      <canvas id="canvas" className="max-w-full rounded-lg" />
+    <div className="h-full block" ref={canvasContainer}>
+      <canvas id="canvas" className="max-w-full h-full rounded-lg" />
     </div>
   )
 

@@ -34,6 +34,15 @@ html, body {
 @tailwind utilities;
 
 /*
+* Wrapper vh
+*/
+
+.layout-wrapper{
+  height: var(--vh);
+}
+
+
+/*
  * Scrollbar
  */ 
 
@@ -235,6 +244,37 @@ input{
  /*
   * Animations
   */
+
+  .shrink-and-fade{
+    overflow: hidden;
+    animation: shrink-and-fade 1s ease forwards;
+  }
+
+  @keyframes shrink-and-fade{
+    100% {
+      height: 0;
+      opacity: 0;
+    }
+  }
+
+  .progress-bar{
+    animation: progress-bar 2s ease infinite;
+    position: relative;
+    transition: all 0.2s ease-out;
+  }
+
+  @keyframes progress-bar{
+    0%{
+      left: 0%;
+    }
+    20%{
+      width: 30%;
+    }
+    100%{
+      left: 98%;
+      width: 2%;
+    }
+  }
 
   .pop-in{
     animation: pop-in 0.5s ease-out;

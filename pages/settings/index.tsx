@@ -1,4 +1,5 @@
 import { faUser, faUserTag, faExclamationCircle, faHome, faKey, faSignOutAlt, faTag, faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import Router from 'next/router'
 import { useCallback, useEffect, useState } from "react"
 import InputsCard from "../../components/molecules/forms/InputsCard"
 import { UserServicer } from '../../services/user/User'
@@ -11,7 +12,7 @@ const Settings = () => {
     username: ''
   })
 
-  const { changePasswordUser, getUser } = UserServicer()
+  const { changePasswordUser, updateEmailUser, getUser } = UserServicer()
 
   const [accountPasswordInputs, setAccountPasswordInputs] = useState(
     [
@@ -36,11 +37,9 @@ const Settings = () => {
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const changePassword = useCallback(async () => {
+  const changePassword = async () => {
     setIsLoading(true)
-    console.log(accountPasswordInputs)
     const params = accountPasswordInputs.reduce((accumulator, input, index) => {
-      console.log(index, accumulator)
       if (index === 1) {
         return {
           [accumulator.name]: accumulator.value,
@@ -51,14 +50,18 @@ const Settings = () => {
     })
     const response = await changePasswordUser(params)
     setIsLoading(false)
-  }, [accountPasswordInputs])
+  }
 
-  const updateEmail = useCallback(async () => {
-    // Commented until I have the api call
-    // const response = await api.put('/api/update-email', { email: emailInput[0].value })
-    // setIsLoading(false)
-    // console.log(response)
-  }, [])
+  const updateEmail = async () => {
+    setIsLoading(true)
+    const email = emailInput[0].value
+    const response = await updateEmailUser(email)
+    if(response.error) {
+      setIsLoading(false)
+      return
+    }
+    Router.push('/logout')
+  }
 
   async function getUserData() {
     setIsLoading(true)
@@ -70,11 +73,14 @@ const Settings = () => {
 
   useEffect(() => {
     getUserData()
+    return () => {
+      setIsLoading(false)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
-    <div className="p-4 pb-20">
+    <div className="p-4">
       <div className="flex items-center pb-8">
         <h1 className="heading-2 font-semibold">Settings</h1>
       </div>

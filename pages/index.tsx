@@ -31,7 +31,7 @@ const Home = () => {
 
   const { gameHelpers } = AppHelpers()
 
-  const { getUser, isFirstTimeUser } = UserServicer()
+  const { getUser, isFirstTimeUser, updateScoreUser } = UserServicer()
 
   const [isLoading, setIsLoading] = useState(true)
 
@@ -41,6 +41,8 @@ const Home = () => {
 
   const [showTutorialOverlay, setTutorialOverlay] = useState(false)
 
+  const [isMaxScoreSet, setIsMaxScoreSet] = useState(false)
+
   const isGameFinished = useRef(true)
 
   const [userData, setUserData] = useState({
@@ -49,12 +51,53 @@ const Home = () => {
     score: 0,
   })
 
+  const updateScore = async() => {
+    if(score <= userData.score || isMaxScoreSet) return
+    await updateScoreUser(score)
+    setIsMaxScoreSet(true)
+  }
+
   async function getUserData() {
     setIsLoading(true)
     const response = await getUser()
     setUserData(response.data)
     setIsLoading(false)
   }
+
+  const isActiveHeart = (heartIndex: number) => {
+    const isActive = gameHelpers.lives.find((_, index) => index === heartIndex)?.isActive
+    return isActive
+  }
+
+  const setIntervalForScoreSum = useCallback(() => {
+    intervalForScoreSum.current = setInterval(async() => {
+      if (isGameFinished.current) {
+        await updateScore()
+        return
+      }
+      setScore(score + 1)
+    }, 250)
+  }, [score, isMaxScoreSet])
+
+  const livesRemaining = () => {
+    return gameHelpers.lives.filter(heart => heart.isActive).length
+  }
+
+  useEffect(() => {
+    setIntervalForScoreSum()
+    return () => {
+      if (!intervalForScoreSum.current) return
+      clearInterval(intervalForScoreSum.current)
+    }
+  }, [gameHelpers, setIntervalForScoreSum])
+
+  useEffect(() => {
+    setTutorialOverlay(isFirstTimeUser())
+    getUserData()
+    return () => {
+      gameHelpers.resetFields()
+    }
+  }, [])
 
   function gameInstructions() {
     return (
@@ -97,35 +140,7 @@ const Home = () => {
     )
   }
 
-  const isActiveHeart = useCallback((heartIndex: number) => {
-    const isActive = gameHelpers.lives.find((_, index) => index === heartIndex)?.isActive
-    return isActive
-  }, [gameHelpers.lives])
-
-  const setIntervalForScoreSum = useCallback(() => {
-    intervalForScoreSum.current = setInterval(() => {
-      if (isGameFinished.current) return
-      setScore(score + 1)
-    }, 250)
-  }, [score])
-
-  useEffect(() => {
-    setIntervalForScoreSum()
-    return () => {
-      if (!intervalForScoreSum.current) return
-      clearInterval(intervalForScoreSum.current)
-    }
-  }, [gameHelpers, setIntervalForScoreSum])
-
-  useEffect(() => {
-    setTutorialOverlay(isFirstTimeUser())
-    getUserData()
-    return () => {
-      gameHelpers.resetFields()
-    }
-  }, [])
-
-  const gameMenu = useCallback(() => {
+  const gameMenu = () => {
     const hasNoLives = gameHelpers.lives.every(life => !life.isActive)
     if (hasNoLives) {
       return (
@@ -152,6 +167,7 @@ const Home = () => {
                 setScore(0)
                 gameHelpers.resetFields()
                 isGameFinished.current = false
+                setIsMaxScoreSet(false)
               }}
               disabled={isLoading} />
           </div>
@@ -181,47 +197,40 @@ const Home = () => {
         </div>
       )
     }
-  }, [gameHelpers, isLoading, score])
-
-  const livesRemaining = useCallback(() => {
-    return gameHelpers.lives.filter(heart => heart.isActive).length
-  }, [gameHelpers.lives])
-
+  }
 
   return (
-    <div>
-      <div className="smooth-render relative">
-        <div className="h-16 flex items-center justify-between">
-          <h3 className="subtitle-1 font-bold" onClick={() => gameHelpers.resetFields()}>
-            Welcome back
-            <span className="text-card">{' ' + userData.name}</span>!
-          </h3>
-          <IconButton iconName={faKeyboard} onClick={() => setTutorialOverlay(!showTutorialOverlay)} iconSize={'icon'} />
-        </div>
-        <Menu isGameFinished={isGameFinished} />
-        <div className="absolute top-16 h-screen w-full">
-          <div className="flex justify-between">
+    <div className="h-full smooth-render relative">
+      <div className="h-16 flex items-center justify-between">
+        <h3 className="subtitle-1 font-bold" onClick={() => gameHelpers.resetFields()}>
+          Welcome back
+          <span className="text-card">{' ' + userData.name}</span>!
+        </h3>
+        <IconButton iconName={faKeyboard} onClick={() => setTutorialOverlay(!showTutorialOverlay)} iconSize={'icon'} />
+      </div>
+      <Menu isGameFinished={isGameFinished} />
+      <div className="absolute top-16 h-full w-full">
+        <div className="flex justify-between">
+          <div className="flex">
             <div className="flex">
-              <div className="flex">
-                {Array(LIVES).fill(0).map((_, index) => {
-                  return (
-                    <FontAwesomeIcon className="icon-large pr-3" color={isActiveHeart(index) ? 'red' : 'white'}
-                      key={index}
-                      icon={isActiveHeart(index) ? faHeart : faHeartBroken} />
-                  )
-                })}
-              </div>
-              <h3 className="subtitle-2 font-bold">x{livesRemaining()}</h3>
+              {Array(LIVES).fill(0).map((_, index) => {
+                return (
+                  <FontAwesomeIcon className="icon-large pr-3" color={isActiveHeart(index) ? 'red' : 'white'}
+                    key={index}
+                    icon={isActiveHeart(index) ? faHeart : faHeartBroken} />
+                )
+              })}
             </div>
-            <div>
-              <h3 className="font-bold subtitle-1">
-                Score:
-                <span className="text-card">{" " + score}</span>
-              </h3>
-            </div>
+            <h3 className="subtitle-2 font-bold">x{livesRemaining()}</h3>
           </div>
-          {showTutorialOverlay ? gameInstructions() : gameMenu()}
+          <div>
+            <h3 className="font-bold subtitle-1">
+              Score:
+              <span className="text-card">{" " + score}</span>
+            </h3>
+          </div>
         </div>
+        {showTutorialOverlay ? gameInstructions() : gameMenu()}
       </div>
     </div>
   )

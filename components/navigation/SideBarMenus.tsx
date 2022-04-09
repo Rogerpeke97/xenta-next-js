@@ -17,20 +17,33 @@ const SideBarMenus = () => {
     {text: 'Log out', icon: faSignOutAlt, route: '/logout'}
   ]
 
-	const { currentMenu, setCurrentMenu, setShowSideBar } = AppHelpers()
+	const { currentMenu, setCurrentMenu, setShowSideBar, isAuthenticated } = AppHelpers()
+
+  const findValidIndex = () => {
+    const INDEX_NOT_FOUND = -1
+    const menuIndex = menus.findIndex(menu => menu.route === Router.pathname)
+    const loginRoute = Router.pathname === '/login'
+    if(loginRoute && isAuthenticated){
+      return 0
+    }
+    if(menuIndex !== INDEX_NOT_FOUND){
+      return menuIndex
+    }
+    return INDEX_NOT_FOUND
+  } 
 
   const updateMenu = (menu: number) => {
-    if(menu !== currentMenu){
-      setCurrentMenu(menu)
-    }
-    setShowSideBar(false)
+    console.log(menu)
+    setCurrentMenu(menu)
     const menuRoute = menus[menu]?.route
     if(!menuRoute) return
     Router.push(menuRoute)
+    setShowSideBar(false)
   }
 
   useEffect(() => {
-    updateMenu(menus.findIndex(menu => menu.route === Router.pathname))
+    const menuIndex = findValidIndex()
+    updateMenu(menuIndex)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
