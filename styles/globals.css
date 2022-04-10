@@ -37,10 +37,13 @@ html, body {
 * Wrapper vh
 */
 
-.layout-wrapper{
+.device-height{
   height: var(--vh);
 }
 
+.device-width{
+  width: var(--vw);
+}
 
 /*
  * Scrollbar
@@ -291,6 +294,24 @@ input{
     to{
       transform: scale(1);
     }
+  }
+
+  .pop-out{
+    animation: pop-out 0.25s ease-out forwards;
+    transition: all 0.2s ease-out; 
+  }
+
+  @keyframes pop-out{
+    from{
+      transform: scale(1);
+    }
+    50%{
+      transform: scale(0.5);
+    }
+    to{
+      transform: scale(0);
+      display: none;
+    }  
   }
 
 

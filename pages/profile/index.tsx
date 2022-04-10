@@ -40,7 +40,7 @@ const Profile = () => {
   return (
     <>
       <LoadingBar loading={isLoading} />
-      <div className="relative">
+      <div>
         <div className="flex opacity-75 justify-center items-center h-80 bg-primary cursor-pointer rounded-lg hover:opacity-100 transition ease-out">
         </div>
         <div className="relative cursor-pointer -top-32 left-1/2 -ml-32 h-64 w-64 rounded-full shadow-xl hover:scale-105 transition ease-out">
@@ -53,7 +53,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      <div className="flex mdAndDown:px-0 px-48 justify-between items-center">
+      <div className="flex mdAndDown:px-0 px-48 pb-12 justify-between items-center">
         {stats && stats.map(({ stat, value, icon }, index) => {
           return (
             <Stat stat={stat} value={value} icon={icon} key={index} />

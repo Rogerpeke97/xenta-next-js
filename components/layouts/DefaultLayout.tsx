@@ -54,7 +54,9 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
 
   const setViewHeightCssVar = () => {
     const viewHeight = window.innerHeight
+    const viewWidth = window.innerWidth
     document.documentElement.style.setProperty('--vh', `${viewHeight}px`)
+    document.documentElement.style.setProperty('--vw', `${viewWidth}px`)
   }
 
   const displayToast = () => {
@@ -87,7 +89,7 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
 
   return (
     <>
-      <div className="layout-wrapper smooth-render-long">
+      <div className="device-height smooth-render-long">
         <Overlay isLoading={isLoading} />
         {showLoginOrHome()}
       </div>
