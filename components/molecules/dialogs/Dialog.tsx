@@ -1,6 +1,7 @@
 
 
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
+import { faPencilAlt, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useRef, useState } from 'react'
 import IconButton from '../../atoms/buttons/IconButton'
 
@@ -19,8 +20,8 @@ const Dialog = ({children, onOpen}: {children: React.ReactElement, onOpen: () =>
   }
 
   const dialogStateClass = () => {
-    const mobileDefaultClass = 'mdAndDown:ml-0 device-height w-full '
-    const defaultClass = 'absolute h-96 w-96 top-0 left-0 -ml-24 bg-white '
+    const mobileDefaultClass = 'mdAndDown:device-height inset-0 w-full '
+    const defaultClass = 'fixed dialog bg-primary '
     if(showDialog === 'hide'){
       return defaultClass + mobileDefaultClass + 'pop-out'
     }
@@ -42,6 +43,9 @@ const Dialog = ({children, onOpen}: {children: React.ReactElement, onOpen: () =>
     <div ref={dialog}>
       <IconButton iconName={faPencilAlt} onClick={() => setShowDialog('show')} iconSize={'icon-small'} />
       <div className={dialogStateClass()}>
+      <div className="flex w-full justify-end pr-1">
+        <FontAwesomeIcon icon={faTimes} className="icon cursor-pointer transition ease-out duration-300 hover:text-card" onClick={() => setShowDialog('hide')} />
+      </div>
         {children}
       </div>
     </div>

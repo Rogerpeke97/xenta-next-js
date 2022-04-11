@@ -39,18 +39,14 @@ const Profile = () => {
   
   return (
     <>
-      <LoadingBar loading={isLoading} />
-      <div>
-        <div className="flex opacity-75 justify-center items-center h-80 bg-primary cursor-pointer rounded-lg hover:opacity-100 transition ease-out">
-        </div>
-        <div className="relative cursor-pointer -top-32 left-1/2 -ml-32 h-64 w-64 rounded-full shadow-xl hover:scale-105 transition ease-out">
-          <Image className="rounded-full" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg" width={256} height={256} alt="profile-pic" />
-          <div className="flex justify-center items-center">
-            <h3 className="heading-3 font-bold mr-3">
-              {user?.name}
-            </h3>
-            <ProfileEditDialog />
-          </div>
+    <LoadingBar loading={isLoading} />
+      <div className="flex flex-col pb-20 items-center justify-center rounded-full shadow-xl transition ease-out">
+        <Image className="rounded-full cursor-pointer" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg" width={256} height={256} alt="profile-pic" />
+        <div className="flex justify-center items-center">
+          <h3 className="heading-3 font-bold mr-3">
+            {user?.name}
+          </h3>
+          <ProfileEditDialog />
         </div>
       </div>
       <div className="flex mdAndDown:px-0 px-48 pb-12 justify-between items-center">
