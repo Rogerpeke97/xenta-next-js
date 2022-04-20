@@ -1,5 +1,6 @@
+import ProgressBar from '@/components/atoms/loaders/ProgressBar'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
-import { faCrown, faEgg, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
+import { faCertificate, faCrown, faEgg, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
@@ -65,7 +66,7 @@ const Profile = () => {
         </div>
         <div className="m-2 justify-center flex grow h-64">
           <div className="w-full max-w-[600px] min-w-[300px] p-5 rounded-lg bg-hoverCard">
-            <h3 className="subtitle-3">Your score</h3>
+            <h3 className="subtitle-3 font-bold">Your score</h3>
             <div className="flex py-1">
               <FontAwesomeIcon className="icon-x-large mr-4" color="yellow" icon={faCrown} />
               <h3 className="pt-2 heading-3 font-bold pl-2">{stats?.max_score}</h3>
@@ -84,11 +85,23 @@ const Profile = () => {
         </div>
         <div className="m-2 flex justify-center h-64 grow">
           <div className="min-w-[300px] max-w-[300px] w-full p-5 rounded-lg bg-hoverCard">
-            <h3 className="subtitle-3">My level</h3>
+            <h3 className="subtitle-3 font-bold">My level</h3>
             <div className="flex items-center justify-center">
               <div className="flex rotate-45 w-24 justify-center cursor-default truncate backface-hidden rounded-lg box-hover hover:scale-105 items-center bg-primary mt-7 h-24 py-1">
-                <h3 className="heading-3 w-full truncate -rotate-45 font-bold">123123123123</h3>
+                <h3 className="heading-3 w-full truncate -rotate-45 font-bold text-center">123</h3>
               </div>
+            </div>
+            <ProgressBar measurementUnit="XP" className="mt-8" progress={120} totalProgress={1000} titleForAmountLeftFor="next level" />
+          </div>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="m-2 flex justify-center h-64 grow">
+          <div className="min-w-[300px] max-w-[300px] w-full p-5 rounded-lg bg-hoverCard">
+            <h3 className="subtitle-3 font-bold text-center">Your rank</h3>
+            <div className="flex py-14 justify-center">
+              <FontAwesomeIcon className="icon-x-large mr-4" color="silver" icon={faCertificate} />
+              <h3 className="pt-2 truncate heading-3 font-bold pl-2">{stats?.max_score}<span className="subtitle-2">th</span></h3>
             </div>
           </div>
         </div>
