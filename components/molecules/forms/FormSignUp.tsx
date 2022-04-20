@@ -79,18 +79,12 @@ const FormSignUp = ({ onSignUpSuccess }: { onSignUpSuccess: () => void }) => {
   return (
     <form className="flex flex-col w-full pop-in" onSubmit={signUp}>
       <div className="px-6 flex flex-col items-center justify-center">
-        <FormField value={form.name} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'name')} type="name" icon={faUser} placeholder="Name" disabled={isLoading} />
-        <div className="w-full h-7">
-          {!form.isValidUser && <FormWarning text="Please enter a valid user name" icon={faExclamationCircle} />}
-        </div>
-        <FormField value={form.email} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'email')} type="email" icon={faEnvelope} placeholder="Email" disabled={isLoading} />
-        <div className="w-full h-7">
-          {!form.isValidEmail && <FormWarning text="Please enter a valid email address" icon={faExclamationCircle} />}
-        </div>
-        <FormField value={form.password} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'password')} type="password" icon={faKey} placeholder="Password" disabled={isLoading} />
-        <div className="w-full h-7">
-          {!form.isValidPassword && <FormWarning text="Password must be of at least 8 characters, including digits and one upper case letter" icon={faExclamationCircle} />}
-        </div>
+        <FormField isValid={form.isValidUser} value={form.name} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'name')} 
+        warningMessage="Please enter a valid user name" type="name" icon={faUser} placeholder="Name" disabled={isLoading} />
+        <FormField isValid={form.isValidEmail} value={form.email} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'email')} 
+        warningMessage="Please enter a valid email address" type="email" icon={faEnvelope} placeholder="Email" disabled={isLoading} />
+        <FormField isValid={form.isValidPassword} value={form.password} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'password')} 
+        warningMessage="Password must be of at least 8 characters, including digits and one upper case letter" type="password" icon={faKey} placeholder="Password" disabled={isLoading} />
       </div>
       <div className="flex items-center pt-10 justify-center">
         <Button size="regular" color="bg-card" text="Sign Up" onClick={(e) => signUp(e)} isLoading={isLoading} disabled={!isValidForm()} />

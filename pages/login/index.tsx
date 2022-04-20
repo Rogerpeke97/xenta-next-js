@@ -12,7 +12,9 @@ const loginStyle = {
   maxHeight: '800px',
   minWidth: '320px',
   maxWidth: '800px',
-  width: '100%'
+  width: '100%',
+  overflowY: 'auto',
+  overflowX: 'hidden'
 }
 
 const Login: NextPage = () => {

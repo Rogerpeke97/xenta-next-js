@@ -1,7 +1,9 @@
 
 
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { useCallback, useState } from 'react'
 import { UserServicer } from '../../services/user/User'
+import IconButton from '../atoms/buttons/IconButton'
 import Dialog from '../molecules/dialogs/Dialog'
 
 
@@ -19,10 +21,9 @@ const ProfileEditDialog = () => {
     setIsLoading(false)
   }, [])
 
-
   return (
     <>
-      <Dialog onOpen={getUserData}>
+      <Dialog onOpen={getUserData} Activator={<IconButton iconName={faPencilAlt} onClick={getUserData} iconSize={'icon-small'} />}>
         <div>
           asdasd
         </div>

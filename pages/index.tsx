@@ -200,16 +200,9 @@ const Home = () => {
   }
 
   return (
-    <div className="h-full smooth-render relative">
-      <div className="h-16 flex items-center justify-between">
-        <h3 className="subtitle-1 font-bold" onClick={() => gameHelpers.resetFields()}>
-          Welcome back
-          <span className="text-card">{' ' + userData.name}</span>!
-        </h3>
-        <IconButton iconName={faKeyboard} onClick={() => setTutorialOverlay(!showTutorialOverlay)} iconSize={'icon'} />
-      </div>
+    <div className="smooth-render relative h-full">
       <Menu isGameFinished={isGameFinished} />
-      <div className="absolute top-16 h-full w-full">
+      <div className="absolute flex flex-col justify-between inset-0 p-2 h-full w-full">
         <div className="flex justify-between">
           <div className="flex">
             <div className="flex">
@@ -231,6 +224,7 @@ const Home = () => {
           </div>
         </div>
         {showTutorialOverlay ? gameInstructions() : gameMenu()}
+        <IconButton iconName={faKeyboard} onClick={() => setTutorialOverlay(!showTutorialOverlay)} iconSize={'icon'} />
       </div>
     </div>
   )

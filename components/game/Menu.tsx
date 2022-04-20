@@ -269,9 +269,9 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
     const trackedStillParticles: Array<TrackedParticles> = []
     renderer.setAnimationLoop(() => {
       if (isGameFinished.current) {
-        if(characterAnimationMixer.current){
+        if (characterAnimationMixer.current) {
           characterAnimationMixer.current?._actions[1]?.stop()
-          if(characterAnimationMixer.current?._actions.length >= 2) return
+          if (characterAnimationMixer.current?._actions.length >= 2) return
           characterAnimationMixer.current?._actions[0].play()
           return
         }
@@ -307,15 +307,15 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
         tree.userData.treeAngleOnPlanetZ = 360
       }
       treePositionX = tree.position.x - PLANET_ORIGIN_AXES.x + MOVE_ON_X_AXIS
-      if(treePositionX > ALLOWED_X_MAX_VALUE_RIGHT){
+      if (treePositionX > ALLOWED_X_MAX_VALUE_RIGHT) {
         treePositionX = ALLOWED_X_MAX_VALUE_RIGHT
       }
-      if(treePositionX < ALLOWED_X_MAX_VALUE_LEFT){
+      if (treePositionX < ALLOWED_X_MAX_VALUE_LEFT) {
         treePositionX = ALLOWED_X_MAX_VALUE_LEFT
       }
       xz2dApparentPointRadius = Math.sqrt(Math.pow(PLANET_RADIUS, 2) - Math.pow(treePositionX, 2))
       treePositionZ = Math.sin(currentTreeAngleOnPlanetZRadians(tree.userData.treeAngleOnPlanetZ) * (180 / Math.PI)) * xz2dApparentPointRadius
-      treeRotationZ = Math.asin(treePositionX / PLANET_RADIUS) 
+      treeRotationZ = Math.asin(treePositionX / PLANET_RADIUS)
       treeRotationX = -currentTreeAngleOnPlanetZRadians(tree.userData.treeAngleOnPlanetZ) * (180 / Math.PI)
       treePositionY = Math.cos(currentTreeAngleOnPlanetZRadians(tree.userData.treeAngleOnPlanetZ) * (180 / Math.PI)) * xz2dApparentPointRadius
       tree.position.set(treePositionX + PLANET_ORIGIN_AXES.x, treePositionY + PLANET_ORIGIN_AXES.y, -treePositionZ + PLANET_ORIGIN_AXES.z)
@@ -437,8 +437,8 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
   }
 
   useEffect(() => {
-    if(gameHelpers.gameInterval) return
-    if(gameHelpers.intervalIds.length > 1){
+    if (gameHelpers.gameInterval) return
+    if (gameHelpers.intervalIds.length > 1) {
       gameHelpers.intervalIds.forEach((id: number, index: number) => {
         clearInterval(id)
       })
@@ -486,7 +486,7 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
   }, [trackedKeys])
 
   return (
-    <div className="h-full block" ref={canvasContainer}>
+    <div className="h-full" ref={canvasContainer}>
       <canvas id="canvas" className="max-w-full h-full rounded-lg" />
     </div>
   )

@@ -31,7 +31,7 @@ const MenuContent = ({ children }: { children: React.ReactElement }) => {
   }
 
   return (
-    <div className="h-full overflow-y-auto px-5 py-6">
+    <div className="h-full overflow-y-auto px-5 py-6" style={{ backgroundImage: "url('backgrounds/curvedshape.webp')" }}>
       {loadContent()}
     </div>
   )

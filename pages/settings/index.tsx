@@ -1,7 +1,8 @@
-import { faUser, faUserTag, faExclamationCircle, faHome, faKey, faSignOutAlt, faTag, faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faKey, faEnvelope, faCogs, faWrench } from '@fortawesome/free-solid-svg-icons'
 import Router from 'next/router'
 import { useCallback, useEffect, useState } from "react"
-import InputsCard from "../../components/molecules/forms/InputsCard"
+import LoadingBar from '@/components/atoms/loaders/LoadingBar'
+import InputsCard from "@/components/molecules/forms/InputsCard"
 import { UserServicer } from '../../services/user/User'
 
 
@@ -56,7 +57,7 @@ const Settings = () => {
     setIsLoading(true)
     const email = emailInput[0].value
     const response = await updateEmailUser(email)
-    if(response.error) {
+    if (response.error) {
       setIsLoading(false)
       return
     }
@@ -80,15 +81,18 @@ const Settings = () => {
   }, [])
 
   return (
-    <div className="p-4">
-      <div className="flex items-center pb-8">
-        <h1 className="heading-2 font-semibold">Settings</h1>
+    <>
+      <LoadingBar loading={isLoading} />
+      <div className="p-4">
+        <div className="flex items-center pb-8">
+          <h1 className="heading-2 font-semibold">Settings</h1>
+        </div>
+        <InputsCard title={userData.name} subtitle={'Change password'} subtitleIcon={faWrench} titleIcon={faUser} inputsAttrs={accountPasswordInputs}
+          setInputsAttrs={(attrs) => setAccountPasswordInputs(attrs)} onSave={changePassword} isLoading={isLoading} />
+        <InputsCard title={userData.username} titleIcon={faEnvelope} subtitle={'Change email'} subtitleIcon={faWrench} inputsAttrs={emailInput}
+          setInputsAttrs={(attrs) => setEmailInput(attrs)} onSave={updateEmail} isLoading={isLoading} />
       </div>
-      <InputsCard title={'Account'} subtitle={userData.name} subtitleIcon={faTag} titleIcon={faUser} inputsAttrs={accountPasswordInputs}
-        setInputsAttrs={(attrs) => setAccountPasswordInputs(attrs)} onSave={changePassword} isLoading={isLoading} />
-      <InputsCard subtitle={userData.username} subtitleIcon={faEnvelope} inputsAttrs={emailInput}
-        setInputsAttrs={(attrs) => setEmailInput(attrs)} onSave={updateEmail} isLoading={isLoading} />
-    </div>
+    </>
   )
 }
 

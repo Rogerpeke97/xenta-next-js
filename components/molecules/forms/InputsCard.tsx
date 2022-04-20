@@ -99,7 +99,7 @@ const InputsCard = ({ title, subtitle, subtitleIcon, titleIcon, inputsAttrs, set
   }
 
   return (
-    <div className="p-5 transition ease-out duration-300 hover:bg-background rounded-lg">
+    <div className="p-5 transition ease-out duration-300 hover:bg-hoverCard rounded-lg">
       {(title && titleIcon) ?
         <div className="pb-8 flex items-center">
           <FontAwesomeIcon className="icon-small" icon={titleIcon} color="#0070f3" fixedWidth />
@@ -121,9 +121,10 @@ const InputsCard = ({ title, subtitle, subtitleIcon, titleIcon, inputsAttrs, set
                 value={input.value}
                 icon={input.icon}
                 disabled={false}
+                warningMessage={input.warningMessage}
+                isValid={inputsAttrs[index].isValid}
                 onChange={(e) => validateInput((e.target as HTMLTextAreaElement).value, input, index)}
               />
-              {!inputsAttrs[index].isValid && <FormWarning text={input.warningMessage} icon={faExclamationCircle} />}
             </div>
           )
         })}
