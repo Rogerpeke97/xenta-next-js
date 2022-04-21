@@ -1,4 +1,5 @@
 import ProgressBar from '@/components/atoms/loaders/ProgressBar'
+import FadeInUp from '@/components/molecules/transitions/FadeInUp'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faCertificate, faCrown, faEgg, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -52,7 +53,7 @@ const Profile = () => {
     <>
       <LoadingBar loading={isLoading} />
       <h3 className="subtitle-1 font-bold">Overview</h3>
-      <div className="flex flex-wrap pt-6">
+      <FadeInUp className="flex flex-wrap pt-6 fade-in-up">
         <div className="flex m-2 grow relative justify-center flex-col rounded-full transition ease-out">
           <div className="flex justify-center">
             <Image className="rounded-full cursor-pointer" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg" width={256} height={256} alt="profile-pic" />
@@ -87,25 +88,28 @@ const Profile = () => {
           <div className="min-w-[300px] max-w-[300px] w-full p-5 rounded-lg bg-hoverCard">
             <h3 className="subtitle-3 font-bold">My level</h3>
             <div className="flex items-center justify-center">
-              <div className="flex rotate-45 w-24 justify-center cursor-default truncate backface-hidden rounded-lg box-hover hover:scale-105 items-center bg-primary mt-7 h-24 py-1">
+              <div className="mt-7 py-1 rombo-box box-hover">
                 <h3 className="heading-3 w-full truncate -rotate-45 font-bold text-center">123</h3>
               </div>
             </div>
             <ProgressBar measurementUnit="XP" className="mt-8" progress={120} totalProgress={1000} titleForAmountLeftFor="next level" />
           </div>
         </div>
-      </div>
-      <div className="flex">
+      </FadeInUp>
+      <FadeInUp className="flex" delayMs={2000}>
         <div className="m-2 flex justify-center h-64 grow">
           <div className="min-w-[300px] max-w-[300px] w-full p-5 rounded-lg bg-hoverCard">
             <h3 className="subtitle-3 font-bold text-center">Your rank</h3>
-            <div className="flex py-14 justify-center">
+            <div className="flex pt-14 pb-6 justify-center">
               <FontAwesomeIcon className="icon-x-large mr-4" color="silver" icon={faCertificate} />
               <h3 className="pt-2 truncate heading-3 font-bold pl-2">{stats?.max_score}<span className="subtitle-2">th</span></h3>
             </div>
+            <div>
+              <h3 className="body-2 text-center font-bold">out of 3000</h3>
+            </div>
           </div>
         </div>
-      </div>
+      </FadeInUp>
     </>
   )
 }

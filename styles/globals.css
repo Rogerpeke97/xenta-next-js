@@ -477,6 +477,23 @@ a {
   }
 }
 
+.fade-in-up {
+  animation: fade-in-up 1.25s forwards;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 30%, 0);
+    transform: translate3d(0, 30%, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+  }
+}
 
 
 .spinner {
@@ -535,6 +552,34 @@ a {
 /*
   * Specifics
   */
+.rombo-box {
+  display: flex;
+  transform: rotate(45deg);
+  width: 96px;
+  justify-content: center;
+  cursor: default;
+  backface-visibility: hidden;
+  border-radius: 10%;
+  background: var(--primary);
+  height: 96px;
+  align-items: center;
+  animation: heart-beat 1.8s infinite;
+}
+
+@keyframes heart-beat {
+  0% {
+    transform: rotate(45deg) scale(1);
+  }
+
+  50% {
+    transform: rotate(45deg) scale(1.05);
+  }
+
+  100% {
+    transform: rotate(45deg) scale(1);
+  }
+}
+
 
 .dialog {
   width: 700px;

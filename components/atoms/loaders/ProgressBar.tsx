@@ -54,7 +54,7 @@ const ProgressBar = ({ progress, totalProgress, titleForAmountLeftFor, className
   return(
     <>
       <div ref={progressBarContainer} className={`${className} transition ease-out duration-300 h-2 w-full bg-background my-3 rounded-lg`}>
-        <div ref={progressBar} className={`h-full bg-stone-300 rounded-lg`} />
+        <div ref={progressBar} className="w-0 h-full bg-stone-300 rounded-lg" />
       </div>
       <div className="flex justify-between w-full">
         <h3 className="body-2 truncate">{`${amountToTotal()} ${measurementUnit} to get to ${titleForAmountLeftFor}`}</h3>
