@@ -3,7 +3,7 @@
 
 @font-face {
   font-family: 'Inter';
-  src: local('Inter'), url(../fonts/Inter/Inter-VariableFont_slnt\,wght.ttf) format('opentype');
+  src: local('Inter'), url('../fonts/Inter/Inter-VariableFont_slnt\,wght.ttf') format('opentype');
 }
 
 :root {
@@ -29,11 +29,9 @@ body {
   font-size: 1rem;
   margin: 0;
   overflow-x: hidden;
-  background-image: url('/backgrounds/curvedshape.webp');
-  background-repeat: no-repeat;
-  background-size: cover;
   background-color: black;
   color: white;
+  position: relative;
   /* scrollbar-color: rgb(24 8 100) transparent; */
 }
 
@@ -484,8 +482,8 @@ a {
 @keyframes fade-in-up {
   from {
     opacity: 0;
-    -webkit-transform: translate3d(0, 30%, 0);
-    transform: translate3d(0, 30%, 0);
+    -webkit-transform: translate3d(0, 100px, 0);
+    transform: translate3d(0, 100px, 0);
   }
 
   to {
@@ -552,6 +550,16 @@ a {
 /*
   * Specifics
   */
+
+.table{
+  table, th, td{
+    border: 1px solid var(--card);
+    border-collapse: collapse;
+    padding: 5px;
+  }
+}
+
+
 .rombo-box {
   display: flex;
   transform: rotate(45deg);
@@ -578,17 +586,6 @@ a {
   100% {
     transform: rotate(45deg) scale(1);
   }
-}
-
-
-.dialog {
-  width: 700px;
-  height: 700px;
-  top: 50%;
-  left: 50%;
-  margin-top: -350px;
-  margin-left: -350px;
-  border-radius: 12px;
 }
 
 .show-side-bar {

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import LoadingBar from '@/components/atoms/loaders/LoadingBar'
 import InputsCard from "@/components/molecules/forms/InputsCard"
 import { UserServicer } from '../../services/user/User'
+import FadeInUp from '@/components/molecules/transitions/FadeInUp'
 
 
 const Settings = () => {
@@ -83,7 +84,7 @@ const Settings = () => {
   return (
     <>
       <LoadingBar loading={isLoading} />
-      <div className="p-4">
+      <FadeInUp className="p-4">
         <div className="flex items-center pb-8">
           <h1 className="heading-2 font-semibold">Settings</h1>
         </div>
@@ -91,7 +92,7 @@ const Settings = () => {
           setInputsAttrs={(attrs) => setAccountPasswordInputs(attrs)} onSave={changePassword} isLoading={isLoading} />
         <InputsCard title={userData.username} titleIcon={faEnvelope} subtitle={'Change email'} subtitleIcon={faWrench} inputsAttrs={emailInput}
           setInputsAttrs={(attrs) => setEmailInput(attrs)} onSave={updateEmail} isLoading={isLoading} />
-      </div>
+      </FadeInUp>
     </>
   )
 }

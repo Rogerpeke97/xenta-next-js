@@ -202,7 +202,7 @@ const Home = () => {
   return (
     <div className="smooth-render relative h-full">
       <Menu isGameFinished={isGameFinished} />
-      <div className="absolute flex flex-col justify-between inset-0 p-2 h-full w-full">
+      <div className="absolute flex flex-col justify-between inset-0 p-4 h-full w-full">
         <div className="flex justify-between">
           <div className="flex">
             <div className="flex">

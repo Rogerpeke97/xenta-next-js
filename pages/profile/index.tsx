@@ -1,5 +1,6 @@
 import ProgressBar from '@/components/atoms/loaders/ProgressBar'
 import FadeInUp from '@/components/molecules/transitions/FadeInUp'
+import LeaderBoardTable from '@/components/profile/LeaderBoardTable'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faCertificate, faCrown, faEgg, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -54,7 +55,7 @@ const Profile = () => {
       <LoadingBar loading={isLoading} />
       <h3 className="subtitle-1 font-bold">Overview</h3>
       <FadeInUp className="flex flex-wrap pt-6 fade-in-up">
-        <div className="flex m-2 grow relative justify-center flex-col rounded-full transition ease-out">
+        <div className="flex m-2 grow justify-center flex-col rounded-full transition ease-out">
           <div className="flex justify-center">
             <Image className="rounded-full cursor-pointer" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg" width={256} height={256} alt="profile-pic" />
           </div>
@@ -96,7 +97,7 @@ const Profile = () => {
           </div>
         </div>
       </FadeInUp>
-      <FadeInUp className="flex" delayMs={2000}>
+      <FadeInUp className="flex" delayMs={500}>
         <div className="m-2 flex justify-center h-64 grow">
           <div className="min-w-[300px] max-w-[300px] w-full p-5 rounded-lg bg-hoverCard">
             <h3 className="subtitle-3 font-bold text-center">Your rank</h3>
@@ -109,6 +110,7 @@ const Profile = () => {
             </div>
           </div>
         </div>
+        <LeaderBoardTable />
       </FadeInUp>
     </>
   )

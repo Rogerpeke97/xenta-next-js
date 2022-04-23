@@ -93,6 +93,7 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
         <Overlay isLoading={isLoading} />
         {showLoginOrHome()}
       </div>
+      <div id="modal"/>
       {displayToast()}
     </>
   )

@@ -2,8 +2,9 @@
 
 import { faPencilAlt, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { Component, useEffect, useRef, useState } from 'react'
+import React, { Component, useCallback, useEffect, useRef, useState } from 'react'
 import IconButton from '../../atoms/buttons/IconButton'
+import ReactDOM from 'react-dom'
 
 
 
@@ -14,13 +15,14 @@ const Dialog = ({children, onOpen, Activator}: {children: React.ReactElement, on
   const dialog = useRef<HTMLDivElement>(null)
 
   const setUpClickListenerToCloseDialog = (event: MouseEvent) => {
-    if (dialog.current !== event.target && !dialog.current?.contains(event.target as Node) && showDialog) {    
+    if(showDialog !== 'show') return
+    if (dialog.current !== event.target && !dialog.current?.contains(event.target as Node)) {    
       setShowDialog('hide')
     }
   }
 
   const dialogStateClass = () => {
-    const defaultClass = 'fixed inset-0 w-full h-full bg-white '
+    const defaultClass = `fixed inset-0 w-full h-full ${showDialog === 'show' && 'bg-black bg-opacity-40'} `
     if(showDialog === 'hide'){
       return defaultClass + 'pop-out-fade'
     }
@@ -31,26 +33,29 @@ const Dialog = ({children, onOpen, Activator}: {children: React.ReactElement, on
   }
 
   useEffect(() => {
+    ReactDOM.render(
+      <div className={dialogStateClass()}>
+        <div ref={dialog} className="fixed m-auto rounded-lg max-w-[700px] max-h-[700px] bg-hoverCard mdAndDown:max-h-full inset-0 w-full p-4">
+          <div className="flex w-full justify-end">
+            <FontAwesomeIcon icon={faTimes} className="icon cursor-pointer transition ease-out duration-300 hover:text-card" onClick={() => setShowDialog('hide')} />
+          </div>
+          {children}
+        </div>
+      </div>, document.getElementById('modal')
+    )
+  }, [showDialog, children])
+
+  useEffect(() => {
     window.addEventListener('click', setUpClickListenerToCloseDialog)
-    console.log(Activator)
-    console.log(children)
     return () => {
       window.removeEventListener('click', setUpClickListenerToCloseDialog)
     } 
   }, [showDialog])
 
   return (
-    <div ref={dialog}>
+    <>
       {React.cloneElement(Activator, {onClick: () => setShowDialog('show')})}
-        <div className={dialogStateClass()}>
-          <div className="dialog bg-hoverCard mdAndDown:device-height inset-0 w-full">
-            <div className="flex w-full justify-end pr-1">
-              <FontAwesomeIcon icon={faTimes} className="icon cursor-pointer transition ease-out duration-300 hover:text-card" onClick={() => setShowDialog('hide')} />
-            </div>
-            {children}
-          </div>
-        </div>
-    </div>
+    </>
   )
 }
 

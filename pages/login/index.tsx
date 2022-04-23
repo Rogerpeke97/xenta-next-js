@@ -44,7 +44,7 @@ const Login: NextPage = () => {
   const [formState, setFormState] = useState(loginStateInfo)
 
   return (
-    <div className="flex h-full items-center justify-center">
+    <div className="flex h-full items-center justify-center bg-no-repeat bg-cover" style={{ backgroundImage: "url('/backgrounds/curvedshape.webp')" }}>
       <div style={loginStyle} className="flex h-full flex-col bg-background rounded-lg">
         <div className="py-4 flex flex-col">
           <div className="flex items-center">
