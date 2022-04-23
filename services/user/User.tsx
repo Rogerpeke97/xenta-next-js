@@ -1,7 +1,7 @@
 import Router from 'next/router';
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { AppHelpers } from '../../context/AppHelpers';
-import { ApiServicer } from '../ApiService';
+import { ApiServicer } from '../api/ApiService';
 const UserServiceContext = createContext<any>({})
 
 const UserServiceWrapper = ({ children }: { children: Array<React.ReactElement> }) => {

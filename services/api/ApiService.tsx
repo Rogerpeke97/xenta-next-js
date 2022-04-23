@@ -1,6 +1,6 @@
 import {createContext, useCallback, useContext, useEffect, useState} from 'react';
-import Api from '../services/Api';
-import { AppHelpers } from '../context/AppHelpers';
+import Api from '../api/Api'
+import { AppHelpers } from '../../context/AppHelpers';
 import Router from 'next/router';
 
 const ApiServiceContext = createContext<any>({})
@@ -11,7 +11,7 @@ const ApiServiceWrapper = ({ children }: { children: React.ReactElement }) => {
 
   const [apiService, setApiService] = useState<Api>()
 
-  const handler = (method: string, url?: string, params?: Object) => {
+  const callServiceMethod = (method: string, url?: string, params?: Object) => {
     if(url) {
       if(params){
         if(method === 'POST'){
@@ -35,7 +35,7 @@ const ApiServiceWrapper = ({ children }: { children: React.ReactElement }) => {
 
   const ApiService = useCallback(async (method: string, url?: string, params?: Object) => {
     if(!apiService) return
-    const response = await handler(method, url, params)
+    const response = await callServiceMethod(method, url, params)
     if(response?.status === 401){
       setIsAuthenticated(false);
       return

@@ -3,7 +3,7 @@ import type { AppProps } from 'next/app'
 import DefaultLayout from '../components/layouts/DefaultLayout'
 import Head from 'next/head'
 import AppHelpersWrapper, { AppHelpers } from '../context/AppHelpers'
-import ApiServiceWrapper from '../services/ApiService'
+import ApiServiceWrapper from '../services/api/ApiService'
 import UserServiceWrapper from '../services/user/User'
 
 function MyApp({ Component, pageProps }: AppProps) {
