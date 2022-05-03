@@ -49,7 +49,7 @@ const Profile = () => {
   useEffect(() => {
     getUserData()
   }, [])
-  
+
   return (
     <>
       <LoadingBar loading={isLoading} />
@@ -76,10 +76,10 @@ const Profile = () => {
             <h3 className="subtitle-3">Recent plays</h3>
             {stats?.plays.map((play, index) => (
               <div key={index} className="flex pt-2 justify-between">
-                <h3 className="subtitle-3 font-bold">{ `Played at "${play.date}"` }</h3>
+                <h3 className="subtitle-3 font-bold">{`Played at "${play.date}"`}</h3>
                 <div className="flex items-center">
                   <FontAwesomeIcon className="icon-small mr-1" color="grey" icon={faCrown} />
-                  <h3 className="body-2">{ play.score }</h3>
+                  <h3 className="body-2">{play.score}</h3>
                 </div>
               </div>
             ))}
@@ -97,11 +97,11 @@ const Profile = () => {
           </div>
         </div>
       </FadeInUp>
-      <FadeInUp className="flex" delayMs={500}>
-        <div className="m-2 flex justify-center h-64 grow">
+      <FadeInUp className="flex flex-wrap" delayMs={500}>
+        <div className="m-2 flex justify-center pt-6 h-64 grow">
           <div className="min-w-[300px] max-w-[300px] w-full p-5 rounded-lg bg-hoverCard">
             <h3 className="subtitle-3 font-bold text-center">Your rank</h3>
-            <div className="flex pt-14 pb-6 justify-center">
+            <div className="flex pt-9 pb-6 justify-center">
               <FontAwesomeIcon className="icon-x-large mr-4" color="silver" icon={faCertificate} />
               <h3 className="pt-2 truncate heading-3 font-bold pl-2">{stats?.max_score}<span className="subtitle-2">th</span></h3>
             </div>
@@ -110,7 +110,12 @@ const Profile = () => {
             </div>
           </div>
         </div>
-        <LeaderBoardTable />
+        <div className="flex pt-6 grow justify-center">
+          <div className="bg-hoverCard p-5 rounded-lg">
+            <h3 className="subtitle-3 font-bold">Leaderboard</h3>
+            <LeaderBoardTable className="mt-4" />
+          </div>
+        </div>
       </FadeInUp>
     </>
   )

@@ -5,6 +5,7 @@ import TextLink from '../../components/atoms/links/TextLink'
 import FormLogin from '../../components/molecules/forms/FormLogin'
 import FormSignUp from '../../components/molecules/forms/FormSignUp'
 import Image from 'next/image'
+import { firstLetterUppercase } from 'plugins/text/Helpers'
 
 
 const loginStyle = {
@@ -20,21 +21,21 @@ const loginStyle = {
 const Login: NextPage = () => {
 
   const loginStateInfo = {
-    state: 'login',
+    state: 'Login',
     descriptionText: "Don't have an account?",
     buttonText: 'Sign up',
     stateComponent: <FormLogin />
   }
 
   const signUpStateInfo = {
-    state: 'signup',
+    state: 'Sign up',
     descriptionText: "Already have an account?",
     buttonText: 'Login',
     stateComponent: <FormSignUp onSignUpSuccess={() => setFormState(loginStateInfo)} />
   }
 
   const findStateToGoTo = (state: string) => {
-    return state === 'login' ? signUpStateInfo : loginStateInfo
+    return state === 'Login' ? signUpStateInfo : loginStateInfo
   }
 
   const currentStateComponent = () => {
@@ -45,14 +46,14 @@ const Login: NextPage = () => {
 
   return (
     <div className="flex h-full items-center justify-center bg-no-repeat bg-cover" style={{ backgroundImage: "url('/backgrounds/curvedshape.webp')" }}>
-      <div style={loginStyle} className="flex h-full flex-col bg-background rounded-lg">
+      <div style={loginStyle} className="flex h-full flex-col bg-background-2 rounded-lg">
         <div className="py-4 flex flex-col">
           <div className="flex items-center">
             <Image priority={true} src="/logos/xenta.png" width={50} height={50} alt="profile-pic" />
             <h3 className="subtitle-2 font-bold">Xenta</h3>
           </div>
           <div className="flex pt-4 justify-center">
-            <h1 className="heading-3 font-bold">Login</h1>
+            <h1 className="heading-3 font-bold">{ formState.state }</h1>
           </div>
         </div>
         <div className="flex w-full py-3">

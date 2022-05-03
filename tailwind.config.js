@@ -10,6 +10,7 @@ module.exports = {
       colors: {
         "primary": "#020A33",
         "background": "#1e2429",
+        "background-2": "#36393f",
         "pop-up": "#3636db",
         "button": {
           light:  "#E9ECEF",

@@ -10,6 +10,7 @@ import { AppHelpers } from '../../../context/AppHelpers'
 import Router from 'next/router'
 import { validateEmail, validatePassword } from '../../../plugins/validators/inputValidator'
 import { UserServicer } from '../../../services/user/User'
+import FadeInUp from '../transitions/FadeInUp'
 
 
 
@@ -78,25 +79,27 @@ const FormLogin = () => {
 
 
   return (
-    <form className="flex flex-col w-full pop-in" onSubmit={login}>
-      <div className="px-6 flex flex-col items-center justify-center">
-        <FormField isValid={form.isValidEmail} value={form.email} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'email')} 
-        warningMessage="Please enter a valid email address" type="email" icon={faEnvelope} placeholder="Email" disabled={isLoading} />
-        <FormField isValid={form.isValidPassword} value={form.password} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'password')} 
-        warningMessage="Password must be of at least 8 characters, including digits and one upper case letter" type="password" icon={faKey} placeholder="Password" disabled={isLoading} />
-      </div>
-      <div className="flex items-end py-6 px-3">
-        <div className="flex w-full items-center justify-end">
-          <TextLink textColor="text-card" text="Forgot password?" link="/forgot-password" />
+    <FadeInUp className="w-full" delayMs={0}>
+      <form className="flex flex-col w-full" onSubmit={login}>
+        <div className="px-6 flex flex-col items-center justify-center">
+          <FormField isValid={form.isValidEmail} value={form.email} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'email')} 
+          warningMessage="Please enter a valid email address" type="email" icon={faEnvelope} placeholder="Email" disabled={isLoading} />
+          <FormField isValid={form.isValidPassword} value={form.password} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'password')} 
+          warningMessage="Password must be of at least 8 characters, including digits and one upper case letter" type="password" icon={faKey} placeholder="Password" disabled={isLoading} />
         </div>
-      </div>
-      <div className="flex items-center pt-2 justify-center">
-        <Button size="regular" color="bg-card" text="Login" onClick={(e) => login(e)} isLoading={isLoading} disabled={!isValidForm()} />
-        <div className="ml-3">
-          <Button size="regular" color="bg-primary" text="Google login" icon={faGoogle} onClick={(e) => loginWithGoogle(e)} disabled={isLoading} />
+        <div className="flex items-end py-6 px-3">
+          <div className="flex w-full items-center justify-end">
+            <TextLink textColor="text-card" text="Forgot password?" link="/forgot-password" />
+          </div>
         </div>
-      </div>
-    </form>
+        <div className="flex items-center pt-2 justify-center">
+          <Button size="regular" color="bg-card" text="Login" onClick={(e) => login(e)} isLoading={isLoading} disabled={!isValidForm()} />
+          <div className="ml-3">
+            <Button size="regular" color="bg-primary" text="Google login" icon={faGoogle} onClick={(e) => loginWithGoogle(e)} disabled={isLoading} />
+          </div>
+        </div>
+      </form>
+    </FadeInUp>
   )
 }
 

@@ -34,10 +34,16 @@ const Button = (props: buttonProps): JSX.Element => {
     )
   }
 
+  const triggerFunctionAndUnfocus = (event: react.MouseEvent) => {
+    event.preventDefault()
+    props.onClick(event)
+    event.currentTarget.blur()
+  }
+
   return (
     <button disabled={props.disabled}
       className={`flex justify-center items-center ${props.color} rounded-lg`}
-      onClick={props.onClick} style={findButtonSize(props.size)}>
+      onClick={triggerFunctionAndUnfocus} style={findButtonSize(props.size)}>
       {props.isLoading ? <div className="spinner"></div> : buttonContent()}
     </button>
   )
