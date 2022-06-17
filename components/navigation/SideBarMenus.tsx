@@ -33,7 +33,6 @@ const SideBarMenus = () => {
   } 
 
   const updateMenu = (menu: number) => {
-    console.log(menu)
     setCurrentMenu(menu)
     const menuRoute = menus[menu]?.route
     if(!menuRoute) return

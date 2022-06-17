@@ -9,13 +9,15 @@ module.exports = {
     extend: {
       colors: {
         "primary": "#020A33",
-        "background": "#1e2429",
-        "background-2": "#36393f",
+        "background": "#093545",
+        "background-2": "#1D1E2B",
+        "background-3": "#2b1637",
         "pop-up": "#3636db",
         "button": {
           light:  "#E9ECEF",
           dark:   "#020A33",
         },
+        "input": "rgb(234, 234, 234)",
         "card": "#0070f3",
         "hoverCard": "#292841"
       },

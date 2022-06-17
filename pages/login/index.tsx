@@ -6,6 +6,7 @@ import FormLogin from '../../components/molecules/forms/FormLogin'
 import FormSignUp from '../../components/molecules/forms/FormSignUp'
 import Image from 'next/image'
 import { firstLetterUppercase } from 'plugins/text/Helpers'
+import TransitionFadeIn from '@/components/molecules/transitions/TransitionFadeIn'
 
 
 const loginStyle = {
@@ -45,15 +46,16 @@ const Login: NextPage = () => {
   const [formState, setFormState] = useState(loginStateInfo)
 
   return (
-    <div className="flex h-full items-center justify-center bg-no-repeat bg-cover" style={{ backgroundImage: "url('/backgrounds/curvedshape.webp')" }}>
-      <div style={loginStyle} className="flex h-full flex-col bg-background-2 rounded-lg">
+    <div className="flex h-full items-center justify-center bg-no-repeat bg-cover"
+      style={{ backgroundImage: "url('/backgrounds/curvedshape.webp')" }}>
+      <TransitionFadeIn style={loginStyle} className="flex h-full p-4 flex-col bg-background-2 rounded-lg">
         <div className="py-4 flex flex-col">
           <div className="flex items-center">
             <Image priority={true} src="/logos/xenta.png" width={50} height={50} alt="profile-pic" />
             <h3 className="subtitle-2 font-bold">Xenta</h3>
           </div>
           <div className="flex pt-4 justify-center">
-            <h1 className="heading-3 font-bold">{ formState.state }</h1>
+            <h1 className="heading-3 font-bold">{formState.state}</h1>
           </div>
         </div>
         <div className="flex w-full py-3">
@@ -65,7 +67,7 @@ const Login: NextPage = () => {
             <Button size="small" color="bg-card" text={formState.buttonText} onClick={() => setFormState(findStateToGoTo(formState.state))} />
           </div>
         </div>
-      </div>
+      </TransitionFadeIn>
     </div>
   )
 }
