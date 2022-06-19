@@ -7,7 +7,8 @@ import Toast from '../atoms/notifications/Toast'
 import Overlay from '../overlays/Overlay'
 import NavigationLayout from './NavigationLayout'
 
-export default function DefaultLayout({ children }: { children: React.ReactElement }) {
+const DefaultLayout = ({ children }: { children: React.ReactElement }) => {
+
   const MINUTES = 1
   const REFRESH_TOKEN_EVERY = MINUTES * (60 * 1000)
   const { setWindowWidth, setShowSideBar, showSideBar, isAuthenticated, toast } = AppHelpers()
@@ -15,14 +16,12 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
   const [refreshTokenInterval, setRefreshTokenInterval] = useState<NodeJS.Timer>()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
-
   async function checkIfAuthenticated() {
     setIsLoading(true)
     if (!isServiceReady) return
     await pingUser()
     setIsLoading(false)
   }
-
   const onResize = () => {
     const windowSize = {
       description: window.innerWidth <= 1200 ? 'mobile' : 'desktop', size: window.innerWidth
@@ -38,12 +37,10 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
       setShowSideBar({ show: false, forced: false })
     }
   }
-
   function setWindowListener() {
     setWindowWidth({ description: window.innerWidth <= 1200 ? 'mobile' : 'desktop', size: window.innerWidth })
     window.addEventListener('resize', onResize)
   }
-
   const showLoginOrHome = () => {
     if (!isAuthenticated) {
       return <Login />
@@ -54,25 +51,21 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
       </NavigationLayout>
     )
   }
-
   const setViewHeightCssVar = () => {
     const viewHeight = window.innerHeight
     const viewWidth = window.innerWidth
     document.documentElement.style.setProperty('--vh', `${viewHeight}px`)
     document.documentElement.style.setProperty('--vw', `${viewWidth}px`)
   }
-
   const displayToast = () => {
     if (!toast || !toast.displayToast) return
     return (
       toast.messages.map((message: string, index: number) => <Toast key={index} text={message.message} type={message.type} />)
     )
   }
-
   useEffect(() => {
     setViewHeightCssVar()
   }, [])
-
   useEffect(() => {
     setWindowListener()
     checkIfAuthenticated()
@@ -101,3 +94,4 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
     </>
   )
 }
+export default DefaultLayout
