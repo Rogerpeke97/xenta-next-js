@@ -25,12 +25,12 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
 
   const onResize = () => {
     const windowSize = {
-      description: window.innerWidth <= 1200 ? 'small' : 'big', size: window.innerWidth
+      description: window.innerWidth <= 1200 ? 'mobile' : 'desktop', size: window.innerWidth
     }
     const showSideBarForced = showSideBar.forced && showSideBar.show
     setViewHeightCssVar()
     setWindowWidth(windowSize)
-    if (windowSize.description === 'big') {
+    if (windowSize.description === 'desktop') {
       setShowSideBar({ show: true, forced: false })
       return
     }
@@ -40,7 +40,7 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
   }
 
   function setWindowListener() {
-    setWindowWidth({ description: window.innerWidth <= 1200 ? 'small' : 'big', size: window.innerWidth })
+    setWindowWidth({ description: window.innerWidth <= 1200 ? 'mobile' : 'desktop', size: window.innerWidth })
     window.addEventListener('resize', onResize)
   }
 

@@ -15,10 +15,9 @@ const SideBar= () => {
     const sideBarWidth = sideBar.current?.clientWidth
     const isSideBarHidden = sideBarWidth === 0
     const showSideBarForced = showSideBar.forced && showSideBar.show
-    const showSideBarNotForced = showSideBar.show && !showSideBar.forced
     const hideSideBarForced = !showSideBar.show && showSideBar.forced
     const hideSideBarNotForced = !showSideBar.show && !showSideBar.forced
-    const isMobile = windowWidth.description === 'small'
+    const isMobile = windowWidth.description === 'mobile'
     if(isMobile){
       if(showSideBarForced && isSideBarHidden){
         currentSideBarClass.current = 'show-side-bar-mobile flex w-full absolute z-50'
@@ -31,12 +30,7 @@ const SideBar= () => {
       }
     }
     else{
-      if(showSideBarNotForced) {
-        currentSideBarClass.current = 'flex w-60 show-side-bar expand'
-      }
-      if(hideSideBarNotForced){
-        currentSideBarClass.current = 'flex absolute z-50 collapse-menu'
-      }
+      currentSideBarClass.current = 'flex w-60 show-side-bar expand'
     }
     return currentSideBarClass.current
   }, [showSideBar, windowWidth])
@@ -46,7 +40,7 @@ const SideBar= () => {
       <div className="h-full w-full bg-background rounded-lg">
         <div className="h-24 flex items-center mdAndDown:justify-between justify-center">
           <Image priority={true} src="/logos/xenta.png" width={80} height={80} alt="profile-pic" />
-          {windowWidth.description === 'small' && (
+          {windowWidth.description === 'mobile' && (
             <div className="pr-6">
               <FontAwesomeIcon icon={faTimes} className="icon cursor-pointer" 
                 onClick={() => setShowSideBar({ show: false, forced: true })} />

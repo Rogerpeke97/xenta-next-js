@@ -13,7 +13,7 @@ const NavigationBar: react.FC<NavProps> = ({ sideBar }) => {
 
   const { windowWidth, setShowSideBar } = AppHelpers()
   const leftSide = () => {
-    if (windowWidth.description === "small") {
+    if (windowWidth.description === "mobile") {
       return (
         <div className="flex pl-5 flex-col items-center justify-center">
           <FontAwesomeIcon className="icon cursor-pointer" icon={faBars} 
