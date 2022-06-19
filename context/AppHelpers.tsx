@@ -14,6 +14,11 @@ interface GameHelpers {
   gameInterval: NodeJS.Timeout | null;
 }
 
+type showSideBar = {
+  show: boolean;
+  forced: boolean;
+}
+
 const AppContextHelpers = createContext<any>({})
 
 const AppHelpersWrapper = ({ children }: { children: React.ReactElement }) => {
@@ -24,7 +29,7 @@ const AppHelpersWrapper = ({ children }: { children: React.ReactElement }) => {
 
   const [windowWidth, setWindowWidth] = useState({ description: '', size: 0 })
 
-  const [showSideBar, setShowSideBar] = useState(false)
+  const [showSideBar, setShowSideBar] = useState<showSideBar>({ show: true, forced: false })
 
   const [gameHelpers, setGameHelpers] = useState<GameHelpers>({
     lives: [

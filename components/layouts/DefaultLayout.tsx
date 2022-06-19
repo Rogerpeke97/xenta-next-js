@@ -10,7 +10,7 @@ import NavigationLayout from './NavigationLayout'
 export default function DefaultLayout({ children }: { children: React.ReactElement }) {
   const MINUTES = 1
   const REFRESH_TOKEN_EVERY = MINUTES * (60 * 1000)
-  const { setWindowWidth, setShowSideBar, isAuthenticated, toast } = AppHelpers()
+  const { setWindowWidth, setShowSideBar, showSideBar, isAuthenticated, toast } = AppHelpers()
   const { pingUser, isServiceReady } = UserServicer()
   const [refreshTokenInterval, setRefreshTokenInterval] = useState<NodeJS.Timer>()
   const router = useRouter()
@@ -25,19 +25,22 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
 
   const onResize = () => {
     const windowSize = {
-      description: window.innerWidth < 1024 ? 'small' : 'big', size: window.innerWidth
+      description: window.innerWidth <= 1200 ? 'small' : 'big', size: window.innerWidth
     }
+    const showSideBarForced = showSideBar.forced && showSideBar.show
     setViewHeightCssVar()
     setWindowWidth(windowSize)
     if (windowSize.description === 'big') {
-      setShowSideBar(true)
+      setShowSideBar({ show: true, forced: false })
       return
     }
-    setShowSideBar(false)
+    if(!showSideBarForced){
+      setShowSideBar({ show: false, forced: false })
+    }
   }
 
   function setWindowListener() {
-    setWindowWidth({ description: window.innerWidth < 1100 ? 'small' : 'big', size: window.innerWidth })
+    setWindowWidth({ description: window.innerWidth <= 1200 ? 'small' : 'big', size: window.innerWidth })
     window.addEventListener('resize', onResize)
   }
 
@@ -85,7 +88,7 @@ export default function DefaultLayout({ children }: { children: React.ReactEleme
       window.removeEventListener('resize', onResize)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.pathname, isServiceReady])
+  }, [router.pathname, isServiceReady, showSideBar])
 
   return (
     <>

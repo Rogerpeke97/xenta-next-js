@@ -48,7 +48,7 @@ const Login: NextPage = () => {
   return (
     <div className="flex h-full items-center justify-center bg-no-repeat bg-cover"
       style={{ backgroundImage: "url('/backgrounds/curvedshape.webp')" }}>
-      <TransitionFadeIn style={loginStyle} className="flex h-full p-4 flex-col bg-background-2 rounded-lg">
+      <TransitionFadeIn style={loginStyle} className="flex h-full p-4 flex-col bg-background-2 rounded-3xl">
         <div className="py-4 flex flex-col">
           <div className="flex items-center">
             <Image priority={true} src="/logos/xenta.png" width={50} height={50} alt="profile-pic" />

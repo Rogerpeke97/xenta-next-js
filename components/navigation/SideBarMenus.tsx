@@ -37,7 +37,7 @@ const SideBarMenus = () => {
     const menuRoute = menus[menu]?.route
     if(!menuRoute) return
     Router.push(menuRoute)
-    setShowSideBar(false)
+    setShowSideBar({ show: false, forced: true })
   }
 
   useEffect(() => {

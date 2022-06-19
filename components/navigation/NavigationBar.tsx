@@ -11,21 +11,18 @@ interface NavProps {
 
 const NavigationBar: react.FC<NavProps> = ({ sideBar }) => {
 
-  const { windowWidth } = AppHelpers()
-
-  const [showSideBar, setShowSideBar] = sideBar
-
+  const { windowWidth, setShowSideBar } = AppHelpers()
   const leftSide = () => {
     if (windowWidth.description === "small") {
       return (
         <div className="flex pl-5 flex-col items-center justify-center">
-          <FontAwesomeIcon className="icon cursor-pointer" icon={faBars} onClick={() => setShowSideBar(!showSideBar)} />
+          <FontAwesomeIcon className="icon cursor-pointer" icon={faBars} 
+            onClick={() => setShowSideBar({ show: true, forced: true })} />
         </div>
       )
     }
     return
   }
-
 
   return (
     <nav className="flex w-full px-5" style={{ minHeight: '120px' }}>

@@ -1,10 +1,10 @@
 import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from 'three';
-import { vertexShaderParticle, fragmentShaderParticle } from '../../plugins/game/shaders/sphereParticle';
+import { vertexShaderParticle, fragmentShaderParticle } from '../../../plugins/game/shaders/sphereParticle';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { BufferGeometry, Object3D } from "three";
-import { AppHelpers } from "../../context/AppHelpers"
+import { AppHelpers } from "context/AppHelpers";
 
 
 interface Axes {

@@ -2,40 +2,43 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import Divider from '../atoms/dividers/Divider'
 import SideBarMenus from './SideBarMenus'
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { AppHelpers } from '../../context/AppHelpers'
 import Image from 'next/image'
 
 const SideBar= () => {
 
   const { windowWidth, showSideBar, setShowSideBar } = AppHelpers()
-
   const sideBar = useRef<HTMLDivElement>(null)
-
+  const currentSideBarClass = useRef<string>('')
   const classForSideBar = useCallback(() => {
     const sideBarWidth = sideBar.current?.clientWidth
-    if(windowWidth.description === 'small'){
-      if(showSideBar){
-        if(sideBarWidth === windowWidth.size || sideBarWidth === 0){
-          return 'show-side-bar-mobile flex w-full absolute z-50'
-        }
+    const isSideBarHidden = sideBarWidth === 0
+    const showSideBarForced = showSideBar.forced && showSideBar.show
+    const showSideBarNotForced = showSideBar.show && !showSideBar.forced
+    const hideSideBarForced = !showSideBar.show && showSideBar.forced
+    const hideSideBarNotForced = !showSideBar.show && !showSideBar.forced
+    const isMobile = windowWidth.description === 'small'
+    if(isMobile){
+      if(showSideBarForced && isSideBarHidden){
+        currentSideBarClass.current = 'show-side-bar-mobile flex w-full absolute z-50'
       }
-      if (sideBarWidth) {
-        if (sideBarWidth === windowWidth.size) {
-          return 'flex absolute z-50 collapse-menu'
-        }
-        if (sideBarWidth > 0) {
-          return 'absolute hide-side-bar-mobile'
-        }
+      if (hideSideBarNotForced && !isSideBarHidden) {
+        currentSideBarClass.current = 'absolute hide-side-bar-mobile'
       }
-      return 'absolute hidden'
+      if(hideSideBarForced){
+        currentSideBarClass.current = 'flex absolute z-50 collapse-menu'
+      }
     }
     else{
-      if (sideBarWidth === 0) {
-        return 'flex w-60 show-side-bar expand'
+      if(showSideBarNotForced) {
+        currentSideBarClass.current = 'flex w-60 show-side-bar expand'
       }
-      return 'flex w-60 show-side-bar'
+      if(hideSideBarNotForced){
+        currentSideBarClass.current = 'flex absolute z-50 collapse-menu'
+      }
     }
+    return currentSideBarClass.current
   }, [showSideBar, windowWidth])
 
   return (
@@ -45,7 +48,8 @@ const SideBar= () => {
           <Image priority={true} src="/logos/xenta.png" width={80} height={80} alt="profile-pic" />
           {windowWidth.description === 'small' && (
             <div className="pr-6">
-              <FontAwesomeIcon icon={faTimes} className="icon cursor-pointer" onClick={() => setShowSideBar(false)} />
+              <FontAwesomeIcon icon={faTimes} className="icon cursor-pointer" 
+                onClick={() => setShowSideBar({ show: false, forced: true })} />
             </div>
           )}
         </div>
