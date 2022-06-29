@@ -66,7 +66,12 @@ const PlayMenu = ({ score, setScore, isGameFinished, isLoading, setTutorialOverl
   }
   if (isGameFinished.current) {
     return (
-      <PlayMenuDialog onPlay={playFirstTime} isLoading={isLoading} />
+      <PlayMenuDialog onPlay={playFirstTime} isLoading={isLoading}>
+        <h3 className="pt-3 heading-3 font-bold">Welcome!</h3>
+        <p className="pt-3 subtitle-2">
+          Hey! I hope you enjoy this silly game I created while being bored &#129400;
+        </p>
+      </PlayMenuDialog>
     )
   }
   return <></>
