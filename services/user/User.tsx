@@ -142,5 +142,5 @@ export const useUpdateScoreUser = (score: number) => {
       })
     }
     return response
-  })
+  }, { enabled: false })
 } 

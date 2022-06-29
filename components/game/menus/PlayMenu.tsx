@@ -5,10 +5,9 @@ import { AppHelpers } from "context/AppHelpers"
 import Image from "next/image"
 import { MutableRefObject } from "react"
 
-const PlayMenu = ({ score, setScore, isGameFinished, setIsMaxScoreSet, 
-    isLoading, setTutorialOverlay }: 
-    { score: number, setScore: (score: number) => void, isGameFinished: MutableRefObject<boolean>
-      setIsMaxScoreSet: (isMaxScoreSet: boolean) => void, isLoading: boolean
+const PlayMenu = ({ score, setScore, isGameFinished, isLoading, setTutorialOverlay }: 
+    { score: number, setScore: (score: number) => void, 
+      isGameFinished: MutableRefObject<boolean>, isLoading: boolean
       setTutorialOverlay: (showTutorialOverlay: boolean) => void
     }
   ) => {
@@ -39,7 +38,6 @@ const PlayMenu = ({ score, setScore, isGameFinished, setIsMaxScoreSet,
               setScore(0)
               gameHelpers.resetFields()
               isGameFinished.current = false
-              setIsMaxScoreSet(false)
             }}
             disabled={isLoading} />
         </div>

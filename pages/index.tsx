@@ -15,26 +15,18 @@ const Home = () => {
   const [score, setScore] = useState(0)
   const intervalForScoreSum = useRef<NodeJS.Timeout>()
   const [showTutorialOverlay, setTutorialOverlay] = useState(false)
-  const [isMaxScoreSet, setIsMaxScoreSet] = useState(false)
   const isGameFinished = useRef(true)
-  const [userData, setUserData] = useState({
-    username: '',
-    name: '',
-    score: 0,
-  })
-  const { isLoading, data: fetchedUserData, refetch } = useGetUser()
+  const { isLoading, data: userData, refetch } = useGetUser()
+  const { refetch: setScoreServer, isRefetching: isUpdatingScore } = useUpdateScoreUser(score)
   useEffect(() => {
-    if(!fetchedUserData) {
+    if(!userData) {
       refetch()
     }
-    if(fetchedUserData){
-      setUserData(userData)
-    }
-  }, [fetchedUserData, userData, refetch])
+  }, [userData])
   const updateScore = async() => {
-    if(score <= userData.score || isMaxScoreSet) return
-    await useUpdateScoreUser(score)
-    setIsMaxScoreSet(true)
+    if(!userData || score <= userData.data?.score) return
+    const setNewScore = await setScoreServer()
+    setScore(0)
   }
   const isActiveHeart = (heartIndex: number) => {
     const isActive = gameHelpers.lives.find((_, index) => index === heartIndex)?.isActive
@@ -42,13 +34,13 @@ const Home = () => {
   }
   const setIntervalForScoreSum = useCallback(() => {
     intervalForScoreSum.current = setInterval(async() => {
-      if (isGameFinished.current) {
+      if (isGameFinished.current && !isUpdatingScore) {
         await updateScore()
         return
       }
       setScore(score + 1)
     }, 250)
-  }, [score, isMaxScoreSet])
+  }, [score, userData, isUpdatingScore])
   const livesRemaining = () => {
     return gameHelpers.lives.filter(heart => heart.isActive).length
   }
@@ -93,7 +85,7 @@ const Home = () => {
         {showTutorialOverlay ? 
           <InstructionsMenu setTutorialOverlay={setTutorialOverlay} /> : 
           <PlayMenu score={score} setScore={setScore} isGameFinished={isGameFinished}
-            setIsMaxScoreSet={setIsMaxScoreSet} isLoading={true} setTutorialOverlay={setTutorialOverlay}
+            isLoading={isLoading} setTutorialOverlay={setTutorialOverlay}
           />
         }
         <IconButton iconName={faKeyboard} onClick={() => setTutorialOverlay(!showTutorialOverlay)} iconSize={'icon'} />
