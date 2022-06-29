@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef, CSSProperties } from 'react'
 const TransitionFadeIn = ({ children, delayMs = 0, className = "",
    direction = "up", disableOnScrollDisplay = true, style={} }: 
   { children: React.ReactElement | Array<React.ReactElement>, delayMs?: number, 
-    className?: string, direction?: string, disableOnScrollDisplay?: boolean, style: CSSProperties 
+    className?: string, direction?: string, disableOnScrollDisplay?: boolean, style?: CSSProperties 
   }) => {
 
   const [loadedOnce, setLoadedOnce] = useState(false)

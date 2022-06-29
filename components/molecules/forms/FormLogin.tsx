@@ -5,23 +5,19 @@ import { faGoogle } from '@fortawesome/free-brands-svg-icons'
 import FormField from '../../atoms/inputs/FormField'
 import TextLink from '../../atoms/links/TextLink'
 import Button from '../../atoms/buttons/Button'
-import { AppHelpers } from '../../../context/AppHelpers'
 import { validateEmail, validatePassword } from '../../../plugins/validators/inputValidator'
-import { UserServicer } from '../../../services/user/User'
+import { useLoginUser } from 'services/user/User'
 
 const FormLogin = () => {
-
-  const { setIsAuthenticated } = AppHelpers()
-  const { loginUser } = UserServicer()
   const [form, setForm] = useState({
     email: '',
     password: '',
     isValidEmail: true,
     isValidPassword: true,
-    isSubmitted: false,
     popUpMessage: ''
   })
-  function handleInputChange(newValue: string, inputName: string) {
+  const { isLoading, refetch } = useLoginUser({ username: form.email, password: form.password })
+  const onInputChange = (newValue: string, inputName: string) => {
     const validationsByInputName = [
       { name: 'email', validate: (email: string) => validateEmail(email), isValidName: 'isValidEmail' },
       { name: 'password', validate: (password: string) => validatePassword(password), isValidName: 'isValidPassword' }
@@ -39,31 +35,23 @@ const FormLogin = () => {
     setForm({ ...form, isValidEmail, isValidPassword })
     return isValidEmail && isValidPassword
   }
-  const [isLoading, setIsLoading] = useState(false)
   const login = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent) => {
     if (areAllFieldsValid()) {
       e.preventDefault()
-      setIsLoading(true)
-      await loginUser({ username: form.email, password: form.password })
-      setIsLoading(false)
+      await refetch()
     }
   }
   const loginWithGoogle = (e: React.FormEvent<HTMLFormElement> | React.MouseEvent) => {
     e.preventDefault()
     console.log('login with google')
   }
-  useEffect(() => {
-    return () => {
-      setIsLoading(false)
-    }
-  },[])
 
   return (
     <form className="flex flex-col w-full pop-in" onSubmit={login}>
       <div className="px-6 flex flex-col items-center justify-center">
-        <FormField isValid={form.isValidEmail} value={form.email} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'email')} 
+        <FormField isValid={form.isValidEmail} value={form.email} onChange={(e) => onInputChange((e.target as HTMLTextAreaElement).value, 'email')} 
         warningMessage="Please enter a valid email address" type="email" icon={faEnvelope} placeholder="Email" disabled={isLoading} />
-        <FormField isValid={form.isValidPassword} value={form.password} onChange={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, 'password')} 
+        <FormField isValid={form.isValidPassword} value={form.password} onChange={(e) => onInputChange((e.target as HTMLTextAreaElement).value, 'password')} 
         warningMessage="Password must be of at least 8 characters, including digits and one upper case letter" type="password" icon={faKey} placeholder="Password" disabled={isLoading} />
       </div>
       <div className="flex items-end py-6 px-3">

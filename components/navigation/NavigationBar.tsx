@@ -5,11 +5,7 @@ import IconButtonLink from '../atoms/buttons/IconButtonLink'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { AppHelpers } from '../../context/AppHelpers'
 
-interface NavProps {
-  sideBar: [boolean, Function]
-}
-
-const NavigationBar: react.FC<NavProps> = ({ sideBar }) => {
+const NavigationBar = () => {
 
   const { windowWidth, setShowSideBar } = AppHelpers()
   const leftSide = () => {

@@ -28,56 +28,43 @@ interface TrackedParticles {
   angleOfRotation: number;
 }
 
-const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> }) => {
+const Game = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> }) => {
 
   const ALLOWED_KEYS = [' ', 'ArrowLeft', 'ArrowRight']
-
   const canvasContainer = useRef<HTMLDivElement>(null);
-
   const PLANET_ORIGIN_AXES = {
     x: 30,
     y: -2,
     z: 30
   }
-
-  const { gameHelpers } = AppHelpers()
-
+  const { gameHelpers, windowWidth } = AppHelpers()
   const trackedKeys = useRef({ ArrowRight: false, ArrowLeft: false })
-
   const PLANET_RADIUS = 10
-
   const modelLoader = new GLTFLoader()
-
   const animationFrameId = useRef<number>(0)
-
   const TREE_COUNT = 40
-
   const scene = useRef<THREE.Scene>(new THREE.Scene())
-
-  function afterKeyPressHandler(event: KeyboardEvent) {
+  const renderer = useRef<THREE.Renderer | null>()
+  const camera = useRef<THREE.PerspectiveCamera>()
+  const afterKeyPressHandler = (event: KeyboardEvent) => {
     const isAnAllowedKey = ALLOWED_KEYS.includes(event.key)
     if (isAnAllowedKey) {
       trackedKeys.current = { ...trackedKeys.current, [event.key]: true }
     }
   }
-
-  function afterKeyUnpressedHandler(event: KeyboardEvent) {
+  const afterKeyUnpressedHandler = (event: KeyboardEvent) => {
     const isAnAllowedKey = ALLOWED_KEYS.includes(event.key)
     if (isAnAllowedKey) {
       trackedKeys.current = { ...trackedKeys.current, [event.key]: false }
     }
   }
-
-  function setKeyDownListener() {
+  const setKeyDownListener = () => {
     window.addEventListener('keydown', afterKeyPressHandler)
   }
-
-  function setKeyUpListener() {
+  const setKeyUpListener = () => {
     window.addEventListener('keyup', afterKeyUnpressedHandler)
   }
-
-
-  function hasCharacterHitTree(scene: THREE.Scene) {
+  const hasCharacterHitTree = (scene: THREE.Scene) => {
     const character = scene.getObjectByName('character')
     let trees: Array<THREE.Mesh> = []
     scene.traverse((mesh) => {
@@ -111,9 +98,7 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
     }
     return hasBeenHit
   }
-
-
-  function updateCharacterPosition(scene: THREE.Scene) {
+  const updateCharacterPosition = (scene: THREE.Scene) => {
     const character = scene.getObjectByName('character')
     if (!character || !characterAnimationMixer.current) return
     characterAnimationMixer.current.clipAction(
@@ -150,17 +135,13 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
       }
     }
   }
-
   const characterAnimationMixer = useRef<THREE.AnimationMixer>()
-
   const characterAnimations = useRef<THREE.AnimationClip[]>([])
-
-  function setCameraPosition(camera: THREE.PerspectiveCamera, position: Axes, rotation: Axes) {
+  const setCameraPosition = (camera: THREE.PerspectiveCamera, position: Axes, rotation: Axes) => {
     camera.position.set(position.x, position.y, position.z)
     camera.rotation.set(rotation.x, rotation.y, rotation.z)
   }
-
-  function addLight(scene: THREE.Scene) {
+  const addLight = (scene: THREE.Scene) => {
     const directionalLight = new THREE.DirectionalLight(0xBC2732, 1)
     directionalLight.position.set(PLANET_ORIGIN_AXES.x, PLANET_ORIGIN_AXES.y + PLANET_RADIUS * 2, PLANET_ORIGIN_AXES.z - 8)
     directionalLight.castShadow = true
@@ -180,20 +161,18 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
 
     scene.add(ambientLight)
   }
-  function hasCollidedWithPlanet(point: THREE.Vector3) {
+  const hasCollidedWithPlanet = (point: THREE.Vector3) => {
     const coordinatesForCollisionCalc = Math.pow(point.x - PLANET_ORIGIN_AXES.x, 2) + Math.pow(point.y - PLANET_ORIGIN_AXES.y, 2) + Math.pow(point.z - PLANET_ORIGIN_AXES.z, 2)
     const hasCollision = Math.sqrt(coordinatesForCollisionCalc) <= PLANET_RADIUS
     return hasCollision
   }
-
-  function calculateParticleRotation(vector: THREE.Vector3, indexInArray: number, particlePositions: (THREE.BufferAttribute | THREE.InterleavedBufferAttribute), rotationAngle: number) {
+  const calculateParticleRotation = (vector: THREE.Vector3, indexInArray: number, particlePositions: (THREE.BufferAttribute | THREE.InterleavedBufferAttribute), rotationAngle: number) => {
     const rotationAngleInRadians = rotationAngle * Math.PI / 180
     const particleAfterRotationZ = Math.cos(rotationAngleInRadians) * (vector.z - PLANET_ORIGIN_AXES.z) - Math.sin(rotationAngleInRadians) * (vector.y - PLANET_ORIGIN_AXES.y) + PLANET_ORIGIN_AXES.z
     const particleAfterRotationY = Math.sin(rotationAngleInRadians) * (vector.z - PLANET_ORIGIN_AXES.z) + Math.cos(rotationAngleInRadians) * (vector.y - PLANET_ORIGIN_AXES.y) + PLANET_ORIGIN_AXES.y
     const particleAfterRotationX = vector.x
     particlePositions.setXYZ(indexInArray, particleAfterRotationX, particleAfterRotationY, particleAfterRotationZ)
   }
-
   const moveParticles = (particles: THREE.BufferGeometry, clock: THREE.Clock, particlesSystem: THREE.Points, PARTICLES_COUNT: number, trackedStillParticles: Array<TrackedParticles>) => {
     let trackedParticle
     const particlesPosition = particles.getAttribute('position')
@@ -229,9 +208,7 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
       particlesSystem.geometry.attributes.position.needsUpdate = true
     }
   }
-
-
-  function addAmbientParticles(scene: THREE.Scene, renderer: THREE.WebGLRenderer, clock: THREE.Clock, resolution: THREE.Vector2) {
+  const addAmbientParticles = (scene: THREE.Scene, renderer: THREE.WebGLRenderer, clock: THREE.Clock, resolution: THREE.Vector2) => {
     const PARTICLES_COUNT = 1800
     const PARTICLES_DISTANCE = 53
     const particleTexture = new THREE.TextureLoader().load('/game/textures/particle.png')
@@ -284,9 +261,7 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
 
     scene.add(particlesSystem)
   }
-
-
-  function rotateTrees(scene: THREE.Scene, clock: THREE.Clock) {
+  const rotateTrees = (scene: THREE.Scene, clock: THREE.Clock) => {
     let trees: Array<THREE.Mesh> = []
     scene.traverse((mesh) => {
       if (mesh instanceof THREE.Mesh && mesh.name === 'tree') {
@@ -322,16 +297,12 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
       tree.rotation.set(treeRotationX, 0, -treeRotationZ)
     })
   }
-
-
-
   const render = (renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.PerspectiveCamera, clock: THREE.Clock, oldTime: number) => {
     const currentTime = clock.getElapsedTime()
     characterAnimationMixer.current?.update(currentTime - oldTime) // deltaTime = currentTime - oldTime.
     renderer.render(scene, camera)
     animationFrameId.current = requestAnimationFrame(() => render(renderer, scene, camera, clock, currentTime))//  Not using THREE.getDelta because it wasn't working properly and I was lazy to research about it
   }
-
   const resize = (renderer: THREE.WebGLRenderer, camera: THREE.PerspectiveCamera, renderScreenWidth: number, renderScreenHeight: number) => {
     if (canvasContainer.current === null) return
     renderScreenWidth = canvasContainer.current.clientWidth
@@ -340,8 +311,7 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
     camera.aspect = renderScreenWidth / renderScreenHeight;
     camera.updateProjectionMatrix();
   }
-
-  function addPlanet(scene: THREE.Scene, renderer: THREE.WebGLRenderer) {
+  const addPlanet = (scene: THREE.Scene, renderer: THREE.WebGLRenderer) => {
     const planetTexture = new THREE
       .TextureLoader()
       .load('/game/textures/rock.jpg', () => {
@@ -360,8 +330,7 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
     planet.name = 'planet'
     scene.add(planet)
   }
-
-  function addTrees(scene: THREE.Scene) {
+  const addTrees = (scene: THREE.Scene) => {
     modelLoader.load('/game/models/tree.glb', (tree) => {
       let treeGeometry: BufferGeometry | undefined
       let treeMaterial
@@ -402,8 +371,7 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
       }
     })
   }
-
-  function addCharacter(scene: THREE.Scene) {
+  const addCharacter = (scene: THREE.Scene) => {
     modelLoader.load('/game/models/knight.gltf', (character) => {
       character.scene.traverse((child: Object3D) => {
         if (child instanceof THREE.Mesh) {
@@ -423,19 +391,15 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
       scene.add(character.scene)
     })
   }
-
-
-  function rotatePlanet(scene: THREE.Scene, clock: THREE.Clock) {
+  const rotatePlanet = (scene: THREE.Scene, clock: THREE.Clock) => {
     const planet = scene.getObjectByName('planet')
     if (!planet) return
     planet.rotation.x += 0.01
   }
-
-  function setControls(camera: THREE.Camera, renderer: THREE.WebGLRenderer) {
+  const setControls = (camera: THREE.Camera, renderer: THREE.WebGLRenderer) => {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 0, 0)
   }
-
   useEffect(() => {
     if (gameHelpers.gameInterval) return
     if (gameHelpers.intervalIds.length > 1) {
@@ -448,42 +412,52 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
     gameHelpers.gameInterval = interval
     gameHelpers.intervalIds.push(interval)
   }, [gameHelpers])
-
-  useEffect(() => {
-    const canvasElement = document.getElementById('canvas');
-    if (!canvasContainer.current || !canvasElement) {
-      return
+  const canvasContainerSize = useMemo(() => {
+    return {
+      renderScreenHeight: canvasContainer.current?.clientHeight || 0,
+      renderScreenWidth: canvasContainer.current?.clientWidth || 0
     }
-    let renderScreenHeight = canvasContainer.current.clientHeight
-    let renderScreenWidth = canvasContainer.current.clientWidth
+  }, [windowWidth])
+  useEffect(() => {
+    renderer.current = new THREE.WebGLRenderer({ 
+      canvas: document.getElementById('canvas')
+    })
+    const { renderScreenHeight, renderScreenWidth } = canvasContainerSize
     const resolution = new THREE.Vector2(renderScreenWidth, renderScreenHeight)
-    const camera = new THREE.PerspectiveCamera(75, renderScreenWidth / renderScreenHeight, 0.1, 1000)
-    const renderer = new THREE.WebGLRenderer({ canvas: canvasElement })
-    renderer.shadowMap.enabled = true
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap
+    camera.current = new THREE.PerspectiveCamera(75, renderScreenWidth / renderScreenHeight, 0.1, 1000)
+    renderer.current.shadowMap.enabled = true
+    renderer.current.shadowMap.type = THREE.PCFSoftShadowMap
     const CHARACTER_POSITION_ON_PLANET_Y_AXIS = PLANET_ORIGIN_AXES.y + PLANET_RADIUS + 1.5
     setKeyDownListener()
     setKeyUpListener()
-    setControls(camera, renderer)
-    setCameraPosition(camera, { x: PLANET_ORIGIN_AXES.x, y: CHARACTER_POSITION_ON_PLANET_Y_AXIS, z: PLANET_ORIGIN_AXES.z + 1.2 }, { x: -0.7, y: 0, z: 0 })
+    setControls(camera.current, renderer.current)
+    setCameraPosition(camera.current, { x: PLANET_ORIGIN_AXES.x, y: CHARACTER_POSITION_ON_PLANET_Y_AXIS, z: PLANET_ORIGIN_AXES.z + 1.2 }, { x: -0.7, y: 0, z: 0 })
     const clock = new THREE.Clock()
-    addPlanet(scene.current, renderer)
+    addPlanet(scene.current, renderer.current)
     addTrees(scene.current)
     addCharacter(scene.current)
-    addAmbientParticles(scene.current, renderer, clock, resolution)
+    addAmbientParticles(scene.current, renderer.current, clock, resolution)
     addLight(scene.current)
-    renderer.setSize(renderScreenWidth, renderScreenHeight)
-    window.addEventListener('resize', () => resize(renderer, camera, renderScreenWidth, renderScreenHeight))
-    render(renderer, scene.current, camera, clock, clock.getElapsedTime())
-
+    renderer.current.setSize(renderScreenWidth, renderScreenHeight)
+    camera.current.aspect = renderScreenWidth / renderScreenHeight
+    camera.current.updateProjectionMatrix()
+    window.addEventListener('resize', () => resize(renderer.current, camera.current, renderScreenWidth, renderScreenHeight))
+    render(renderer.current, scene.current, camera.current, clock, clock.getElapsedTime())
     return () => {
-      window.removeEventListener('resize', () => resize(renderer, camera, renderScreenWidth, renderScreenHeight))
+      window.removeEventListener('resize', () => resize(renderer.current, camera.current, renderScreenWidth, renderScreenHeight))
       window.cancelAnimationFrame(animationFrameId.current)
       window.removeEventListener('keydown', afterKeyPressHandler)
       window.removeEventListener('keyup', afterKeyUnpressedHandler)
     }
-
   }, [trackedKeys])
+  useEffect(() => {
+    const { renderScreenHeight, renderScreenWidth } = canvasContainerSize
+    resize(renderer.current, camera.current, renderScreenWidth, renderScreenHeight)
+  }, [canvasContainerSize])
+  useEffect(() => {
+    const { renderScreenHeight, renderScreenWidth } = canvasContainerSize
+    resize(renderer.current, camera.current, renderScreenWidth, renderScreenHeight)
+  }, [])
 
   return (
     <div className="h-full" ref={canvasContainer}>
@@ -494,4 +468,4 @@ const Menu = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
 }
 
 
-export default Menu;
+export default Game;

@@ -4,13 +4,15 @@ import DefaultLayout from '../components/layouts/DefaultLayout'
 import Head from 'next/head'
 import AppHelpersWrapper, { AppHelpers } from '../context/AppHelpers'
 import ApiServiceWrapper from '../services/api/ApiService'
-import UserServiceWrapper from '../services/user/User'
+import { QueryClient, QueryClientProvider} from 'react-query'
 
 function MyApp({ Component, pageProps }: AppProps) {
+
+  const queryClient = new QueryClient()
   return (
-    <AppHelpersWrapper>
-      <ApiServiceWrapper>
-        <UserServiceWrapper>
+    <QueryClientProvider client={queryClient}>
+      <AppHelpersWrapper>
+        <ApiServiceWrapper>
           <Head>
             <title>Xenta</title>
             <meta name="description" content="Xenta the game" />
@@ -19,10 +21,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           <DefaultLayout>
             <Component {...pageProps} />
           </DefaultLayout>
-        </UserServiceWrapper>
-      </ApiServiceWrapper>
-
-    </AppHelpersWrapper>
+        </ApiServiceWrapper>
+      </AppHelpersWrapper>
+    </QueryClientProvider>
   )
 }
 

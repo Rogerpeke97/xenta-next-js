@@ -3,26 +3,26 @@ import { faUser, faHome, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import NavigationCard from '../atoms/navigation/NavigationCard'
 import { useEffect } from 'react'
-import Router from 'next/router'
+import Router, { useRouter } from 'next/router'
 import { AppHelpers } from '../../context/AppHelpers'
 
 
 
 const SideBarMenus = () => {
 
+  const router = useRouter()
   const menus = [
     {text: 'Home', icon: faHome, route: '/'},
     {text: 'Profile', icon: faUser, route: '/profile'},
     {text: 'Settings', icon: faCog, route: '/settings'},
     {text: 'Log out', icon: faSignOutAlt, route: '/logout'}
   ]
-
 	const { currentMenu, setCurrentMenu, setShowSideBar, isAuthenticated } = AppHelpers()
 
   const findValidIndex = () => {
     const INDEX_NOT_FOUND = -1
-    const menuIndex = menus.findIndex(menu => menu.route === Router.pathname)
-    const loginRoute = Router.pathname === '/login'
+    const menuIndex = menus.findIndex(menu => menu.route === router.pathname)
+    const loginRoute = router.pathname === '/login'
     if(loginRoute && isAuthenticated){
       return 0
     }
@@ -36,7 +36,7 @@ const SideBarMenus = () => {
     setCurrentMenu(menu)
     const menuRoute = menus[menu]?.route
     if(!menuRoute) return
-    Router.push(menuRoute)
+    router.push(menuRoute)
     setShowSideBar({ show: false, forced: true })
   }
 

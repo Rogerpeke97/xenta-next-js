@@ -1,22 +1,34 @@
-import Router from 'next/router';
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { AppHelpers } from '../../context/AppHelpers';
-import { ApiServicer } from '../api/ApiService';
-const UserServiceContext = createContext<any>({})
+import { AppHelpers } from 'context/AppHelpers'
+import Router from 'next/router'
+import { useQuery, UseQueryResult } from 'react-query'
+import { ApiServicer } from 'services/api/ApiService'
+const MINUTES = 1
+const REFRESH_TOKEN_EVERY = MINUTES * (60 * 1000)
+export interface UserData{
+  created_at: Date;
+  id: number;
+  name: string;
+  roles: string[];
+  score: number;
+  updated_at: Date;
+  username: string;
+}
 
-const UserServiceWrapper = ({ children }: { children: Array<React.ReactElement> }) => {
 
-  const { setIsAuthenticated, setToast } = AppHelpers()
-
+export const usePingUser = () => {
   const { ApiService } = ApiServicer()
+  return useQuery(['pingUser'], () => ApiService('GET', '/api/ping'), { refetchInterval: REFRESH_TOKEN_EVERY })
+}
 
-  const [isServiceReady, setIsServiceReady] = useState(false)
+export const useGetUser = () => {
+  const { ApiService } = ApiServicer()
+  return useQuery(['getUser'], () => ApiService('GET', '/api/user'))
+}
 
-  const getUser = () => {
-    return ApiService('GET', '/api/user')
-  }
-
-  const loginUser = async(params: Object) => {
+export const useLoginUser = (params?: Object) => {
+  const { ApiService } = ApiServicer()
+  const { setIsAuthenticated, setToast } = AppHelpers()
+  return useQuery(['loginUser', params], async() => {
     const response = await ApiService('POST', '/signin', params)
     if(response && response.message){
       setToast({
@@ -30,9 +42,14 @@ const UserServiceWrapper = ({ children }: { children: Array<React.ReactElement> 
       Router.push('/')
     }
     return response
-  }
+  }, { enabled: false })
 
-  const signInUser = async(params: Object) => {
+}
+
+export const useSignInUser = (params: Object) => {
+  const { ApiService } = ApiServicer()
+  const { setIsAuthenticated, setToast } = AppHelpers()
+  return useQuery(['signInUser', params], async() => {
     const response = await ApiService('PUT', '/signup', params)
     if(response && response.message){
       setToast({
@@ -43,23 +60,16 @@ const UserServiceWrapper = ({ children }: { children: Array<React.ReactElement> 
         displayToast: true
       })
     }
+    console.log(response)
     return response
-  }
+  }, { enabled: false })
+}
 
-  const pingUser = async() => {
-    const response = await ApiService('GET', '/api/ping')
-    if (response && !response.error) {
-      setIsAuthenticated(true)
-    }
-    else{
-      ApiService('LOGOUT')
-      return Router.push('/login')
-    }
-    return response
-  }
-
-  const logoutUser = () => {
-    const response = ApiService('LOGOUT')
+export const useLogoutUser = () => {
+  const { ApiService } = ApiServicer()
+  const { setIsAuthenticated, setToast } = AppHelpers()
+  return useQuery(['logoutUser'], async() => {
+    const response = await ApiService('LOGOUT')
     setToast({
       messages: [{
         message: 'Successfully logged out',
@@ -68,9 +78,13 @@ const UserServiceWrapper = ({ children }: { children: Array<React.ReactElement> 
       displayToast: true
     })
     return response
-  }
+  }, { enabled: false })
+}
 
-  const changePasswordUser = async(params: Object) => {
+export const useChangePasswordUser = (params: Object) => {
+  const { ApiService } = ApiServicer()
+  const { setIsAuthenticated, setToast } = AppHelpers()
+  return useQuery(['changePasswordUser'], async() => {
     const response = await ApiService('POST', '/api/change-password', params)
     if(response && response.message){
       setToast({
@@ -83,18 +97,22 @@ const UserServiceWrapper = ({ children }: { children: Array<React.ReactElement> 
       Router.push('/logout')
     }
     return response
-  }
+  })
+}
 
-  const isFirstTimeUser = () => {
-    const hasPlayed = localStorage.getItem('xenta-tutorial')
-    if (!hasPlayed) {
-      localStorage.setItem('xenta-tutorial', 'true')
-      return true
-    }
-    return false
+export const isFirstTimeUser = () => {
+  const hasPlayed = localStorage.getItem('xenta-tutorial')
+  if (!hasPlayed) {
+    localStorage.setItem('xenta-tutorial', 'true')
+    return true
   }
+  return false
+}
 
-  const updateEmailUser = async(email: string) => {
+export const useUpdateEmailUser = async(email: string) => {
+  const { ApiService } = ApiServicer()
+  const { setIsAuthenticated, setToast } = AppHelpers()
+  return useQuery(['updateEmailUser'], async() => {
     const response = await ApiService('POST', '/api/update-email', { username: email })
     if(response && response.message){
       setToast({
@@ -106,9 +124,13 @@ const UserServiceWrapper = ({ children }: { children: Array<React.ReactElement> 
       })
     }
     return response
-  }
+  })
+}
 
-  const updateScoreUser = async(score: number) => {
+export const useUpdateScoreUser = (score: number) => {
+  const { ApiService } = ApiServicer()
+  const { setIsAuthenticated, setToast } = AppHelpers()
+  return useQuery(['updateScoreUser'], async() => {
     const response = await ApiService('PUT', '/api/update-score', score)
     if(response && response.message){
       setToast({
@@ -120,25 +142,5 @@ const UserServiceWrapper = ({ children }: { children: Array<React.ReactElement> 
       })
     }
     return response
-  }
-
-  useEffect(() => {
-    if (ApiService) {
-      setIsServiceReady(true)
-    }
-  }, [ApiService])
-
-  return (
-    <UserServiceContext.Provider value={{
-      getUser, loginUser, signInUser, pingUser,
-      logoutUser, changePasswordUser, isServiceReady,
-      isFirstTimeUser, updateEmailUser, updateScoreUser
-    }}>
-      {children}
-    </UserServiceContext.Provider>
-  )
-}
-
-export const UserServicer = () => useContext(UserServiceContext)
-
-export default UserServiceWrapper
+  })
+} 

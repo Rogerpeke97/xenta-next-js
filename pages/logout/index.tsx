@@ -1,32 +1,19 @@
 import { useRouter } from 'next/router'
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+import { useLogoutUser } from 'services/user/User'
 import Loading from "../../components/atoms/loaders/Loading"
-import { UserServicer } from '../../services/user/User'
-
-
 
 const Logout = () => {
 
-  const [isLoading, setIsLoading] = useState(true)
-
-  const { logoutUser } = UserServicer()
-  
+  const { isLoading, refetch } = useLogoutUser()
   const router = useRouter()
-
-  function removeTokenAndLogout() {
-    logoutUser()
-    router.replace('/login')
-    setIsLoading(false)
+  const removeTokenAndLogout = async() => {
+    await refetch()
+    router.push('/login')
   }
-
   useEffect(() => {
     removeTokenAndLogout()
-    return () => {
-      removeTokenAndLogout()
-    }
   }, [])
-
-
 
   return (
     <Loading isLoading={isLoading} loadingText="Logging out..." />

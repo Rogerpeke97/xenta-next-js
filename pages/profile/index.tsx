@@ -5,19 +5,13 @@ import { faCertificate, faCrown, faEgg, faPencilAlt } from '@fortawesome/free-so
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { useGetUser, UserData } from 'services/user/User'
 import LoadingBar from '../../components/atoms/loaders/LoadingBar'
 import ProfileEditDialog from '../../components/profile/ProfileEditDialog'
-import { UserServicer } from '../../services/user/User'
-import { UserType } from '../../types/user'
 
 const Profile = () => {
 
-  const { getUser } = UserServicer()
-
-  const [isLoading, setIsLoading] = useState(true)
-
-  const [user, setUser] = useState<UserType>()
-
+  const { isLoading, data: user }: {isLoading: boolean, data: UserData | undefined} = useGetUser()
   const [stats, setStats] = useState({
     max_score: 150,
     points: 3000,
@@ -28,24 +22,14 @@ const Profile = () => {
       { date: '2020-01-03', score: 300 },
     ]
   })
-
-  async function getUserData() {
-    setIsLoading(true)
-    const response = await getUser()
-    const userData: UserType = response.data
-    const { score, updated_at, created_at } = userData
-    setUser(userData)
-    // setStats([
-    //   { stat: 'Score', value: score, icon: faCrown },
-    //   { stat: 'Created', value: formatDate(created_at), icon: faEgg },
-    //   { stat: 'Updated', value: formatDate(updated_at), icon: faPencilAlt }
-    // ])
-    setIsLoading(false)
-  }
-
-  useEffect(() => {
-    getUserData()
-  }, [])
+  // async function getUserData() {
+  //   // const { score, updated_at, created_at } = user
+  //   // setStats([
+  //   //   { stat: 'Score', value: score, icon: faCrown },
+  //   //   { stat: 'Created', value: formatDate(created_at), icon: faEgg },
+  //   //   { stat: 'Updated', value: formatDate(updated_at), icon: faPencilAlt }
+  //   // ])
+  // }
 
   return (
     <>

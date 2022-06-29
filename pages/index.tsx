@@ -1,19 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AppHelpers } from '../context/AppHelpers'
-import Menu from '../components/game/scenes/Play'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart, faHeartBroken, faKeyboard } from '@fortawesome/free-solid-svg-icons'
 import IconButton from '../components/atoms/buttons/IconButton'
-import { UserServicer } from '../services/user/User'
 import InstructionsMenu from '@/components/game/menus/InstructionsMenu'
 import PlayMenu from '@/components/game/menus/PlayMenu'
+import { isFirstTimeUser, useGetUser, useUpdateScoreUser } from 'services/user/User'
+import Game from '../components/game/scenes/Game'
 
 const Home = () => {
 
   const LIVES = 3
   const { gameHelpers } = AppHelpers()
-  const { getUser, isFirstTimeUser, updateScoreUser } = UserServicer()
-  const [isLoading, setIsLoading] = useState(true)
   const [score, setScore] = useState(0)
   const intervalForScoreSum = useRef<NodeJS.Timeout>()
   const [showTutorialOverlay, setTutorialOverlay] = useState(false)
@@ -24,16 +22,19 @@ const Home = () => {
     name: '',
     score: 0,
   })
+  const { isLoading, data: fetchedUserData, refetch } = useGetUser()
+  useEffect(() => {
+    if(!fetchedUserData) {
+      refetch()
+    }
+    if(fetchedUserData){
+      setUserData(userData)
+    }
+  }, [fetchedUserData, userData, refetch])
   const updateScore = async() => {
     if(score <= userData.score || isMaxScoreSet) return
-    await updateScoreUser(score)
+    await useUpdateScoreUser(score)
     setIsMaxScoreSet(true)
-  }
-  async function getUserData() {
-    setIsLoading(true)
-    const response = await getUser()
-    setUserData(response.data)
-    setIsLoading(false)
   }
   const isActiveHeart = (heartIndex: number) => {
     const isActive = gameHelpers.lives.find((_, index) => index === heartIndex)?.isActive
@@ -60,7 +61,6 @@ const Home = () => {
   }, [gameHelpers, setIntervalForScoreSum])
   useEffect(() => {
     setTutorialOverlay(isFirstTimeUser())
-    getUserData()
     return () => {
       gameHelpers.resetFields()
     }
@@ -68,7 +68,7 @@ const Home = () => {
 
   return (
     <div className="smooth-render relative h-full">
-      <Menu isGameFinished={isGameFinished} />
+      <Game isGameFinished={isGameFinished} />
       <div className="absolute flex flex-col justify-between inset-0 p-4 h-full w-full">
         <div className="flex justify-between">
           <div className="flex">
@@ -93,7 +93,7 @@ const Home = () => {
         {showTutorialOverlay ? 
           <InstructionsMenu setTutorialOverlay={setTutorialOverlay} /> : 
           <PlayMenu score={score} setScore={setScore} isGameFinished={isGameFinished}
-            setIsMaxScoreSet={setIsMaxScoreSet} isLoading={isLoading} setTutorialOverlay={setTutorialOverlay}
+            setIsMaxScoreSet={setIsMaxScoreSet} isLoading={true} setTutorialOverlay={setTutorialOverlay}
           />
         }
         <IconButton iconName={faKeyboard} onClick={() => setTutorialOverlay(!showTutorialOverlay)} iconSize={'icon'} />

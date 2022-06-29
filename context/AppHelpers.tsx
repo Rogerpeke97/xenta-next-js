@@ -1,4 +1,4 @@
-import {createContext, useContext, useEffect, useState} from 'react';
+import {createContext, memo, useContext, useEffect, useState} from 'react';
 
 interface Lives {
   index: number;
@@ -23,7 +23,7 @@ const AppContextHelpers = createContext<any>({})
 
 const AppHelpersWrapper = ({ children }: { children: React.ReactElement }) => {
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(true)
 
   const [currentMenu, setCurrentMenu] = useState<Number>(0)
 

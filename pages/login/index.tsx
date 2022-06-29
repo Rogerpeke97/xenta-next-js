@@ -1,13 +1,11 @@
 import type { NextPage } from 'next'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from '../../components/atoms/buttons/Button'
-import TextLink from '../../components/atoms/links/TextLink'
 import FormLogin from '../../components/molecules/forms/FormLogin'
 import FormSignUp from '../../components/molecules/forms/FormSignUp'
 import Image from 'next/image'
-import { firstLetterUppercase } from 'plugins/text/Helpers'
 import TransitionFadeIn from '@/components/molecules/transitions/TransitionFadeIn'
-
+import { useRouter } from 'next/router'
 
 const loginStyle = {
   minHeight: '600px',
@@ -18,32 +16,33 @@ const loginStyle = {
   overflowY: 'auto',
   overflowX: 'hidden'
 }
-
 const Login: NextPage = () => {
 
+  const router = useRouter()
   const loginStateInfo = {
     state: 'Login',
     descriptionText: "Don't have an account?",
     buttonText: 'Sign up',
     stateComponent: <FormLogin />
   }
-
   const signUpStateInfo = {
     state: 'Sign up',
     descriptionText: "Already have an account?",
     buttonText: 'Login',
     stateComponent: <FormSignUp onSignUpSuccess={() => setFormState(loginStateInfo)} />
   }
-
   const findStateToGoTo = (state: string) => {
     return state === 'Login' ? signUpStateInfo : loginStateInfo
   }
-
   const currentStateComponent = () => {
     return formState.stateComponent
   }
-
   const [formState, setFormState] = useState(loginStateInfo)
+  useEffect(() => {
+    if(router.pathname !== '/login'){
+      router.replace('/login')
+    }
+  }, [])
 
   return (
     <div className="flex h-full items-center justify-center bg-no-repeat bg-cover"

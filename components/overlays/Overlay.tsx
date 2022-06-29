@@ -2,23 +2,17 @@ import type react from 'react'
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
-
-
 interface overlayProps {
   isLoading: boolean,
 }
 
-
-
 const Overlay: react.FC<overlayProps> = ({ isLoading }) => {
 
   const [isVisible, setIsVisible] = useState(true)
-
   const loadingStates = [
     { text: 'Loading...'.split(''), value: true },
     { text: 'Done!'.split(''), value: false }
   ]
-
   const findLoadingState = () => {
     return loadingStates.find(state => state.value === isLoading) ?? { text: [], value: false }
   }
