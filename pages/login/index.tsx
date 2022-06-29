@@ -63,7 +63,7 @@ const Login: NextPage = () => {
         <div className="flex w-full h-full items-end pt-4 px-3">
           <div className="flex w-full h-28 items-center justify-start py-4">
             <h1 className="body-1 text-center font-bold pr-3">{formState.descriptionText}</h1>
-            <Button size="small" color="bg-card" text={formState.buttonText} onClick={() => setFormState(findStateToGoTo(formState.state))} />
+            <Button className="text-black" size="sm" color="bg-button-light" text={formState.buttonText} onClick={() => setFormState(findStateToGoTo(formState.state))} />
           </div>
         </div>
       </TransitionFadeIn>

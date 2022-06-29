@@ -6,34 +6,32 @@ import { prependOnceListener } from 'process'
 interface buttonProps {
   onClick: react.MouseEventHandler,
   text: string,
+  className?: string,
   isLoading?: boolean,
   disabled?: boolean,
   icon?: IconProp,
   color: string,
-  size: string
+  size?: string
 }
-
 const buttonStyles = [
-  { size: 'small', style: { width: '110px', height: '32px', fontSize: '14px' } },
-  { size: 'regular', style: { width: '150px', height: '45px', fontSize: '16px' } },
-  { size: 'large', style: { width: '200px', height: '64px', fontSize: '24px' } }
+  { size: 'sm', style: { minWidth: '110px', maxWidth: '150px', height: '32px', fontSize: '16px' } },
+  { size: 'md', style: { minWidth: '150px', maxWidth: '200px', height: '45px', fontSize: '20px' } },
+  { size: 'lg', style: { minWidth: '200px', maxWidth: '300px', height: '64px', fontSize: '24px' } }
 ]
 
 const Button = (props: buttonProps): JSX.Element => {
-  const findButtonSize = (size: string) => {
+  const findButtonSize = (size='md') => {
     const styleForButton = buttonStyles.find(style => style.size === size)
     return styleForButton?.style || {}
   }
-
   const buttonContent = (): JSX.Element => {
     return (
       <div className="flex items-center justify-center">
         {props.icon && <FontAwesomeIcon className="icon-small mr-2" icon={props.icon} color="white" />}
-        <h1 className="body-2 smooth-render font-bold">{props.text}</h1>
+        <h1 className="smooth-render font-bold">{props.text}</h1>
       </div>
     )
   }
-
   const triggerFunctionAndUnfocus = (event: react.MouseEvent) => {
     event.preventDefault()
     props.onClick(event)
@@ -42,12 +40,11 @@ const Button = (props: buttonProps): JSX.Element => {
 
   return (
     <button disabled={props.disabled}
-      className={`flex justify-center items-center ${props.color} rounded-lg`}
-      onClick={triggerFunctionAndUnfocus} style={findButtonSize(props.size)}>
+      className={`flex justify-center px-5 items-center ${props.color} rounded-lg ${props.className}`}
+      onClick={triggerFunctionAndUnfocus} style={findButtonSize(props?.size)}>
       {props.isLoading ? <div className="spinner"></div> : buttonContent()}
     </button>
   )
 }
-
 
 export default Button

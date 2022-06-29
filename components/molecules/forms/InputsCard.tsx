@@ -129,7 +129,7 @@ const InputsCard = ({ title, subtitle, subtitleIcon, titleIcon, inputsAttrs, set
           )
         })}
         <div className="pt-10">
-          <Button size="regular" color="bg-card" text="Save Changes" onClick={(e) => checkValidAndSave(e)} isLoading={isLoading} disabled={isLoading} />
+          <Button color="bg-card" text="Save Changes" onClick={(e) => checkValidAndSave(e)} isLoading={isLoading} disabled={isLoading} />
         </div>
       </form>
     </div>

@@ -60,10 +60,8 @@ const FormLogin = () => {
         </div>
       </div>
       <div className="flex items-center pt-2 justify-center">
-        <Button size="regular" color="bg-card" text="Login" onClick={(e) => login(e)} isLoading={isLoading} disabled={!isValidForm()} />
-        <div className="ml-3">
-          <Button size="regular" color="bg-primary" text="Google login" icon={faGoogle} onClick={(e) => loginWithGoogle(e)} disabled={isLoading} />
-        </div>
+        <Button color="bg-card" text="Login" onClick={(e) => login(e)} isLoading={isLoading} disabled={!isValidForm()} />
+        <Button className="ml-3" color="bg-primary" text="Google login" icon={faGoogle} onClick={(e) => loginWithGoogle(e)} disabled={isLoading} />
       </div>
     </form>
   )

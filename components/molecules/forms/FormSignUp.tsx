@@ -65,7 +65,7 @@ const FormSignUp = ({ onSignUpSuccess }: { onSignUpSuccess: () => void }) => {
           warningMessage="Password must be of at least 8 characters, including digits and one upper case letter" type="password" icon={faKey} placeholder="Password" disabled={isLoading} />
       </div>
       <div className="flex items-center pt-10 justify-center">
-        <Button size="regular" color="bg-card" text="Sign Up" onClick={(e) => signUp(e)} isLoading={isLoading} disabled={!isValidForm()} />
+        <Button color="bg-card" text="Sign Up" onClick={(e) => signUp(e)} isLoading={isLoading} disabled={!isValidForm()} />
       </div>
     </form>
   )
