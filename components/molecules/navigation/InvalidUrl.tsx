@@ -1,6 +1,6 @@
 import { faRadiation, faBug, faExclamation } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { AppHelpers } from "../../context/AppHelpers"
+import { AppHelpers } from "../../../context/AppHelpers"
 
 const InvalidUrl = () => {
 

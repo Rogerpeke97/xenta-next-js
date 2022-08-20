@@ -1,9 +1,8 @@
-
 import React, { MouseEventHandler, useEffect, useState } from 'react'
 import { faEnvelope, faExclamationCircle, faKey, faUser } from '@fortawesome/free-solid-svg-icons'
 import FormField from '../../atoms/inputs/FormField'
 import Button from '../../atoms/buttons/Button'
-import { validateEmail, validatePassword, validateUserName } from '../../../plugins/validators/inputValidator'
+import { validateEmail, validatePassword, validateUserName } from '../../../utils/validators/inputValidator'
 import { useSignInUser } from 'services/user/User'
 
 

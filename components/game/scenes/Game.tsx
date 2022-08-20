@@ -1,6 +1,6 @@
 import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from 'three';
-import { vertexShaderParticle, fragmentShaderParticle } from '../../../plugins/game/shaders/sphereParticle';
+import { vertexShaderParticle, fragmentShaderParticle } from '../../../utils/game/shaders/sphereParticle';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { BufferGeometry, Object3D } from "three";
@@ -44,7 +44,7 @@ const Game = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
   const animationFrameId = useRef<number>(0)
   const TREE_COUNT = 40
   const scene = useRef<THREE.Scene>(new THREE.Scene())
-  const renderer = useRef<THREE.Renderer | null>()
+  const renderer = useRef<THREE.WebGLRenderer>()
   const camera = useRef<THREE.PerspectiveCamera>()
   const afterKeyPressHandler = (event: KeyboardEvent) => {
     const isAnAllowedKey = ALLOWED_KEYS.includes(event.key)
@@ -419,8 +419,10 @@ const Game = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
     }
   }, [windowWidth])
   useEffect(() => {
+    const canvasForRenderer = document.getElementById('canvas')
+    if(!canvasForRenderer) return
     renderer.current = new THREE.WebGLRenderer({ 
-      canvas: document.getElementById('canvas')
+      canvas: canvasForRenderer
     })
     const { renderScreenHeight, renderScreenWidth } = canvasContainerSize
     const resolution = new THREE.Vector2(renderScreenWidth, renderScreenHeight)

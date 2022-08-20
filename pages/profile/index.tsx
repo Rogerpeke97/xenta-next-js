@@ -1,17 +1,17 @@
 import ProgressBar from '@/components/atoms/loaders/ProgressBar'
 import TransitionFadeIn from '@/components/molecules/transitions/TransitionFadeIn'
-import LeaderBoardTable from '@/components/profile/LeaderBoardTable'
+import LeaderBoardTable from '@/components/molecules/profile/LeaderBoardTable'
 import { faCertificate, faCrown, faEgg, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { useGetUser, UserData } from 'services/user/User'
+import { useGetUser } from 'services/user/User'
 import LoadingBar from '../../components/atoms/loaders/LoadingBar'
-import ProfileEditDialog from '../../components/profile/ProfileEditDialog'
+import ProfileEditDialog from '../../components/molecules/profile/ProfileEditDialog'
+import { ApiReturnValues } from 'services/api/ApiService'
 
 const Profile = () => {
-
-  const { isLoading, data: user }: {isLoading: boolean, data: UserData | undefined} = useGetUser()
+  const { isLoading, data: user }: {isLoading: boolean, data: ApiReturnValues | undefined} = useGetUser()
   const [stats, setStats] = useState({
     max_score: 150,
     points: 3000,
@@ -22,14 +22,6 @@ const Profile = () => {
       { date: '2020-01-03', score: 300 },
     ]
   })
-  // async function getUserData() {
-  //   // const { score, updated_at, created_at } = user
-  //   // setStats([
-  //   //   { stat: 'Score', value: score, icon: faCrown },
-  //   //   { stat: 'Created', value: formatDate(created_at), icon: faEgg },
-  //   //   { stat: 'Updated', value: formatDate(updated_at), icon: faPencilAlt }
-  //   // ])
-  // }
 
   return (
     <>
@@ -42,7 +34,7 @@ const Profile = () => {
           </div>
           <div className="flex justify-center items-center">
             <h3 className="heading-3 font-bold mr-3">
-              {user?.name}
+              {user?.data?.name}
             </h3>
             <ProfileEditDialog />
           </div>

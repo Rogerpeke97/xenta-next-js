@@ -6,7 +6,6 @@ export function formatDate(dateString: Date): string {
     "November", "December"
   ]
   const date = new Date(dateString)
-  console.log(date)
   const day = date.getDate()
   const monthIndex = date.getMonth()
   const year = date.getFullYear()

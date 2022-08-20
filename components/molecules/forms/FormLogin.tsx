@@ -4,9 +4,9 @@ import { faEnvelope, faExclamationCircle, faKey } from '@fortawesome/free-solid-
 import { faGoogle } from '@fortawesome/free-brands-svg-icons'
 import FormField from '../../atoms/inputs/FormField'
 import TextLink from '../../atoms/links/TextLink'
-import Button from '../../atoms/buttons/Button'
-import { validateEmail, validatePassword } from '../../../plugins/validators/inputValidator'
+import { validateEmail, validatePassword } from '../../../utils/validators/inputValidator'
 import { useLoginUser } from 'services/user/User'
+import IconButton from '@/components/atoms/buttons/IconButton'
 
 const FormLogin = () => {
   const [form, setForm] = useState({
@@ -60,8 +60,8 @@ const FormLogin = () => {
         </div>
       </div>
       <div className="flex items-center pt-2 justify-center">
-        <Button color="bg-card" text="Login" onClick={(e) => login(e)} isLoading={isLoading} disabled={!isValidForm()} />
-        <Button className="ml-3" color="bg-primary" text="Google login" icon={faGoogle} onClick={(e) => loginWithGoogle(e)} disabled={isLoading} />
+        <IconButton color="bg-card" text="Login" onClick={(e) => login(e)} isLoading={isLoading} disabled={!isValidForm()} />
+        <IconButton className="ml-3" color="bg-primary" text="Google login" icon={faGoogle} onClick={(e) => loginWithGoogle(e)} disabled={isLoading} />
       </div>
     </form>
   )

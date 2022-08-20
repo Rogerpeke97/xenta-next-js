@@ -8,7 +8,7 @@ import FormWarning from '../forms/FormWarning'
 
 interface formFieldProps {
   type: string,
-  icon?: IconProp,
+  icon: IconProp,
   placeholder: string,
   value: string,
   disabled: boolean,
@@ -32,7 +32,7 @@ const FormField = (props: formFieldProps): JSX.Element => {
     <div className="w-full">
       <div className="flex items-center input-wrapper w-full">
         <FontAwesomeIcon className="icon-small input-icon ml-3" icon={props.icon} color="#0070f3" />
-        <input className="my-2" disabled={props.disabled} type={inputTypeHandler()} placeholder={props.placeholder} onChange={props.onChange} value={props.value} />
+        <input className="my-2 shadow-md shadow-black" disabled={props.disabled} type={inputTypeHandler()} placeholder={props.placeholder} onChange={props.onChange} value={props.value} />
         {props.type === 'password' &&
           <FontAwesomeIcon
             className="icon-small input-icon-end mr-3"

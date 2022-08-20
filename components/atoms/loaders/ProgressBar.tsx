@@ -4,15 +4,10 @@ const ProgressBar = ({ progress, totalProgress, titleForAmountLeftFor, className
   titleForAmountLeftFor: string, className: string, measurementUnit: string}) => {
 
   const progressBarContainer = useRef<HTMLDivElement>(null)
-
   const progressBar = useRef<HTMLDivElement>(null)
-
   const timeoutRefForWidth = useRef<NodeJS.Timeout>(0)
-
   const [progressPercentage, setProgressPercentage] = useState(0)
-
   const currentProgressPercentage = (progress / totalProgress) * 100
-
   const calculateBarWidth = () => {
     const container = progressBarContainer.current
     if(container){
@@ -21,11 +16,9 @@ const ProgressBar = ({ progress, totalProgress, titleForAmountLeftFor, className
       return Math.floor(barWidth)
     }
   }
-
   const amountToTotal = () => {
     return totalProgress - progress
   }
-
   const setUpProgressAnimation = () => {
     const progressBarDiv = progressBar.current
     if(progressBarDiv){
@@ -35,7 +28,6 @@ const ProgressBar = ({ progress, totalProgress, titleForAmountLeftFor, className
       timeoutRefForWidth.current = setTimeout(setUpProgressAnimation, 10)
     }
   }
-
   useEffect(() => {
     setUpProgressAnimation()
     const intervalForPercentageSum = setInterval(() => {
@@ -57,8 +49,8 @@ const ProgressBar = ({ progress, totalProgress, titleForAmountLeftFor, className
         <div ref={progressBar} className="w-0 h-full bg-stone-300 rounded-lg" />
       </div>
       <div className="flex justify-between w-full">
-        <h3 className="body-2 truncate">{`${amountToTotal()} ${measurementUnit} to get to ${titleForAmountLeftFor}`}</h3>
-        <h3 className="body-2 ml-5">{`${progressPercentage}%`}</h3>
+        <h3 className="body-2 truncate font-bold">{`${amountToTotal()} ${measurementUnit} to get to ${titleForAmountLeftFor}`}</h3>
+        <h3 className="body-2 ml-5 font-bold">{`${progressPercentage}%`}</h3>
       </div>
     </>
   )

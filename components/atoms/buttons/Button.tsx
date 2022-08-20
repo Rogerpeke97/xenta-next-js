@@ -26,9 +26,9 @@ const Button = (props: buttonProps): JSX.Element => {
   }
   const buttonContent = (): JSX.Element => {
     return (
-      <div className="flex items-center justify-center">
+      <div className="flex max-w-full items-center justify-center">
         {props.icon && <FontAwesomeIcon className="icon-small mr-2" icon={props.icon} color="white" />}
-        <h1 className="smooth-render font-bold">{props.text}</h1>
+        <h1 className="min-w-0 smooth-render truncate font-bold">{props.text}</h1>
       </div>
     )
   }

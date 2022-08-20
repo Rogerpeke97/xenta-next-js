@@ -124,14 +124,11 @@ body {
   position: relative;
 }
 
-// input, textarea {
+// input:-webkit-autofill {
+//   -webkit-text-fill-color: black;
+//   -webkit-box-shadow: 0 0 0 30px var(--input) inset !important;
+//   box-shadow: 0 0 0 30px var(--input) inset !important;
 // }
-
-input:-webkit-autofill {
-  -webkit-text-fill-color: black;
-  -webkit-box-shadow: 0 0 0 30px var(--input) inset !important;
-  box-shadow: 0 0 0 30px var(--input) inset !important;
-}
 
 input[type], textarea, select {
   color: black;

@@ -1,7 +1,6 @@
+import { AppHelpers } from 'context/AppHelpers'
 import Router from 'next/router'
 import react, { useCallback, useMemo } from 'react'
-import { AppHelpers } from '../../context/AppHelpers'
-import Loading from '../atoms/loaders/Loading'
 import InvalidUrl from './InvalidUrl'
 
 const MenuContent = ({ children }: { children: React.ReactElement }) => {

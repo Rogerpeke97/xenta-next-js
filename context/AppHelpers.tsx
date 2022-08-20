@@ -21,7 +21,7 @@ type showSideBar = {
 
 const AppContextHelpers = createContext<any>({})
 
-const AppHelpersWrapper = ({ children }: { children: React.ReactElement }) => {
+const AppHelpersWrapper = ({ children }: { children: Array<React.ReactElement> }) => {
 
   const [isAuthenticated, setIsAuthenticated] = useState(true)
 

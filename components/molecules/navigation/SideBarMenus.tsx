@@ -1,10 +1,10 @@
 import type react from 'react'
 import { faUser, faHome, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import NavigationCard from '../atoms/navigation/NavigationCard'
 import { useEffect } from 'react'
 import Router, { useRouter } from 'next/router'
-import { AppHelpers } from '../../context/AppHelpers'
+import { AppHelpers } from 'context/AppHelpers'
+import NavigationCard from '@/components/atoms/navigation/NavigationCard'
 
 
 

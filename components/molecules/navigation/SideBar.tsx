@@ -1,10 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
-import Divider from '../atoms/dividers/Divider'
 import SideBarMenus from './SideBarMenus'
 import { useCallback, useRef, useState } from 'react'
-import { AppHelpers } from '../../context/AppHelpers'
 import Image from 'next/image'
+import Divider from '@/components/atoms/dividers/Divider'
+import { AppHelpers } from 'context/AppHelpers'
 
 const SideBar= () => {
 

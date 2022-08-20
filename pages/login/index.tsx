@@ -6,16 +6,8 @@ import FormSignUp from '../../components/molecules/forms/FormSignUp'
 import Image from 'next/image'
 import TransitionFadeIn from '@/components/molecules/transitions/TransitionFadeIn'
 import { useRouter } from 'next/router'
+import IconButton from '@/components/atoms/buttons/IconButton'
 
-const loginStyle = {
-  minHeight: '600px',
-  maxHeight: '800px',
-  minWidth: '320px',
-  maxWidth: '800px',
-  width: '100%',
-  overflowY: 'auto',
-  overflowX: 'hidden'
-}
 const Login: NextPage = () => {
 
   const router = useRouter()
@@ -47,10 +39,11 @@ const Login: NextPage = () => {
   return (
     <div className="flex h-full items-center justify-center bg-no-repeat bg-cover"
       style={{ backgroundImage: "url('/backgrounds/curvedshape.webp')" }}>
-      <TransitionFadeIn style={loginStyle} className="flex h-full p-4 flex-col bg-background-2 rounded-3xl">
+      <TransitionFadeIn className="flex h-full p-4 flex-col bg-background-2 rounded-3xl shadow-md shadow-black
+       min-h-[600px] max-h-[800px] min-w-[320px] max-w-[800px] w-full overflow-y-auto overflow-x-hidden">
         <div className="py-4 flex flex-col">
           <div className="flex items-center">
-            <Image priority={true} src="/logos/xenta.png" width={50} height={50} alt="profile-pic" />
+            <Image priority src="/logos/xenta.png" width={50} height={50} alt="profile-pic" />
             <h3 className="subtitle-2 font-bold">Xenta</h3>
           </div>
           <div className="flex pt-4 justify-center">
@@ -63,7 +56,8 @@ const Login: NextPage = () => {
         <div className="flex w-full h-full items-end pt-4 px-3">
           <div className="flex w-full h-28 items-center justify-start py-4">
             <h1 className="body-1 text-center font-bold pr-3">{formState.descriptionText}</h1>
-            <Button className="text-black" size="sm" color="bg-button-light" text={formState.buttonText} onClick={() => setFormState(findStateToGoTo(formState.state))} />
+            <IconButton className="text-black" color="bg-button-light" size="sm" 
+              onClick={() => setFormState(findStateToGoTo(formState.state))} text={formState.buttonText}  />
           </div>
         </div>
       </TransitionFadeIn>

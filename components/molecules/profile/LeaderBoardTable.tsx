@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { UserServicer } from '../../services/user/User'
+import { UserServicer } from '../../../services/user/User'
 import LeaderBoardTr from './LeaderBoardTr'
 
 const LeaderBoardTable = ({className}: { className: string }) => {

@@ -4,7 +4,7 @@ import { usePingUser } from 'services/user/User'
 import { AppHelpers } from '../../context/AppHelpers'
 import Login from '../../pages/login'
 import Toast from '../atoms/notifications/Toast'
-import Overlay from '../overlays/Overlay'
+import Overlay from '../molecules/overlays/Overlay'
 import NavigationLayout from './NavigationLayout'
 
 const DefaultLayout = ({ children }: { children: React.ReactElement }) => {

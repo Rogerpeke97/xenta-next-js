@@ -11,7 +11,7 @@ const PlayMenuDialog = ({ children = <></>, buttonText = "Play", onPlay, isLoadi
 }) => {
   return (
     <div className="pop-in m-9 justify-between absolute mt-14 p-5 pt-2 flex flex-col rounded-3xl
-      w-[400px] h-[400px] left-1/2 ml-[-200px] bg-pop-up smAndDown:w-full smAndDown:m-0 smAndDown:left-0">
+      w-[450px] h-[400px] left-1/2 ml-[-200px] bg-pop-up smAndDown:w-full smAndDown:m-0 smAndDown:left-0">
       <div className="px-4">
         <div className="font-bold flex items-center justify-center">
           <Image priority={true} src="/logos/xenta.png" width={100} height={100} alt="profile-pic" />

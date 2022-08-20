@@ -1,9 +1,9 @@
 import type react from 'react'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
-import IconButtonLink from '../atoms/buttons/IconButtonLink'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { AppHelpers } from '../../context/AppHelpers'
+import IconButtonLink from '@/components/atoms/buttons/IconButtonLink'
+import { AppHelpers } from 'context/AppHelpers'
 
 const NavigationBar = () => {
 

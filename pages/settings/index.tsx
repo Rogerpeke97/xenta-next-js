@@ -1,97 +1,100 @@
 import { faUser, faKey, faEnvelope, faCogs, faWrench } from '@fortawesome/free-solid-svg-icons'
 import Router from 'next/router'
-import { useCallback, useEffect, useState } from "react"
+import { useMemo, useReducer, useState } from "react"
 import LoadingBar from '@/components/atoms/loaders/LoadingBar'
 import InputsCard from "@/components/molecules/forms/InputsCard"
-import { UserServicer } from '../../services/user/User'
 import TransitionFadeIn from '@/components/molecules/transitions/TransitionFadeIn'
-
+import FormField from '@/components/atoms/inputs/FormField'
+import { INPUT_TYPES, passwordInputsReducer } from 'utils/validators/inputValidator'
+import { ChangePasswordParams, useChangePasswordUser, useGetUser, useUpdateEmailUser } from 'services/user/User'
+import { ApiReturnValues } from 'services/api/ApiService'
 
 const Settings = () => {
-
-  const [userData, setUserData] = useState({
-    name: '',
-    username: ''
-  })
-
-  const { changePasswordUser, updateEmailUser, getUser } = UserServicer()
-
-  const [accountPasswordInputs, setAccountPasswordInputs] = useState(
-    [
-      {
-        name: 'oldPassword', type: 'password', placeholder: 'Old Password', icon: faKey, value: '',
-        isValid: true, warningMessage: 'Please enter a valid password'
-      },
-      {
-        name: 'newPassword', type: 'password', placeholder: 'New Password', icon: faKey, value: '',
-        isValid: true, warningMessage: 'New password doesn\'t match or invalid'
-      },
-      {
-        name: 'repeatNewPassword', type: 'password', placeholder: 'Repeat New Password', icon: faKey, value: '',
-        isValid: true, warningMessage: 'It must match new password'
-      },
-    ]
-  )
-
-  const [emailInput, setEmailInput] = useState([
-    { name: 'email', type: 'email', placeholder: 'Email', icon: faEnvelope, value: '', isValid: true, warningMessage: 'Please enter a valid email' }
-  ])
-
-  const [isLoading, setIsLoading] = useState(false)
-
+  const { refetch: setChangedPassword, 
+    isRefetching: isUpdatingChangedPassword, data: changedPasswordResult } = useChangePasswordUser()
+  const { isLoading: isLoadingUserData, data: user }: {isLoading: boolean, data: ApiReturnValues | undefined} = useGetUser()
+  const { refetch: setChangedEmail, isRefetching: isUpdatingChangedEmail, data: changeEmailResult } = useUpdateEmailUser()
+  const [passwordInputs, dispatchPasswordInput] = useReducer(passwordInputsReducer, INPUT_TYPES.filter((input) => input.name.toLowerCase().includes('password')))
+  const [emailInput, setEmailInput] = useState(INPUT_TYPES.filter((input) => input.name.toLowerCase().includes('email')))
   const changePassword = async () => {
-    setIsLoading(true)
-    const params = accountPasswordInputs.reduce((accumulator, input, index) => {
-      if (index === 1) {
-        return {
-          [accumulator.name]: accumulator.value,
-          [input.name]: input.value
-        }
-      }
-      return { ...accumulator, [input.name]: input.value }
-    })
-    const response = await changePasswordUser(params)
-    setIsLoading(false)
+    const params: ChangePasswordParams = {
+      "oldPassword": '',
+      "newPassword": '',
+      "confirmPassword": ''
+    }
+    passwordInputs.forEach((input) => params[input.name] = input.value)
+    await setChangedPassword(params)
+    console.log(changedPasswordResult)
   }
-
   const updateEmail = async () => {
-    setIsLoading(true)
-    const email = emailInput[0].value
-    const response = await updateEmailUser(email)
+    const email = emailInput[0]?.value
+    if(!email) return
+    const response = await setChangedEmail(email)
     if (response.error) {
-      setIsLoading(false)
       return
     }
     Router.push('/logout')
   }
-
-  async function getUserData() {
-    setIsLoading(true)
-    const response = await getUser()
-    const { name, username } = response.data
-    setUserData({ ...userData, name, username })
-    setIsLoading(false)
-  }
-
-  useEffect(() => {
-    getUserData()
-    return () => {
-      setIsLoading(false)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const areAllInputsValid = useMemo(() => {
+    return passwordInputs.every((input) => input.isValid && input.value)
+  }, [passwordInputs])
 
   return (
     <>
-      <LoadingBar loading={isLoading} />
+      <LoadingBar loading={isLoadingUserData} />
       <TransitionFadeIn className="p-4">
         <div className="flex items-center pb-8">
           <h1 className="heading-2 font-semibold">Settings</h1>
         </div>
-        <InputsCard title={userData.name} subtitle={'Change password'} subtitleIcon={faWrench} titleIcon={faUser} inputsAttrs={accountPasswordInputs}
-          setInputsAttrs={(attrs) => setAccountPasswordInputs(attrs)} onSave={changePassword} isLoading={isLoading} />
-        <InputsCard title={userData.username} titleIcon={faEnvelope} subtitle={'Change email'} subtitleIcon={faWrench} inputsAttrs={emailInput}
-          setInputsAttrs={(attrs) => setEmailInput(attrs)} onSave={updateEmail} isLoading={isLoading} />
+        <InputsCard title={user?.data?.name} subtitle={'Change password'} subtitleIcon={faWrench} 
+          titleIcon={faUser} onSave={changePassword} disabled={!areAllInputsValid} 
+          isLoading={isLoadingUserData || isUpdatingChangedPassword}>
+          {passwordInputs.map((input, index) => {
+            return (
+              <div className="flex flex-col pt-5" key={index}>
+                <h1 className="body-1 font-semibold">{input.placeholder}</h1>
+                <FormField
+                  type={input.type}
+                  placeholder={input.placeholder}
+                  value={input.value}
+                  icon={input.icon}
+                  disabled={isUpdatingChangedPassword}
+                  warningMessage={input.warningMessage}
+                  isValid={passwordInputs[index].isValid}
+                  onChange={(e) => dispatchPasswordInput({ typeOfInput: input.name, newValue: (e.target as HTMLTextAreaElement).value})}
+                />
+              </div>
+            )
+          })}
+        </InputsCard>
+        <InputsCard title={user?.data?.username} titleIcon={faEnvelope} subtitle={'Change email'} subtitleIcon={faWrench}
+         onSave={updateEmail} isLoading={isLoadingUserData || isUpdatingChangedEmail} 
+         disabled={!emailInput[0]?.isValid || !emailInput[0]?.value}>
+          {emailInput.map((input, index) => {
+            return (
+              <div className="flex flex-col pt-5" key={index}>
+                <h1 className="body-1 font-semibold">{input.placeholder}</h1>
+                <FormField
+                  type={input.type}
+                  placeholder={input.placeholder}
+                  value={input.value}
+                  icon={input.icon}
+                  disabled={isUpdatingChangedEmail}
+                  warningMessage={input.warningMessage}
+                  isValid={passwordInputs[index].isValid}
+                  onChange={(e) => {
+                    const newValue = (e.target as HTMLTextAreaElement).value
+                    setEmailInput((state) => {
+                      return [
+                        { ...input, isValid: input.validate(newValue), value: newValue }
+                      ]
+                    })
+                  }}
+                />
+              </div>
+            )
+          })}
+         </InputsCard>
       </TransitionFadeIn>
     </>
   )

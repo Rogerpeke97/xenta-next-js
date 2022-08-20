@@ -1,6 +1,6 @@
-import MenuContent from '../navigation/MenuContent'
-import NavigationBar from '../navigation/NavigationBar'
-import SideBar from '../navigation/SideBar'
+import MenuContent from '../molecules/navigation/MenuContent'
+import NavigationBar from '../molecules/navigation/NavigationBar'
+import SideBar from '../molecules/navigation/SideBar'
 
 const NavigationLayout = ({ children }: { children: React.ReactElement }) => {
 
