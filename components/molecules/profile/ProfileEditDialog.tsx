@@ -9,7 +9,8 @@ const ProfileEditDialog = () => {
 
   return (
     <>
-      <Dialog onOpen={() => {}} Activator={<IconButton icon={faPencilAlt} onClick={() => {}} size="sm" />}>
+      <Dialog onOpen={() => {}} Activator={<IconButton color="bg-primary" className="rounded-full w-[32px]" size="xs" 
+        icon={faPencilAlt} onClick={() => {}} />}>
         <div>
           
         </div>

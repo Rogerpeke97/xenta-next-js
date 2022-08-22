@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AppHelpers } from '../context/AppHelpers'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart, faHeartBroken, faKeyboard } from '@fortawesome/free-solid-svg-icons'
@@ -7,15 +7,16 @@ import InstructionsMenu from '@/components/game/menus/InstructionsMenu'
 import PlayMenu from '@/components/game/menus/PlayMenu'
 import { isFirstTimeUser, useGetUser, useUpdateScoreUser } from 'services/user/User'
 import Game from '../components/game/scenes/Game'
+import { GameScene } from 'store/game/GameScene'
 
 const Home = () => {
 
   const LIVES = 3
   const { gameHelpers } = AppHelpers()
+  const { GameSceneMemoized, isGameFinished } = GameScene()
   const [score, setScore] = useState(0)
   const intervalForScoreSum = useRef<NodeJS.Timeout>()
   const [showTutorialOverlay, setTutorialOverlay] = useState(false)
-  const isGameFinished = useRef(true)
   const { isLoading, data: userData, refetch } = useGetUser()
   const { refetch: setScoreServer, isRefetching: isUpdatingScore } = useUpdateScoreUser(score)
   useEffect(() => {
@@ -60,7 +61,7 @@ const Home = () => {
 
   return (
     <div className="smooth-render relative h-full">
-      <Game isGameFinished={isGameFinished} />
+      <GameSceneMemoized />
       <div className="absolute flex flex-col justify-between inset-0 p-4 h-full w-full">
         <div className="flex justify-between">
           <div className="flex">
@@ -88,7 +89,7 @@ const Home = () => {
             isLoading={isLoading} setTutorialOverlay={setTutorialOverlay}
           />
         }
-        <IconButton iconName={faKeyboard} onClick={() => setTutorialOverlay(!showTutorialOverlay)} iconSize={'icon'} />
+        <IconButton icon={faKeyboard} onClick={() => setTutorialOverlay(!showTutorialOverlay)} size="sm" />
       </div>
     </div>
   )

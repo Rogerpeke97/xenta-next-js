@@ -10,7 +10,7 @@ interface buttonProps {
   isLoading?: boolean,
   disabled?: boolean,
   icon?: IconProp,
-  color: string,
+  color?: string,
   size?: string,
   title?: string
 }
@@ -29,7 +29,7 @@ const IconButton = (props: buttonProps): JSX.Element => {
   const buttonContent = (): JSX.Element => {
     return (
       <div className="flex max-w-full items-center justify-center">
-        {props.icon && <FontAwesomeIcon className="icon-small mr-2" icon={props.icon} color="white" />}
+        {props.icon && <FontAwesomeIcon className={`icon-small ${props.text ? 'mr-2' : ''}`} icon={props.icon} color="white" />}
         {props.text && <h1 className="min-w-0 truncate font-bold">{props.text}</h1>}
       </div>
     )

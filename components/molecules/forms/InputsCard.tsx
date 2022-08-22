@@ -1,11 +1,8 @@
 
 import React, { useRef } from 'react'
-import FormField from '../../atoms/inputs/FormField'
-import FormWarning from '../../atoms/forms/FormWarning'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons'
-import { validatePassword, validateRepeatPassword, validateUserName, validateEmail } from "../../../utils/validators/inputValidator"
-import Button from '../../atoms/buttons/Button'
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import IconButton from '@/components/atoms/buttons/IconButton'
 
 interface Input {
   name: string
@@ -42,7 +39,7 @@ const InputsCard = ({ title, subtitle, subtitleIcon, titleIcon, onSave, isLoadin
       <form ref={form} className="px-7 mdAndDown:px-1 mdAndDown:w-full w-96">
         {children}
         <div className="pt-10">
-          <Button color="bg-card" text="Save Changes" onClick={(e) => save(e)} 
+          <IconButton color="bg-card" text="Save Changes" onClick={(e) => save(e)} 
             isLoading={isLoading} disabled={isLoading || disabled} />
         </div>
       </form>

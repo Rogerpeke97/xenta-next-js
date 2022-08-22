@@ -1,6 +1,5 @@
 import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
-import Button from '../../components/atoms/buttons/Button'
 import FormLogin from '../../components/molecules/forms/FormLogin'
 import FormSignUp from '../../components/molecules/forms/FormSignUp'
 import Image from 'next/image'

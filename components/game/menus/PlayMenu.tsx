@@ -1,4 +1,4 @@
-import Button from "@/components/atoms/buttons/Button"
+import IconButton from "@/components/atoms/buttons/IconButton"
 import { faCrown, faPlay } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { AppHelpers } from "context/AppHelpers"
@@ -22,7 +22,7 @@ const PlayMenuDialog = ({ children = <></>, buttonText = "Play", onPlay, isLoadi
         {children}
       </div>
       <div className="flex pb-5 justify-center">
-        <Button color="bg-primary"
+        <IconButton color="bg-primary"
           text={buttonText} icon={faPlay} onClick={onPlay}
           disabled={isLoading} />
       </div>
