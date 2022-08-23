@@ -30,40 +30,13 @@ interface TrackedParticles {
 
 const Game = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> }) => {
 
-  const ALLOWED_KEYS = [' ', 'ArrowLeft', 'ArrowRight']
-  const canvasContainer = useRef<HTMLDivElement>(null);
-  const PLANET_ORIGIN_AXES = {
-    x: 30,
-    y: -2,
-    z: 30
-  }
   const { gameHelpers, windowWidth } = AppHelpers()
-  const trackedKeys = useRef({ ArrowRight: false, ArrowLeft: false })
-  const PLANET_RADIUS = 10
   const modelLoader = new GLTFLoader()
   const animationFrameId = useRef<number>(0)
   const TREE_COUNT = 40
   const scene = useRef<THREE.Scene>(new THREE.Scene())
   const renderer = useRef<THREE.WebGLRenderer>()
   const camera = useRef<THREE.PerspectiveCamera>()
-  const afterKeyPressHandler = (event: KeyboardEvent) => {
-    const isAnAllowedKey = ALLOWED_KEYS.includes(event.key)
-    if (isAnAllowedKey) {
-      trackedKeys.current = { ...trackedKeys.current, [event.key]: true }
-    }
-  }
-  const afterKeyUnpressedHandler = (event: KeyboardEvent) => {
-    const isAnAllowedKey = ALLOWED_KEYS.includes(event.key)
-    if (isAnAllowedKey) {
-      trackedKeys.current = { ...trackedKeys.current, [event.key]: false }
-    }
-  }
-  const setKeyDownListener = () => {
-    window.addEventListener('keydown', afterKeyPressHandler)
-  }
-  const setKeyUpListener = () => {
-    window.addEventListener('keyup', afterKeyUnpressedHandler)
-  }
   const hasCharacterHitTree = (scene: THREE.Scene) => {
     const character = scene.getObjectByName('character')
     let trees: Array<THREE.Mesh> = []
@@ -140,26 +113,6 @@ const Game = ({ isGameFinished }: { isGameFinished: MutableRefObject<boolean> })
   const setCameraPosition = (camera: THREE.PerspectiveCamera, position: Axes, rotation: Axes) => {
     camera.position.set(position.x, position.y, position.z)
     camera.rotation.set(rotation.x, rotation.y, rotation.z)
-  }
-  const addLight = (scene: THREE.Scene) => {
-    const directionalLight = new THREE.DirectionalLight(0xBC2732, 1)
-    directionalLight.position.set(PLANET_ORIGIN_AXES.x, PLANET_ORIGIN_AXES.y + PLANET_RADIUS * 2, PLANET_ORIGIN_AXES.z - 8)
-    directionalLight.castShadow = true
-    directionalLight.shadow.camera.near = 0.1
-    directionalLight.shadow.camera.far = 50
-    directionalLight.shadow.mapSize.width = 1024
-    directionalLight.shadow.mapSize.height = 1024
-    directionalLight.intensity = 3
-    const planet = scene.getObjectByName('planet')
-    if (!planet) return
-    directionalLight.target = planet
-    const helper = new THREE.DirectionalLightHelper(directionalLight)
-    scene.add(directionalLight)
-
-    const ambientLight = new THREE.AmbientLight(0xffffff)
-    ambientLight.intensity = 0.2
-
-    scene.add(ambientLight)
   }
   const hasCollidedWithPlanet = (point: THREE.Vector3) => {
     const coordinatesForCollisionCalc = Math.pow(point.x - PLANET_ORIGIN_AXES.x, 2) + Math.pow(point.y - PLANET_ORIGIN_AXES.y, 2) + Math.pow(point.z - PLANET_ORIGIN_AXES.z, 2)
