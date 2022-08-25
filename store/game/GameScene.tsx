@@ -1,21 +1,14 @@
 
-import Game from '@/components/game/scenes/Game';
-import React, {createContext, memo, useContext, useEffect, useMemo, useRef, useState} from 'react';
+import { World } from 'classes/game/World';
+import React, {createContext, memo, MutableRefObject, useContext, useEffect, useMemo, useRef, useState} from 'react';
 
 const StoredGameScene = createContext<any>({})
 
 const StoredGameSceneWrapper = ({ children }: { children: Array<React.ReactElement | React.ReactElement> }) => {
   const isGameFinished = useRef(true)
-  const game = () => {
-    return (
-      <>
-        <Game isGameFinished={isGameFinished} />
-      </>
-    )
-  }
-  const GameSceneMemoized = React.memo(game)
+  const GameWorld: MutableRefObject<World | null> = useRef(null)
   return(
-    <StoredGameScene.Provider value={{GameSceneMemoized, isGameFinished}}>
+    <StoredGameScene.Provider value={{isGameFinished, GameWorld}}>
       {children}
     </StoredGameScene.Provider>
   )

@@ -6,14 +6,14 @@ import IconButton from '../components/atoms/buttons/IconButton'
 import InstructionsMenu from '@/components/game/menus/InstructionsMenu'
 import PlayMenu from '@/components/game/menus/PlayMenu'
 import { isFirstTimeUser, useGetUser, useUpdateScoreUser } from 'services/user/User'
-import Game from '../components/game/scenes/Game'
 import { GameScene } from 'store/game/GameScene'
+import GameTest from '@/components/game/scenes/GameTest'
 
 const Home = () => {
 
   const LIVES = 3
   const { gameHelpers } = AppHelpers()
-  const { GameSceneMemoized, isGameFinished } = GameScene()
+  const { isGameFinished } = GameScene()
   const [score, setScore] = useState(0)
   const intervalForScoreSum = useRef<NodeJS.Timeout>()
   const [showTutorialOverlay, setTutorialOverlay] = useState(false)
@@ -61,7 +61,7 @@ const Home = () => {
 
   return (
     <div className="smooth-render relative h-full">
-      <GameSceneMemoized />
+      <GameTest />
       <div className="absolute flex flex-col justify-between inset-0 p-4 h-full w-full">
         <div className="flex justify-between">
           <div className="flex">
