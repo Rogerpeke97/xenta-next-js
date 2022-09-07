@@ -4,7 +4,7 @@ import React, {createContext, memo, MutableRefObject, useContext, useEffect, use
 
 const StoredGameScene = createContext<any>({})
 
-const StoredGameSceneWrapper = ({ children }: { children: Array<React.ReactElement | React.ReactElement> }) => {
+const StoredGameSceneWrapper = ({ children }: { children: Array<React.ReactElement> | React.ReactElement }) => {
   const isGameFinished = useRef(true)
   const GameWorld: MutableRefObject<World | null> = useRef(null)
   return(
