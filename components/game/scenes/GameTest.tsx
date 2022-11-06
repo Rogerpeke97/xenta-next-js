@@ -5,9 +5,14 @@ import { GameScene } from "store/game/GameScene"
 const GameTest = () => {
   const { GameWorld } = GameScene()
   useEffect(() => {
+    const canvas = document.getElementById("gameScene") as HTMLCanvasElement
     if(!GameWorld.current){
-      const canvas = document.getElementById("gameScene") as HTMLCanvasElement
       GameWorld.current = new World(canvas)
+    } else {
+      GameWorld.current.updateSceneWithNewCanvas(canvas)
+    }
+    return () => {
+      GameWorld.current?.destroyWorld()
     }
   }, [])
   return(
