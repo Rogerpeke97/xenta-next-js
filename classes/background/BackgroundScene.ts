@@ -4,14 +4,14 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { fragmentShaderParticle, vertexShaderParticle } from 'utils/game/shaders/sphereParticle';
 
 export class BackgroundScene {
-  renderer: THREE.WebGLRenderer
-  resolution: THREE.Vector2
-  camera: THREE.PerspectiveCamera
+  renderer!: THREE.WebGLRenderer;
+  resolution!: THREE.Vector2;
+  camera!: THREE.PerspectiveCamera;
   scene: THREE.Scene = new THREE.Scene()
   clock: THREE.Clock = new THREE.Clock()
   animationFrameId: number = 0
-  observerOfCanvasContainer: ResizeObserver
-  controls: OrbitControls
+  observerOfCanvasContainer!: ResizeObserver;
+  controls!: OrbitControls;
   canvasContainer = {
     width: 0,
     height: 0
