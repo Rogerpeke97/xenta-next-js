@@ -1,6 +1,7 @@
 import { getEventListeners } from 'events';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { findNormalizedValue } from 'utils/game/math';
 import { fragmentShaderParticle, vertexShaderParticle } from 'utils/game/shaders/sphereParticle';
 
 export class BackgroundScene {
@@ -19,6 +20,13 @@ export class BackgroundScene {
   trackedKeys = {
     ArrowRight: false,
     ArrowLeft: false,
+  }
+  uniformsForParticles: {time: { value: number } 
+    ,resolution: { value: THREE.Vector2 },
+    particleTexture: { value: THREE.Texture | null }} = {
+    time: { value: 0 } ,
+    resolution: { value: this.resolution },
+    particleTexture: { value: null }
   }
   ALLOWED_KEYS = [' ', 'ArrowLeft', 'ArrowRight']
   CENTER_ORIGIN_AXES = {
@@ -105,6 +113,8 @@ export class BackgroundScene {
     }  
   }
   private renderScene() {
+    // console.log('Clock ', this.clock?.getElapsedTime())
+    this.uniformsForParticles.time.value = findNormalizedValue(this.clock.getElapsedTime())
     this.renderer.render(this.scene, this.camera)
     this.animationFrameId = requestAnimationFrame(this.renderScene.bind(this))
   }
@@ -128,12 +138,10 @@ export class BackgroundScene {
     }
     particles.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
     particles.setAttribute('customParticleColor', new THREE.Float32BufferAttribute(colors, 3))
+    this.uniformsForParticles.time.value = findNormalizedValue(this.clock.getElapsedTime())
+    this.uniformsForParticles.particleTexture.value = particleTexture
     const particleShaderMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        time: { value: this.clock.getElapsedTime() },
-        resolution: { value: this.resolution },
-        particleTexture: { value: particleTexture }
-      },
+      uniforms: this.uniformsForParticles,
       vertexShader: vertexShaderParticle(),
       fragmentShader: fragmentShaderParticle(),
       blending: THREE.AdditiveBlending,
