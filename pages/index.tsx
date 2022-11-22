@@ -10,7 +10,6 @@ import { GameScene } from 'store/game/GameScene'
 import GameTest from '@/components/game/scenes/GameTest'
 
 const Home = () => {
-
   const LIVES = 3
   const { gameHelpers } = AppHelpers()
   const { isGameFinished } = GameScene()

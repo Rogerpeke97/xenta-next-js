@@ -6,9 +6,13 @@ import Image from 'next/image'
 import TransitionFadeIn from '@/components/molecules/transitions/TransitionFadeIn'
 import { useRouter } from 'next/router'
 import IconButton from '@/components/atoms/buttons/IconButton'
+import { AppHelpers } from 'context/AppHelpers'
+import { BackgroundSceneStore } from 'store/background/BackgroundScene'
+import { BackgroundScene } from 'classes/background/BackgroundScene';
 
 const Login: NextPage = () => {
-
+  const { StoredBackground } = BackgroundSceneStore()
+  const { isAuthenticated } = AppHelpers()
   const router = useRouter()
   const loginStateInfo = {
     state: 'Login',
@@ -34,12 +38,30 @@ const Login: NextPage = () => {
       router.replace('/login')
     }
   }, [])
+  useEffect(() => {
+    if(isAuthenticated){
+      router.replace('/')
+    }
+  }, [isAuthenticated])
+
+  useEffect(() => {
+    const canvas = document.getElementById("backgroundScene") as HTMLCanvasElement
+    if(!StoredBackground.current){
+      StoredBackground.current = new BackgroundScene(canvas)
+    } else {
+      StoredBackground.current.updateSceneWithNewCanvas(canvas)
+    }
+    return () => {
+      StoredBackground.current?.destroyWorld()
+    }
+  }, [])
 
   return (
-    <div className="flex h-full items-center justify-center bg-no-repeat bg-cover"
-      style={{ backgroundImage: "url('/backgrounds/curvedshape.webp')" }}>
+    <div id="backgroundSceneContainer" className="flex h-full items-center justify-center bg-no-repeat bg-cover">
+      <canvas className="absolute" id="backgroundScene" />
       <TransitionFadeIn className="flex h-full p-4 flex-col bg-background-2 rounded-3xl shadow-md shadow-black
-       min-h-[600px] max-h-[800px] min-w-[320px] max-w-[800px] w-full overflow-y-auto overflow-x-hidden">
+       min-h-[600px] max-h-[800px] min-w-[320px] max-w-[800px] w-full overflow-y-auto overflow-x-hidden smAndDown:min-h-full smAndDown:max-w-full
+       smAndDown:rounded-none">
         <div className="py-4 flex flex-col">
           <div className="flex items-center">
             <Image priority src="/logos/xenta.png" width={50} height={50} alt="profile-pic" />

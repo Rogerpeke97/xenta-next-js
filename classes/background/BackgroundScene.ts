@@ -1,9 +1,10 @@
 import { getEventListeners } from 'events';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { findNormalizedValue } from 'utils/game/math';
 import { fragmentShaderParticle, vertexShaderParticle } from 'utils/game/shaders/sphereParticle';
 
-export class World {
+export class BackgroundScene {
   renderer!: THREE.WebGLRenderer;
   resolution!: THREE.Vector2;
   camera!: THREE.PerspectiveCamera;
@@ -19,6 +20,13 @@ export class World {
   trackedKeys = {
     ArrowRight: false,
     ArrowLeft: false,
+  }
+  uniformsForParticles: {time: { value: number } 
+    ,resolution: { value: THREE.Vector2 },
+    particleTexture: { value: THREE.Texture | null }} = {
+    time: { value: 0 } ,
+    resolution: { value: this.resolution },
+    particleTexture: { value: null }
   }
   ALLOWED_KEYS = [' ', 'ArrowLeft', 'ArrowRight']
   CENTER_ORIGIN_AXES = {
@@ -36,8 +44,6 @@ export class World {
     this.renderer = new THREE.WebGLRenderer({ canvas })
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.setupIllumination()
-    this.setUpRenderer()
-    this.setKeyListeners()
     this.setCameraPositionAndAspect()
     this.setCameraControls()
     this.addAmbientParticles()
@@ -48,7 +54,7 @@ export class World {
   private trackWindowAndContainerResize() {
     // window.addEventListener('resize', this.updateRendererAndCamera.bind(this))
     this.observerOfCanvasContainer = new ResizeObserver(this.updateRendererAndCamera.bind(this))
-    this.observerOfCanvasContainer.observe(document.getElementById('gameSceneContainer') as HTMLElement)
+    this.observerOfCanvasContainer.observe(document.getElementById('backgroundSceneContainer') as HTMLElement)
   }
   private setCameraPositionAndAspect() {
     const POSITION = {
@@ -70,9 +76,9 @@ export class World {
     this.controls.target.set(0, 0, 0)
   }
   private updateRendererAndCamera() {
-    const gameSceneContainer = document.getElementById('gameSceneContainer') as HTMLElement
-    this.canvasContainer.width = gameSceneContainer?.clientWidth
-    this.canvasContainer.height = gameSceneContainer?.clientHeight
+    const backgroundSceneContainer = document.getElementById('backgroundSceneContainer') as HTMLElement
+    this.canvasContainer.width = backgroundSceneContainer?.clientWidth
+    this.canvasContainer.height = backgroundSceneContainer?.clientHeight
     this.renderer.setSize(this.canvasContainer.width, this.canvasContainer.height)
     this.camera.aspect = this.canvasContainer.width / this.canvasContainer.height
     this.camera.updateProjectionMatrix()
@@ -94,10 +100,6 @@ export class World {
     ambientLight.intensity = 0.2
     this.scene.add(ambientLight)
   }
-  private setUpRenderer() {
-    this.renderer.shadowMap.enabled = true
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
-  }
   private removeListeners() {
     window.removeEventListener('keydown', this.afterKeyPress)
     window.removeEventListener('keyup', this.afterKeyPress)
@@ -110,14 +112,9 @@ export class World {
       this.trackedKeys = { ...this.trackedKeys, [event.key]: false }
     }  
   }
-  private setKeyListeners() {
-    console.log('setting key listeners')
-    // adding .bind changes the function signature for removal later on
-    this.afterKeyPress = this.afterKeyPress.bind(this)
-    window.addEventListener('keydown', this.afterKeyPress)
-    window.addEventListener('keyup', this.afterKeyPress)
-  }
   private renderScene() {
+    // console.log('Clock ', this.clock?.getElapsedTime())
+    this.uniformsForParticles.time.value = findNormalizedValue(this.clock.getElapsedTime())
     this.renderer.render(this.scene, this.camera)
     this.animationFrameId = requestAnimationFrame(this.renderScene.bind(this))
   }
@@ -141,12 +138,10 @@ export class World {
     }
     particles.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
     particles.setAttribute('customParticleColor', new THREE.Float32BufferAttribute(colors, 3))
+    this.uniformsForParticles.time.value = findNormalizedValue(this.clock.getElapsedTime())
+    this.uniformsForParticles.particleTexture.value = particleTexture
     const particleShaderMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        time: { value: this.clock.getElapsedTime() },
-        resolution: { value: this.resolution },
-        particleTexture: { value: particleTexture }
-      },
+      uniforms: this.uniformsForParticles,
       vertexShader: vertexShaderParticle(),
       fragmentShader: fragmentShaderParticle(),
       blending: THREE.AdditiveBlending,

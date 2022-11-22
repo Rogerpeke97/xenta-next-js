@@ -21,7 +21,7 @@ const MenuContent = ({ children }: { children: React.ReactElement }) => {
   }
 
   return (
-    <div className="h-full overflow-y-auto px-5 py-6 bg-background-3">
+    <div className="h-full overflow-y-auto px-5 py-6">
       {loadContent()}
     </div>
   )

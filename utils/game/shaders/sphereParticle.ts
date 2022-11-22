@@ -38,7 +38,7 @@ export function fragmentShaderParticle(){
   varying vec3 vColor;
     void main(){
       vec2 normalizedCoordinates = gl_FragCoord.xy / resolution.xy;
-      gl_FragColor = vec4(vColor, 1.0);
+      gl_FragColor = vec4(time, vColor);
       gl_FragColor = gl_FragColor * texture2D(particleTexture, gl_PointCoord);
     }
   `
