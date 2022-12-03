@@ -13,4 +13,10 @@ export const findNormalizedValue = (value: number) => {
   return normalizedValue
 }
 
+export const normalizedToRadians = (normalizedValue: number) => {
+  return normalizedValue * 2 * Math.PI
+}
 
+export const randomizeNumBetweenMinAndMax = (min: number, max: number) => {
+  return Math.random() * (max - min) + min
+}

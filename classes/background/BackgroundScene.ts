@@ -1,13 +1,14 @@
-import { getEventListeners } from 'events';
+import { Stars, StarsType } from 'classes/particles/stars/Stars';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { findNormalizedValue } from 'utils/game/math';
-import { fragmentShaderParticle, vertexShaderParticle } from 'utils/game/shaders/sphereParticle';
 
 export class BackgroundScene {
   renderer!: THREE.WebGLRenderer;
   resolution!: THREE.Vector2;
   camera!: THREE.PerspectiveCamera;
+  sceneCanvasContainerId!: string;
+  harmlessStars!: Stars;
+  harmfulStars!: Stars;
   scene: THREE.Scene = new THREE.Scene()
   clock: THREE.Clock = new THREE.Clock()
   animationFrameId: number = 0
@@ -21,13 +22,6 @@ export class BackgroundScene {
     ArrowRight: false,
     ArrowLeft: false,
   }
-  uniformsForParticles: {time: { value: number } 
-    ,resolution: { value: THREE.Vector2 },
-    particleTexture: { value: THREE.Texture | null }} = {
-    time: { value: 0 } ,
-    resolution: { value: this.resolution },
-    particleTexture: { value: null }
-  }
   ALLOWED_KEYS = [' ', 'ArrowLeft', 'ArrowRight']
   CENTER_ORIGIN_AXES = {
     x: 30,
@@ -35,26 +29,30 @@ export class BackgroundScene {
     z: 30
   }
   CENTER_OBJECT_RADIUS = 10
-  constructor(canvas: HTMLCanvasElement) {
-    this.initScene(canvas)
+  constructor(canvas: HTMLCanvasElement, sceneCanvasContainerId: string) {
+    this.initScene(canvas, sceneCanvasContainerId)
   }
-  private initScene (canvas: HTMLCanvasElement) {
+  private initScene (canvas: HTMLCanvasElement, sceneCanvasContainerId: string) {
     this.resolution = new THREE.Vector2(canvas.clientWidth, canvas.clientHeight)
     this.camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000)
     this.renderer = new THREE.WebGLRenderer({ canvas })
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+    this.harmlessStars = new Stars({scene: this.scene, resolution: this.resolution,
+      clock: this.clock, centerOriginAxes: this.CENTER_ORIGIN_AXES})
+    this.harmfulStars = new Stars({scene: this.scene, resolution: this.resolution,
+      clock: this.clock, starsType: StarsType.harmful, centerOriginAxes: this.CENTER_ORIGIN_AXES, customColor: new THREE.Vector3(0.9,0.3,0.4)})
+    this.sceneCanvasContainerId = sceneCanvasContainerId
     this.setupIllumination()
     this.setCameraPositionAndAspect()
     this.setCameraControls()
-    this.addAmbientParticles()
     this.renderScene()
     this.updateRendererAndCamera()
     this.trackWindowAndContainerResize()
   }
   private trackWindowAndContainerResize() {
-    // window.addEventListener('resize', this.updateRendererAndCamera.bind(this))
     this.observerOfCanvasContainer = new ResizeObserver(this.updateRendererAndCamera.bind(this))
-    this.observerOfCanvasContainer.observe(document.getElementById('backgroundSceneContainer') as HTMLElement)
+    console.log(this.sceneCanvasContainerId)
+    this.observerOfCanvasContainer.observe(document.getElementById(this.sceneCanvasContainerId) as HTMLElement)
   }
   private setCameraPositionAndAspect() {
     const POSITION = {
@@ -114,44 +112,8 @@ export class BackgroundScene {
   }
   private renderScene() {
     // console.log('Clock ', this.clock?.getElapsedTime())
-    this.uniformsForParticles.time.value = findNormalizedValue(this.clock.getElapsedTime())
     this.renderer.render(this.scene, this.camera)
     this.animationFrameId = requestAnimationFrame(this.renderScene.bind(this))
-  }
-  private addAmbientParticles () {
-    const PARTICLES_COUNT = 1800
-    const PARTICLES_DISTANCE = 53
-    const particleTexture = new THREE.TextureLoader().load('/game/textures/particle.png')
-    const particles = new THREE.BufferGeometry()
-    const positions: Array<number> = []
-    const colors: Array<number> = []
-    let color = new THREE.Vector3()
-    const NORMALIZED_VEC_MAX = 1.0
-    let particlePositionX, particlePositionY, particlePositionZ
-    for (let i = 0; i < PARTICLES_COUNT; i++) {
-      particlePositionX = Math.random() * PARTICLES_DISTANCE + this.CENTER_ORIGIN_AXES.x / 2 - 10
-      particlePositionY = Math.random() * PARTICLES_DISTANCE
-      particlePositionZ = Math.random() * PARTICLES_DISTANCE
-      positions.push(particlePositionX, particlePositionY, particlePositionZ)
-      color.set(Math.random() * NORMALIZED_VEC_MAX, Math.random() * NORMALIZED_VEC_MAX, Math.random() * NORMALIZED_VEC_MAX)
-      colors.push(color.x, color.y, color.z)
-    }
-    particles.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
-    particles.setAttribute('customParticleColor', new THREE.Float32BufferAttribute(colors, 3))
-    this.uniformsForParticles.time.value = findNormalizedValue(this.clock.getElapsedTime())
-    this.uniformsForParticles.particleTexture.value = particleTexture
-    const particleShaderMaterial = new THREE.ShaderMaterial({
-      uniforms: this.uniformsForParticles,
-      vertexShader: vertexShaderParticle(),
-      fragmentShader: fragmentShaderParticle(),
-      blending: THREE.AdditiveBlending,
-      depthTest: true,
-      depthWrite: false,
-      transparent: true,
-    })
-    const particlesSystem = new THREE.Points(particles, particleShaderMaterial)
-    particlesSystem.castShadow = true
-    this.scene.add(particlesSystem)
   }
   updateSceneWithNewCanvas(canvas: HTMLCanvasElement) {
     this.initScene(canvas)
@@ -159,12 +121,6 @@ export class BackgroundScene {
   destroyWorld() {
     console.log('removing listeners')
     this.removeListeners()
-    // while(true){
-    //   const canvas = document.getElementById('canvas')
-    //   if(!canvas){
-    //     this.removeListeners()
-    //   }
-    // }
   }
   setCanvasElement(canvas: HTMLCanvasElement) {
     this.renderer.domElement = canvas

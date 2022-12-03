@@ -1,7 +1,7 @@
 import { getEventListeners } from 'events';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { fragmentShaderParticle, vertexShaderParticle } from 'utils/game/shaders/sphereParticle';
+import { fragmentShaderParticle, vertexShaderParticle } from 'utils/game/shaders/stars';
 
 export class World {
   renderer!: THREE.WebGLRenderer;

@@ -45,9 +45,11 @@ const Login: NextPage = () => {
   }, [isAuthenticated])
 
   useEffect(() => {
-    const canvas = document.getElementById("backgroundScene") as HTMLCanvasElement
+    const sceneCanvasId = "backgroundScene"
+    const sceneCanvasContainerId = "backgroundSceneContainer"
+    const canvas = document.getElementById(sceneCanvasId) as HTMLCanvasElement
     if(!StoredBackground.current){
-      StoredBackground.current = new BackgroundScene(canvas)
+      StoredBackground.current = new BackgroundScene(canvas, sceneCanvasContainerId)
     } else {
       StoredBackground.current.updateSceneWithNewCanvas(canvas)
     }
@@ -59,7 +61,7 @@ const Login: NextPage = () => {
   return (
     <div id="backgroundSceneContainer" className="flex h-full items-center justify-center bg-no-repeat bg-cover">
       <canvas className="absolute" id="backgroundScene" />
-      <TransitionFadeIn className="flex h-full p-4 flex-col bg-background-2 rounded-3xl shadow-md shadow-black
+      <TransitionFadeIn className="flex h-full p-4 flex-col border-2 border-white rounded-3xl shadow-md shadow-black
        min-h-[600px] max-h-[800px] min-w-[320px] max-w-[800px] w-full overflow-y-auto overflow-x-hidden smAndDown:min-h-full smAndDown:max-w-full
        smAndDown:rounded-none">
         <div className="py-4 flex flex-col">
